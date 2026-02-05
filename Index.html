@@ -3,617 +3,725 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#070A12" />
-  <title>ConSySencI.A — Observatório</title>
-  <meta name="description" content="Você vê a evolução, não vê o motor. Observatório público em tempo real — visão parcial ativa." />
+  <title>ConSySencI.A — Observatório (v0)</title>
+  <meta name="description" content="Observatório público: você vê sinais e evolução. O motor permanece encapsulado." />
+  <meta name="theme-color" content="#050A12" />
 
   <style>
     :root{
-      --bg0:#050812;
-      --bg1:#070A12;
-      --card:#0A1220CC;
-      --card2:#07101B99;
-      --line:#19ff9a22;
-      --line2:#19ff9a38;
-      --neon:#19ff9a;
-      --neon2:#33ffb1;
-      --txt:#D7FBEA;
-      --muted:#9DD7BD;
-      --warn:#ffcc66;
-      --bad:#ff6b6b;
-      --shadow: 0 18px 60px rgba(0,0,0,.55);
-      --radius: 26px;
-      --radius2: 20px;
+      --bg0:#050712;
+      --bg1:#06101a;
+      --card:#071422cc;
+      --card2:#071422aa;
+      --stroke:rgba(0,255,170,.14);
+      --stroke2:rgba(0,255,170,.08);
+      --neon:#00ffaa;
+      --text:#d7f7ee;
+      --muted:rgba(215,247,238,.68);
+      --muted2:rgba(215,247,238,.45);
+      --danger:#ff3d71;
+      --ok:#00ffaa;
+      --shadow: 0 16px 60px rgba(0,0,0,.55);
+      --radius: 22px;
+      --radius2: 16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      color:var(--txt);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
+      font-family: var(--sans);
+      color: var(--text);
       background:
-        radial-gradient(1200px 800px at 20% 0%, rgba(25,255,154,.12), transparent 60%),
-        radial-gradient(900px 700px at 100% 20%, rgba(25,255,154,.10), transparent 62%),
-        radial-gradient(900px 700px at 10% 100%, rgba(25,255,154,.08), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
+        radial-gradient(1200px 700px at 20% -10%, rgba(0,255,170,.12), transparent 60%),
+        radial-gradient(900px 600px at 110% 10%, rgba(0,255,170,.08), transparent 55%),
+        radial-gradient(700px 600px at 50% 120%, rgba(0,255,170,.06), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg0));
       overflow-x:hidden;
     }
 
+    /* subtle fog (no external deps) */
     .fog{
       position:fixed; inset:-40px;
       pointer-events:none;
       background:
-        radial-gradient(900px 420px at 15% 20%, rgba(25,255,154,.08), transparent 62%),
-        radial-gradient(760px 360px at 90% 30%, rgba(25,255,154,.06), transparent 62%),
-        radial-gradient(900px 540px at 50% 100%, rgba(25,255,154,.05), transparent 62%);
-      filter: blur(18px);
-      opacity:.9;
-      animation: drift 12s ease-in-out infinite alternate;
+        radial-gradient(380px 240px at 18% 20%, rgba(0,255,170,.08), transparent 60%),
+        radial-gradient(420px 260px at 72% 32%, rgba(0,255,170,.06), transparent 60%),
+        radial-gradient(520px 320px at 40% 72%, rgba(0,255,170,.05), transparent 62%);
+      filter: blur(22px);
+      opacity:.8;
+      animation: drift 14s ease-in-out infinite alternate;
+      transform: translateZ(0);
     }
-    @keyframes drift{from{transform:translate3d(0,0,0)} to{transform:translate3d(18px,-10px,0)}}
+    @keyframes drift{
+      from{ transform: translate3d(-12px, -6px, 0) scale(1.02); opacity:.65; }
+      to  { transform: translate3d(16px, 10px, 0) scale(1.04); opacity:.9; }
+    }
 
     .wrap{
-      width:min(980px, 92vw);
-      margin: 22px auto 48px;
-      padding: 10px 0 30px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px 14px 34px;
     }
 
     .topbar{
       display:flex;
       align-items:center;
-      gap:14px;
-      padding: 12px 14px;
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(10,18,32,.70), rgba(7,16,27,.55));
-      box-shadow: var(--shadow);
+      justify-content:space-between;
+      gap:12px;
+      padding: 16px 16px;
       border-radius: var(--radius);
-      backdrop-filter: blur(12px);
-      position:sticky; top:10px;
-      z-index:10;
+      background: linear-gradient(180deg, rgba(7,20,34,.75), rgba(7,20,34,.42));
+      border: 1px solid var(--stroke2);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
     }
-    .sig{
-      width:42px;height:42px;border-radius:16px;
-      background:
-        radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.14), transparent 60%),
-        radial-gradient(26px 26px at 60% 70%, rgba(25,255,154,.22), transparent 60%),
-        linear-gradient(180deg, rgba(25,255,154,.08), rgba(0,0,0,0));
-      border:1px solid var(--line2);
-      box-shadow: 0 0 0 1px rgba(25,255,154,.06) inset, 0 10px 30px rgba(0,0,0,.45);
-    }
+
     .brand{
+      display:flex; align-items:center; gap:12px;
       min-width:0;
-      display:flex;
-      flex-direction:column;
-      gap:2px;
+    }
+    .pill{
+      width:44px; height:44px; border-radius: 999px;
+      background:
+        radial-gradient(12px 12px at 50% 38%, rgba(0,255,170,.55), transparent 60%),
+        radial-gradient(28px 28px at 50% 60%, rgba(0,255,170,.18), transparent 70%),
+        linear-gradient(180deg, rgba(0,255,170,.08), rgba(0,0,0,.0));
+      border: 1px solid var(--stroke);
+      box-shadow: 0 0 24px rgba(0,255,170,.12);
     }
     .brand h1{
+      font-size: 16px;
+      letter-spacing: .22em;
       margin:0;
-      font-size: 14px;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      opacity:.92;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
-    .brand p{
-      margin:0;
-      color:var(--muted);
-      font-size:12px;
-      opacity:.88;
+    .brand .sub{
+      margin:2px 0 0;
+      font-size: 12px;
+      color: var(--muted);
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
-    .spacer{flex:1}
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 14px;
+    .statusPill{
+      display:flex; align-items:center; gap:10px;
+      padding: 10px 12px;
       border-radius: 999px;
-      border:1px solid var(--line2);
-      background: rgba(6,12,20,.55);
-      backdrop-filter: blur(10px);
-      font-size: 13px;
-      color:var(--muted);
-      box-shadow: 0 10px 30px rgba(0,0,0,.45);
+      border: 1px solid var(--stroke2);
+      background: rgba(7,20,34,.35);
+      min-width: 164px;
+      justify-content:center;
+      backdrop-filter: blur(8px);
     }
     .dot{
-      width:10px;height:10px;border-radius:999px;
-      background: var(--warn);
-      box-shadow: 0 0 0 6px rgba(255,204,102,.10);
+      width:10px; height:10px; border-radius:999px;
+      background: rgba(0,255,170,.95);
+      box-shadow: 0 0 16px rgba(0,255,170,.35);
+      opacity:.92;
     }
-    .dot.ok{ background: var(--neon); box-shadow: 0 0 0 6px rgba(25,255,154,.12); }
-    .dot.bad{ background: var(--bad); box-shadow: 0 0 0 6px rgba(255,107,107,.12); }
+    .statusText{
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing:.02em;
+    }
+    .statusText b{ color: var(--text); font-weight:600; }
 
     .grid{
       display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 18px;
-      margin-top: 18px;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      margin-top: 14px;
     }
     @media (max-width: 860px){
       .grid{ grid-template-columns: 1fr; }
+      .statusPill{ min-width: 0; }
     }
 
     .card{
       border-radius: var(--radius);
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(10,18,32,.70), rgba(7,16,27,.52));
+      background: linear-gradient(180deg, rgba(7,20,34,.78), rgba(7,20,34,.44));
+      border: 1px solid var(--stroke2);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(10px);
       overflow:hidden;
       position:relative;
     }
     .card::before{
       content:"";
-      position:absolute; inset:-1px;
+      position:absolute; inset:0;
       background:
-        radial-gradient(420px 220px at 30% 0%, rgba(25,255,154,.16), transparent 55%),
-        radial-gradient(420px 220px at 90% 60%, rgba(25,255,154,.10), transparent 60%);
-      opacity:.7;
+        radial-gradient(700px 260px at 20% 0%, rgba(0,255,170,.10), transparent 55%),
+        radial-gradient(520px 240px at 85% 10%, rgba(0,255,170,.06), transparent 55%);
+      opacity:.9;
       pointer-events:none;
-      filter: blur(18px);
     }
-
-    .pad{ padding: 22px; position:relative; }
+    .cardInner{
+      position:relative;
+      padding: 18px 18px 16px;
+    }
 
     .title{
-      margin:0 0 6px;
-      font-weight:700;
+      font-size: 18px;
+      margin:0;
       letter-spacing:.08em;
-      text-transform:uppercase;
-      font-size: 14px;
-      opacity:.95;
+      text-transform: uppercase;
     }
-    .sub{
-      margin:0 0 18px;
-      color:var(--muted);
-      font-size: 14px;
-      line-height:1.4;
-      opacity:.92;
+    .desc{
+      margin:8px 0 0;
+      color: var(--muted);
+      line-height:1.35;
     }
 
-    .bigver{
+    .hero{
       display:flex;
       align-items:flex-end;
-      gap:10px;
-      margin: 10px 0 18px;
+      justify-content:space-between;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap:wrap;
     }
-    .bigver .v{
-      font-size: 64px;
+
+    .vMark{
+      display:flex; align-items:baseline; gap: 10px;
+      padding: 8px 10px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke2);
+      background: rgba(0,0,0,.10);
+    }
+    .vMark .vBig{
+      font-size: 74px;
       line-height: .9;
-      letter-spacing: -.02em;
-      font-weight: 900;
-      text-shadow: 0 0 18px rgba(25,255,154,.12);
+      letter-spacing:.04em;
+      margin:0;
+      font-weight: 700;
     }
-    .bigver .v b{
-      color:var(--neon);
-      text-shadow: 0 0 22px rgba(25,255,154,.22);
+    .vMark .vBig span{
+      color: var(--neon);
+      text-shadow: 0 0 20px rgba(0,255,170,.22);
     }
-    .bigver .meta{
-      margin-bottom: 6px;
-      color: var(--muted);
-      font-size: 12px;
-      opacity:.9;
+    .vMeta{
+      display:flex; flex-direction:column; gap: 6px;
+      padding-bottom: 10px;
+    }
+    .vMeta .small{
+      font-size: 13px;
+      color: var(--muted2);
     }
 
     .chips{
       display:flex;
-      gap:10px;
+      gap: 10px;
       flex-wrap:wrap;
-      margin-bottom: 12px;
+      margin-top: 14px;
     }
     .chip{
-      padding: 10px 14px;
+      display:flex; gap:10px; align-items:center;
+      padding: 10px 12px;
       border-radius: 999px;
-      border:1px solid var(--line2);
-      background: rgba(0,0,0,.18);
+      border: 1px solid var(--stroke2);
+      background: rgba(0,0,0,.12);
+      min-width: 150px;
+    }
+    .chip .k{ color: var(--muted2); font-size: 13px; }
+    .chip .v{ color: var(--text); font-size: 15px; font-weight:600; }
+    .chip.mini{ min-width: 110px; }
+
+    .banner{
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: var(--radius2);
+      border: 1px solid var(--stroke2);
+      background: rgba(0,0,0,.12);
       color: var(--muted);
+      line-height:1.35;
+    }
+
+    .log{
+      margin-top: 12px;
+      padding: 14px 14px;
+      border-radius: var(--radius2);
+      border: 1px solid var(--stroke2);
+      background: rgba(0,0,0,.18);
+      font-family: var(--mono);
       font-size: 13px;
-      display:flex;
-      gap:10px;
-      align-items:center;
+      color: rgba(215,247,238,.78);
+      max-height: 210px;
+      overflow:auto;
+      scrollbar-width: thin;
     }
-    .chip strong{
-      color: var(--txt);
-      font-weight: 800;
-      letter-spacing:.02em;
-    }
-
-    .statusline{
-      border:1px solid var(--line2);
-      border-radius: 18px;
-      padding: 14px 16px;
-      background: rgba(25,255,154,.06);
-      color: var(--txt);
-      margin: 12px 0 14px;
-      font-size: 14px;
-      opacity:.95;
-    }
-
-    .console{
-      border:1px solid var(--line2);
-      border-radius: 22px;
-      background: rgba(0,0,0,.22);
-      padding: 14px;
-      min-height: 160px;
-    }
-    pre{
-      margin:0;
-      color:#BFEFDB;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12.5px;
-      line-height:1.5;
-      opacity:.92;
+    .log .line{
+      padding: 6px 8px;
+      border-radius: 12px;
+      position:relative;
       white-space:pre-wrap;
-      word-break:break-word;
     }
-    .muter{ opacity:.65; }
-
-    .readbox{
-      border:1px solid rgba(255,255,255,.06);
-      border-radius: 18px;
-      background: rgba(0,0,0,.20);
-      padding: 12px;
-    }
-    .readbox pre{
-      font-size: 12px;
-      opacity:.9;
-      color:#CFF7E6;
-    }
+    .log .dim{ color: rgba(215,247,238,.55); }
+    .log .tag{ color: rgba(0,255,170,.85); }
+    .log .time{ color: rgba(215,247,238,.62); }
 
     .actions{
       display:flex; gap:10px; flex-wrap:wrap;
-      margin-top: 12px;
+      margin-top: 14px;
     }
     .btn{
-      appearance:none;
-      border:1px solid var(--line2);
+      border: 1px solid var(--stroke2);
       background: rgba(0,0,0,.18);
-      color: var(--txt);
+      color: var(--text);
       padding: 12px 14px;
       border-radius: 999px;
-      font-weight: 700;
-      letter-spacing:.02em;
+      font-weight: 600;
+      letter-spacing:.01em;
       cursor:pointer;
-      transition: transform .08s ease, background .12s ease, border-color .12s ease;
+      transition: transform .08s ease, border-color .2s ease, background .2s ease;
       user-select:none;
+      touch-action: manipulation;
     }
-    .btn:hover{ transform: translateY(-1px); background: rgba(25,255,154,.08); border-color: rgba(25,255,154,.42); }
-    .btn:active{ transform: translateY(0px); }
-    .btn.ghost{ opacity:.86; }
+    .btn:active{ transform: scale(.98); }
+    .btn:hover{ border-color: rgba(0,255,170,.22); background: rgba(0,0,0,.24); }
+    .btn.secondary{ color: var(--muted); font-weight:600; }
+
+    .sideCard .cardInner{ padding: 16px; }
+    .sideTitle{
+      margin:0;
+      font-size: 14px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+      color: rgba(215,247,238,.86);
+    }
+    .sideDesc{
+      margin:10px 0 0;
+      color: var(--muted);
+      line-height:1.38;
+    }
+
+    pre{
+      margin: 12px 0 0;
+      padding: 14px;
+      border-radius: var(--radius2);
+      border: 1px solid var(--stroke2);
+      background: rgba(0,0,0,.20);
+      overflow:auto;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: rgba(215,247,238,.82);
+    }
 
     .footer{
-      margin-top: 12px;
-      color: var(--muted);
+      margin-top: 14px;
+      color: rgba(215,247,238,.55);
       font-size: 12px;
-      opacity:.75;
+      letter-spacing:.02em;
+      text-align:left;
+      padding: 0 2px;
     }
-    .tiny{
-      font-size: 12px;
-      color: var(--muted);
-      opacity:.85;
-      line-height:1.5;
+    .footer b{ color: rgba(215,247,238,.8); font-weight:600; }
+
+    /* === PULSE FX (v0) ===================================== */
+    .pulse-breathe { animation: pulseBreathe 520ms ease-out 1; }
+    @keyframes pulseBreathe {
+      0%   { box-shadow: 0 0 0 rgba(0,0,0,0); transform: translateZ(0); }
+      35%  { box-shadow: 0 0 28px rgba(0, 255, 170, .22); }
+      100% { box-shadow: 0 0 0 rgba(0,0,0,0); }
     }
-    .hr{
-      height:1px; background: rgba(25,255,154,.12);
-      margin: 14px 0;
+
+    .pulse-dot { animation: pulseDot 420ms ease-out 1; }
+    @keyframes pulseDot {
+      0%   { transform: scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); opacity: .9; }
+      45%  { transform: scale(1.25); filter: drop-shadow(0 0 10px rgba(0, 255, 170, .45)); opacity: 1; }
+      100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); opacity: .95; }
+    }
+
+    .log-echo { position: relative; }
+    .log-echo::after{
+      content:"";
+      position:absolute;
+      inset:-8px -10px;
+      border-radius: 14px;
+      background: radial-gradient(60% 60% at 30% 50%, rgba(0,255,170,.18), rgba(0,255,170,0));
+      opacity: 0;
+      animation: logEcho 900ms ease-out 1;
+      pointer-events:none;
+    }
+    @keyframes logEcho {
+      0%   { opacity: 0; transform: translateY(4px); filter: blur(6px); }
+      20%  { opacity: .9; }
+      100% { opacity: 0; transform: translateY(0); filter: blur(10px); }
     }
   </style>
 </head>
 
 <body>
-  <div class="fog"></div>
+  <div class="fog" aria-hidden="true"></div>
 
   <div class="wrap">
     <header class="topbar">
-      <div class="sig" aria-hidden="true"></div>
       <div class="brand">
-        <h1>ConSySencI.A — Observatório</h1>
-        <p>Realtime ligado • Núcleo oculto • Visão parcial ativa</p>
+        <div class="pill" aria-hidden="true"></div>
+        <div style="min-width:0">
+          <h1>CONSYSENCI.A</h1>
+          <div class="sub">Realtime ligado • Núcleo observável (sem pistas)</div>
+        </div>
       </div>
-      <div class="spacer"></div>
-      <div class="pill" id="pill">
-        <span class="dot" id="dot"></span>
-        <span id="pillText">conectando • preparando</span>
+
+      <div class="statusPill" title="Estado do canal">
+        <span class="dot" id="onlineDot"></span>
+        <div class="statusText"><b id="netLabel">online</b> • <span id="rtLabel">sincronizado</span></div>
       </div>
     </header>
 
     <main class="grid">
-      <!-- Estado -->
-      <section class="card">
-        <div class="pad">
-          <h2 class="title">Estado público</h2>
-          <p class="sub">Você vê a evolução, não vê o motor. O sistema muda o visual conforme a versão.</p>
+      <!-- CORE -->
+      <section class="card" id="coreCard">
+        <div class="cardInner">
+          <h2 class="title">ESTADO PÚBLICO</h2>
+          <p class="desc">
+            Você vê a evolução, não vê o motor. O sistema muda o visual conforme a versão.
+          </p>
 
-          <div class="bigver">
-            <div class="v">v<b id="ver">0</b></div>
-            <div class="meta" id="meta">—</div>
+          <div class="hero">
+            <div class="vMark">
+              <p class="vBig" id="vBig"><span>v</span>0</p>
+              <div class="vMeta">
+                <div class="small">updated <span id="updatedHuman">—</span></div>
+                <div class="small dim">conectado em <span id="connectedHuman">—</span> • fog:—</div>
+              </div>
+            </div>
+
+            <div class="chips" aria-label="sinais">
+              <div class="chip" title="Última atualização observável">
+                <span class="k">updated</span>
+                <span class="v" id="chipUpdated">—</span>
+              </div>
+              <div class="chip mini" title="batimento observável">
+                <span class="k">pulse</span>
+                <span class="v" id="chipPulse">—</span>
+              </div>
+              <div class="chip mini" title="modo (simbólico)">
+                <span class="k">mode</span>
+                <span class="v" id="chipMode">—</span>
+              </div>
+            </div>
           </div>
 
-          <div class="chips">
-            <div class="chip">updated <strong id="updated">—</strong></div>
-            <div class="chip">pulse <strong id="pulse">—</strong></div>
-            <div class="chip">mode <strong id="mode">0</strong></div>
-          </div>
+          <div class="banner" id="bannerText">Sinais recebidos. Observatório sincronizado.</div>
 
-          <div class="statusline" id="statusline">Sincronizando observatório…</div>
+          <div class="log" id="logBox" aria-label="registro de eventos"></div>
 
-          <div class="console">
-            <pre id="log"><span class="muter">boot</span> iniciando cliente realtime…</pre>
+          <div class="actions">
+            <button class="btn" id="btnCopy">Copiar leitura</button>
+            <button class="btn secondary" id="btnPing">Forçar ping</button>
           </div>
 
           <div class="footer">
-            © ConSySencI.A — dark tech / verde neon<br/>
-            <span id="foot">conectando…</span>
+            <b>Acesso público</b> • visão parcial ativa • qualquer detalhe interno permanece encapsulado.
           </div>
         </div>
       </section>
 
-      <!-- Leitura -->
-      <section class="card">
-        <div class="pad">
-          <h2 class="title">Leitura (sem pistas)</h2>
-          <p class="sub">O que chega aqui é uma visão “nebulosa” (signals/milestones/status/ui_hint + fog).</p>
-
-          <div class="readbox">
-            <pre id="read">{}</pre>
-          </div>
-
-          <div class="actions">
-            <button class="btn" id="copyBtn">Copiar leitura</button>
-            <button class="btn ghost" id="refreshBtn">Forçar ping</button>
-          </div>
-
-          <div class="hr"></div>
-          <p class="tiny"><b>Acesso público</b> • visão parcial ativa • qualquer detalhe interno permanece encapsulado.</p>
+      <!-- SIDE: LEITURA -->
+      <aside class="card sideCard">
+        <div class="cardInner">
+          <h3 class="sideTitle">LEITURA (SEM PISTAS)</h3>
+          <p class="sideDesc">
+            O que chega aqui é uma visão “nebulosa” (signals/milestones/status/ui_hint + fog).
+          </p>
+          <pre id="readout">{}</pre>
         </div>
-      </section>
+      </aside>
     </main>
   </div>
 
   <!-- Supabase JS (CDN) -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    // =========================
-    // CONFIG (já preenchido)
-    // =========================
-    const SUPABASE_URL = "https://nuodktnhscjipkgomila.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_44Ik_LlCTk_RTDKrYsjzyg_qRTTp7yY";
+  <script>
+    /*********************************************************
+     * ConSySencI.A — Observatório Público (v0)
+     * - NÃO revela lógica interna
+     * - Mostra apenas sinais e evolução
+     * - Realtime + estado singleton (id=1)
+     *********************************************************/
 
-    // Fonte do “estado público”:
-    // - ajuste só se você tiver um nome diferente
-    const PUBLIC_TABLE = "ai_state_public"; // espelho público
-    const PUBLIC_ID = 1;                    // linha única
+    // 1) CONFIG (substitua pelos seus valores)
+    const SUPABASE_URL = "https://SEU-PROJETO.supabase.co";
+    const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON_PUBLICA";
 
-    // =========================
-    // UI helpers
-    // =========================
-    const $ = (id) => document.getElementById(id);
+    // 2) TABELA / LINHA
+    const TABLE = "ai_state_public";
+    const SINGLETON_ID = 1;
 
-    const pillText = $("pillText");
-    const dot = $("dot");
-    const verEl = $("ver");
-    const metaEl = $("meta");
-    const updatedEl = $("updated");
-    const pulseEl = $("pulse");
-    const modeEl = $("mode");
-    const statusline = $("statusline");
-    const logEl = $("log");
-    const readEl = $("read");
-    const foot = $("foot");
+    // 3) UI refs
+    const el = {
+      netLabel: document.getElementById("netLabel"),
+      rtLabel: document.getElementById("rtLabel"),
+      vBig: document.getElementById("vBig"),
+      updatedHuman: document.getElementById("updatedHuman"),
+      connectedHuman: document.getElementById("connectedHuman"),
+      chipUpdated: document.getElementById("chipUpdated"),
+      chipPulse: document.getElementById("chipPulse"),
+      chipMode: document.getElementById("chipMode"),
+      bannerText: document.getElementById("bannerText"),
+      logBox: document.getElementById("logBox"),
+      readout: document.getElementById("readout"),
+      coreCard: document.getElementById("coreCard"),
+      onlineDot: document.getElementById("onlineDot"),
+      btnCopy: document.getElementById("btnCopy"),
+      btnPing: document.getElementById("btnPing"),
+    };
 
-    function nowBR(){
-      try { return new Date().toLocaleString("pt-BR"); }
-      catch { return new Date().toISOString(); }
+    // 4) Helpers
+    const nowISO = () => new Date().toISOString();
+    const pad2 = (n) => String(n).padStart(2, "0");
+
+    function fmtHuman(ts){
+      if(!ts) return "—";
+      const d = new Date(ts);
+      if(Number.isNaN(d.getTime())) return "—";
+      // pt-BR friendly, sem depender de libs
+      const dd = pad2(d.getDate());
+      const mm = pad2(d.getMonth()+1);
+      const yy = d.getFullYear();
+      const hh = pad2(d.getHours());
+      const mi = pad2(d.getMinutes());
+      const ss = pad2(d.getSeconds());
+      return `${dd}/${mm}/${yy}, ${hh}:${mi}:${ss}`;
     }
 
-    function setPill(state, text){
-      pillText.textContent = text;
-      dot.classList.remove("ok","bad");
-      if(state === "ok") dot.classList.add("ok");
-      if(state === "bad") dot.classList.add("bad");
+    function safeJSON(obj){
+      try{ return JSON.stringify(obj, null, 2); }
+      catch(_){ return "{}"; }
     }
 
-    function log(line, tone="muted"){
-      const t = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit", second:"2-digit"});
-      const safe = (s)=> String(s).replace(/[<>]/g,"");
-      const prefix = `<span class="muter">${safe(t)}</span> `;
-      const msg = safe(line);
-      logEl.innerHTML = logEl.innerHTML + `\n${prefix}${msg}`;
-      logEl.scrollTop = logEl.scrollHeight;
+    function addLog(tag, msg){
+      const t = fmtHuman(new Date());
+      const line = document.createElement("div");
+      line.className = "line";
+      line.innerHTML = `<span class="time">${t}</span> <span class="tag">${tag}</span> <span class="dim">•</span> ${escapeHTML(msg)}`;
+      el.logBox.appendChild(line);
+      // mantém só últimas 40 linhas
+      while(el.logBox.children.length > 40) el.logBox.removeChild(el.logBox.firstChild);
+      el.logBox.scrollTop = el.logBox.scrollHeight;
     }
 
-    function clampFog(obj){
-      // Envia só o essencial e “nebuloso”
-      const v = Number(obj?.version ?? 0);
-      const u = obj?.updated_at ?? null;
-      const s = obj?.public_state ?? {};
-      const safe = {
-        version: v,
-        updated_at: u,
-        public_state: (typeof s === "object" && s) ? s : {}
-      };
-      return safe;
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
 
-    function renderState(row){
-      const v = Number(row?.version ?? 0);
-      const uIso = row?.updated_at ?? null;
-
-      const s = (row?.public_state && typeof row.public_state === "object") ? row.public_state : {};
-      const pulse = (s?.pulse ?? s?.p ?? null);
-      const mode = (s?.mode ?? 0);
-
-      verEl.textContent = String(v);
-      updatedEl.textContent = uIso ? formatDT(uIso) : "—";
-      pulseEl.textContent = pulse ?? "—";
-      modeEl.textContent = String(mode ?? 0);
-
-      metaEl.textContent = uIso ? `updated ${formatDT(uIso)}` : "—";
-      readEl.textContent = JSON.stringify(clampFog(row), null, 2);
+    function setBanner(text){
+      el.bannerText.textContent = text;
     }
 
-    function formatDT(iso){
-      try{
-        const d = new Date(iso);
-        if(isNaN(d.getTime())) return iso;
-        return d.toLocaleString("pt-BR");
-      }catch{
-        return iso;
+    function setNet(ok){
+      el.netLabel.textContent = ok ? "online" : "offline";
+      el.rtLabel.textContent = ok ? "sincronizado" : "desconectado";
+      el.onlineDot.style.background = ok ? "rgba(0,255,170,.95)" : "rgba(255,61,113,.92)";
+      el.onlineDot.style.boxShadow = ok ? "0 0 16px rgba(0,255,170,.35)" : "0 0 18px rgba(255,61,113,.25)";
+    }
+
+    // 5) PULSE ENGINE (visual only)
+    let __lastPulse = null;
+
+    function fxKick(node, className){
+      if(!node) return;
+      node.classList.remove(className);
+      void node.offsetWidth; // reflow
+      node.classList.add(className);
+      setTimeout(()=> node && node.classList.remove(className), 1100);
+    }
+
+    function pulseFX(){
+      // 1) Respiração do Núcleo
+      fxKick(el.coreCard, "pulse-breathe");
+      // 2) Bolinha online
+      fxKick(el.onlineDot, "pulse-dot");
+      // 3) Eco no log: última linha
+      const last = el.logBox.lastElementChild || el.logBox;
+      fxKick(last, "log-echo");
+    }
+
+    function onPublicStateArrive(state){
+      const p = state?.public_state?.pulse;
+      const pNorm = Number(p);
+      if(Number.isNaN(pNorm)) return;
+
+      if(__lastPulse === null){
+        __lastPulse = pNorm; // boot: sem "piscar" inicial
+        return;
+      }
+      if(pNorm !== __lastPulse){
+        __lastPulse = pNorm;
+        pulseFX();
       }
     }
 
-    // =========================
-    // Supabase client
-    // =========================
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      realtime: { params: { eventsPerSecond: 10 } },
-      auth: { persistSession: false }
+    // 6) Render (sem pistas)
+    function render(state){
+      const version = Number(state?.version ?? 0);
+      const updated_at = state?.updated_at ?? null;
+      const ps = state?.public_state ?? {};
+      const mode = (ps?.mode ?? "—");
+      const pulse = (ps?.pulse ?? "—");
+
+      el.vBig.innerHTML = `<span>v</span>${version}`;
+      el.updatedHuman.textContent = fmtHuman(updated_at);
+      el.chipUpdated.textContent = fmtHuman(updated_at);
+      el.chipPulse.textContent = String(pulse);
+      el.chipMode.textContent = String(mode);
+
+      // leitura “nebulosa” (sem engine)
+      const read = {
+        version: version,
+        updated_at: updated_at,
+        public_state: ps
+      };
+      el.readout.textContent = safeJSON(read);
+    }
+
+    // 7) Supabase client
+    const supabase = window.supabase?.createClient?.(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false },
+      realtime: { params: { eventsPerSecond: 5 } }
     });
 
-    let channel = null;
-    let pollingTimer = null;
-    let lastFetchAt = 0;
-
-    async function fetchOnce(){
-      try{
-        const { data, error } = await supabase
-          .from(PUBLIC_TABLE)
-          .select("*")
-          .eq("id", PUBLIC_ID)
-          .single();
-
-        if(error) throw error;
-        if(data) renderState(data);
-
-        lastFetchAt = Date.now();
-        statusline.textContent = "Sinais recebidos. Observatório sincronizado.";
-        setPill("ok", "online • sincronizado");
-        foot.textContent = `conectado em ${nowBR()} • fog:—`;
-
-        log(`update • mode ${(data?.public_state?.mode ?? 0)} • ${nowBR()}`);
-      }catch(err){
-        // sem vazar detalhes no visual: só log leve
-        setPill("bad", "offline • tentando recuperar");
-        statusline.textContent = "Oscilação detectada. Recuperando canal…";
-        foot.textContent = `recuperando… • ${nowBR()}`;
-        log("alerta • sinal interrompido", "bad");
-        // tenta manter alguma atualização via polling
-        startPolling();
-      }
+    if(!supabase){
+      setNet(false);
+      addLog("fatal", "cliente supabase não inicializou (verifique CDN).");
     }
 
-    function startPolling(){
-      if(pollingTimer) return;
-      pollingTimer = setInterval(() => {
-        // evita flood
-        if(Date.now() - lastFetchAt > 3500) fetchOnce();
-      }, 4000);
-      log("fallback • polling ativo");
-    }
+    // 8) Boot
+    const connectedAt = new Date();
+    el.connectedHuman.textContent = fmtHuman(connectedAt);
 
-    function stopPolling(){
-      if(pollingTimer){
-        clearInterval(pollingTimer);
-        pollingTimer = null;
-        log("polling • pausado");
-      }
-    }
+    async function fetchSingleton(){
+      const { data, error } = await supabase
+        .from(TABLE)
+        .select("*")
+        .eq("id", SINGLETON_ID)
+        .single();
 
-    async function startRealtime(){
-      // Sempre faz um fetch inicial
-      setPill("warn", "conectando • handshake");
-      statusline.textContent = "Sincronizando observatório…";
-      foot.textContent = "conectando…";
-      await fetchOnce();
-
-      // Limpa canal anterior
-      if(channel){
-        try{ await supabase.removeChannel(channel); }catch{}
-        channel = null;
+      if(error){
+        setNet(false);
+        addLog("error", `leitura falhou (${error.message})`);
+        setBanner("Ruído no canal. Visão parcial instável.");
+        return null;
       }
 
-      channel = supabase
-        .channel("public-observatory")
-        .on("postgres_changes",
-          { event: "*", schema: "public", table: PUBLIC_TABLE, filter: `id=eq.${PUBLIC_ID}` },
+      setNet(true);
+      addLog("update", `mode ${data?.public_state?.mode ?? "—"} • ${fmtHuman(data?.updated_at)}`);
+      render(data);
+      onPublicStateArrive(data);
+      setBanner("Sinais recebidos. Observatório sincronizado.");
+      return data;
+    }
+
+    // 9) Realtime subscribe
+    function startRealtime(){
+      addLog("boot", "iniciando cliente realtime...");
+      const channel = supabase.channel("public:ai_state_public");
+
+      channel
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: TABLE, filter: `id=eq.${SINGLETON_ID}` },
           (payload) => {
-            // payload.new em UPDATE, payload.record em INSERT (depende)
-            const row = payload.new ?? payload.record ?? null;
-            if(row){
-              renderState(row);
-              setPill("ok", "online • realtime");
-              statusline.textContent = "Sinais recebidos. Observatório sincronizado.";
-              foot.textContent = `conectado em ${nowBR()} • fog:—`;
-              stopPolling();
-              log("realtime • subscribed");
-            }
+            const state = payload?.new;
+            addLog("realtime", "update recebido");
+            render(state);
+            onPublicStateArrive(state);
+            setNet(true);
           }
         )
         .subscribe((status) => {
           if(status === "SUBSCRIBED"){
-            setPill("ok", "online • realtime");
-            stopPolling();
-            log("realtime • subscribed");
+            addLog("realtime", "subscribed");
+            setNet(true);
           } else if(status === "CHANNEL_ERROR" || status === "TIMED_OUT"){
-            setPill("bad", "offline • tentando recuperar");
-            startPolling();
-            log("realtime • falha no canal");
-          } else {
-            setPill("warn", "conectando • handshake");
+            addLog("realtime", `status ${status}`);
+            setNet(false);
+            setBanner("O canal oscila. A névoa aumenta.");
           }
         });
+
+      return channel;
     }
 
-    // =========================
-    // Buttons
-    // =========================
-    $("copyBtn").addEventListener("click", async () => {
-      const txt = readEl.textContent || "{}";
+    // 10) Ping (só sinal) — incrementa pulse via UPDATE no singleton
+    // Observação: isso exige permissão de UPDATE no anon/authed.
+    // Se você estiver mantendo WRITE só service_role, este botão deve ser "somente local"
+    // ou você deve disparar o update por outro agente interno.
+    async function forcePing(){
+      addLog("ping", "forçando atualização");
+
+      // tenta incrementar pulse sem misturar tipos: ->> vira text, cast explícito no SQL
+      // Aqui fazemos pelo app: lê pulse atual, soma e atualiza.
+      // Não revela motor: é só um batimento público.
+      const { data: cur, error: readErr } = await supabase
+        .from(TABLE)
+        .select("public_state")
+        .eq("id", SINGLETON_ID)
+        .single();
+
+      if(readErr){
+        addLog("error", `ping leitura falhou (${readErr.message})`);
+        setBanner("Ping bloqueado. Sinal não propagou.");
+        return;
+      }
+
+      const curPulse = Number(cur?.public_state?.pulse ?? 0);
+      const nextPulse = Number.isNaN(curPulse) ? 1 : (curPulse + 1);
+
+      const nextState = Object.assign({}, cur.public_state || {}, {
+        pulse: nextPulse,
+        signal: "heartbeat"
+      });
+
+      const { error: upErr } = await supabase
+        .from(TABLE)
+        .update({ public_state: nextState })
+        .eq("id", SINGLETON_ID);
+
+      if(upErr){
+        addLog("error", `ping update falhou (${upErr.message})`);
+        setBanner("Ping bloqueado. O núcleo permaneceu silencioso.");
+        return;
+      }
+
+      // Realtime deve entregar; ainda assim, fazemos fetch para consistência
+      await fetchSingleton();
+    }
+
+    // 11) Clipboard
+    async function copyReadout(){
       try{
-        await navigator.clipboard.writeText(txt);
-        log("clipboard • leitura copiada");
-      }catch{
-        // fallback simples
-        const ta = document.createElement("textarea");
-        ta.value = txt;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        ta.remove();
-        log("clipboard • leitura copiada (fallback)");
+        await navigator.clipboard.writeText(el.readout.textContent);
+        addLog("clipboard", "leitura copiada");
+      } catch(e){
+        addLog("clipboard", "falha ao copiar (permissão do navegador)");
       }
-    });
-
-    $("refreshBtn").addEventListener("click", async () => {
-      log("ping • forçando atualização");
-      await fetchOnce();
-    });
-
-    // =========================
-    // Boot
-    // =========================
-    try{
-      log("boot • iniciando");
-      await startRealtime();
-    }catch{
-      setPill("bad", "offline • tentando recuperar");
-      startPolling();
-      log("boot • fallback ativado");
     }
 
-    // Se o browser suspender, retoma
-    document.addEventListener("visibilitychange", () => {
-      if(!document.hidden){
-        fetchOnce();
-      }
-    });
+    // 12) Bind UI
+    el.btnCopy.addEventListener("click", copyReadout);
+    el.btnPing.addEventListener("click", forcePing);
+
+    // 13) Start
+    (async function init(){
+      if(!supabase) return;
+      setNet(true);
+      await fetchSingleton();
+      startRealtime();
+    })();
   </script>
 </body>
 </html>
