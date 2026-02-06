@@ -1,165 +1,158 @@
 // netlify/functions/whatauto_ingest.js
 
-const crypto = require("crypto");
+export default async (req) => {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const INGEST_BEARER = process.env.INGEST_BEARER || "CONSYSENCIA_SECURE_INGEST_V1";
 
-function sha256Hex(input) {
-  return crypto.createHash("sha256").update(input, "utf8").digest("hex");
-}
+  const nowIso = new Date().toISOString();
+  const trace =
+    (crypto?.randomUUID?.() || `t_${Date.now()}_${Math.random().toString(16).slice(2)}`).slice(0, 36);
 
-function getBearerToken(headers = {}) {
-  const auth = headers.authorization || headers.Authorization || "";
-  if (!auth) return "";
-  const m = auth.match(/^Bearer\s+(.+)$/i);
-  return (m ? m[1] : auth).trim();
-}
+  // --- Helpers
+  const json = (statusCode, obj) => ({
+    statusCode,
+    headers: { "content-type": "application/json; charset=utf-8" },
+    body: JSON.stringify(obj),
+  });
 
-function safeTrim(s) {
-  return String(s ?? "").trim();
-}
+  const safeText = async () => {
+    try {
+      return await req.text();
+    } catch {
+      return "";
+    }
+  };
 
-// Aceita:
-// 1) JSON válido
-// 2) form-urlencoded: a=b&c=d
-// 3) texto tipo: {app=WhatsAuto, sender=..., message=...}
-function parseBody(event) {
-  const raw = event.body || "";
-  if (!raw) return {};
+  const parseBody = async () => {
+    // 1) Tenta JSON
+    try {
+      const j = await req.json();
+      if (j && typeof j === "object") return { ok: true, data: j, mode: "json" };
+    } catch {}
 
-  // 1) tenta JSON
-  try {
-    const obj = JSON.parse(raw);
-    if (obj && typeof obj === "object") return obj;
-  } catch (_) {}
+    // 2) Tenta x-www-form-urlencoded / key=value
+    const raw = await safeText();
+    if (!raw) return { ok: false, data: null, mode: "empty", raw: "" };
 
-  // content-type pode ajudar, mas não confiamos 100%
-  const ct = safeTrim(event.headers?.["content-type"] || event.headers?.["Content-Type"] || "").toLowerCase();
-
-  // 2) tenta x-www-form-urlencoded
-  // mesmo que ct não venha, tentamos se tiver "=" e "&"
-  if (raw.includes("=")) {
-    // Caso venha com chaves e vírgulas: {a=b, c=d}
+    // alguns WhatsAuto mandam algo tipo "{app=WhatsAuto, sender=..., message=...}"
+    // vamos normalizar e extrair por regex simples
     const cleaned = raw
       .trim()
       .replace(/^\{/, "")
       .replace(/\}$/, "")
-      .trim();
+      .replace(/\s+/g, " ");
 
-    // Se parece com a=b&c=d
-    if (ct.includes("application/x-www-form-urlencoded") || cleaned.includes("&")) {
-      try {
-        const params = new URLSearchParams(cleaned);
-        const out = {};
-        for (const [k, v] of params.entries()) out[k] = v;
-        if (Object.keys(out).length) return out;
-      } catch (_) {}
+    // tenta URLSearchParams direto
+    try {
+      const p = new URLSearchParams(cleaned);
+      const obj = {};
+      for (const [k, v] of p.entries()) obj[k] = v;
+      if (Object.keys(obj).length) return { ok: true, data: obj, mode: "form", raw };
+    } catch {}
+
+    // tenta parse por "chave=valor" separado por vírgula
+    const obj = {};
+    for (const part of cleaned.split(",")) {
+      const [k, ...rest] = part.split("=");
+      if (!k || !rest.length) continue;
+      obj[k.trim()] = rest.join("=").trim();
     }
+    if (Object.keys(obj).length) return { ok: true, data: obj, mode: "kv", raw };
 
-    // 3) tenta formato "a=b, c=d"
-    // split por vírgula, depois por "="
-    const out = {};
-    const parts = cleaned.split(",").map((p) => p.trim()).filter(Boolean);
-    for (const part of parts) {
-      const idx = part.indexOf("=");
-      if (idx === -1) continue;
-      const k = part.slice(0, idx).trim();
-      const v = part.slice(idx + 1).trim();
-      if (k) out[k] = v;
-    }
-    if (Object.keys(out).length) return out;
-  }
-
-  return {};
-}
-
-exports.handler = async (event) => {
-  const neutralOk = {
-    statusCode: 200,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ reply: "" }),
+    return { ok: false, data: null, mode: "unknown", raw };
   };
 
-  if (event.httpMethod !== "POST") return neutralOk;
+  const sha256Hex = async (input) => {
+    const enc = new TextEncoder().encode(input);
+    const digest = await crypto.subtle.digest("SHA-256", enc);
+    return Array.from(new Uint8Array(digest))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  };
 
-  // Auth
-  const expectedToken = safeTrim(process.env.WHATAUTO_INGEST_TOKEN);
-  const gotToken = getBearerToken(event.headers);
-
-  if (!expectedToken || gotToken !== expectedToken) {
-    console.log("[whatauto_ingest] auth_failed");
-    return neutralOk;
+  // --- Auth (Bearer)
+  const auth = req.headers.get("authorization") || "";
+  const token = auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : "";
+  if (!token || token !== INGEST_BEARER) {
+    return json(401, { ok: false, trace, code: "unauthorized" });
   }
 
-  // Parse tolerante
-  const body = parseBody(event);
-
-  // Normaliza campos (aceita variações de nome)
-  const app = safeTrim(body.app || body.application || "WhatsAuto");
-  const sender = safeTrim(body.sender || body.from || "");
-  const message = safeTrim(body.message || body.text || "");
-  const groupName = safeTrim(body.group_name || body.group || body.groupName || "");
-  const phone = safeTrim(body.phone || body.number || body.msisdn || "");
-
-  if (!message && !sender && !phone && !groupName) {
-    // Sem dados úteis: não insere
-    console.log("[whatauto_ingest] empty_payload");
-    return neutralOk;
+  if (!SUPABASE_URL || !SERVICE_KEY) {
+    return json(500, { ok: false, trace, code: "missing_env" });
   }
 
-  const dedupeKey =
-    "whatauto:" + sha256Hex([app, phone, groupName, sender, message].join("|"));
+  // --- Parse inbound
+  const parsed = await parseBody();
+  if (!parsed.ok) {
+    return json(400, { ok: false, trace, code: "bad_json", mode: parsed.mode, raw: parsed.raw || "" });
+  }
 
-  const actorHash = phone ? sha256Hex("phone:" + phone) : sha256Hex("sender:" + sender);
+  const b = parsed.data;
 
-  const nowIso = new Date().toISOString();
+  // WhatsAuto padrão: app, sender, message, group_name, phone
+  const app = String(b.app || "WhatsAuto");
+  const sender = String(b.sender || "");
+  const message = String(b.message || "");
+  const group_name = String(b.group_name || "");
+  const phone = String(b.phone || "");
 
+  // --- Normalize payload
   const payload = {
-    ts: nowIso,
     app,
     sender,
     message,
-    group_name: groupName || null,
-    phone_last4: phone ? phone.slice(-4) : null,
-    actor_hash: actorHash,
-    raw: {
-      // preserva o bruto “parseado” sem phone completo
-      ...body,
-      phone: undefined,
-    },
+    group_name,
+    phone,
+    received_at: nowIso,
+    trace,
+    parse_mode: parsed.mode,
   };
 
+  // --- Dedupe key (evita 409 e duplicatas)
+  // Base: app + sender + phone + group + message + janela de tempo (minuto)
+  const minuteBucket = nowIso.slice(0, 16); // "YYYY-MM-DDTHH:MM"
+  const dedupeBase = [app, sender, phone, group_name, message, minuteBucket].join("|");
+  const dedupe_key = await sha256Hex(dedupeBase);
+
+  // --- Insert into core_events
+  // IMPORTANTES:
+  //  - source='whatauto'
+  //  - kind='whatauto_in'  (trigger vai disparar o reply)
+  //  - trace (ajuda auditoria)
+  //  - dedupe_key (evita duplicação)
   const row = {
     source: "whatauto",
-    kind: groupName ? "message_in_group" : "message_in_dm",
-    severity: 1,
-    trace: "whatauto_ingest_v1",
+    kind: "whatauto_in",
+    severity: 0,
+    trace,
     payload,
-    dedupe_key: dedupeKey,
+    dedupe_key,
   };
 
-  const SUPABASE_URL = safeTrim(process.env.SUPABASE_URL);
-  const SUPABASE_SERVICE_ROLE_KEY = safeTrim(process.env.SUPABASE_SERVICE_ROLE_KEY);
+  // Supabase REST insert
+  const url = `${SUPABASE_URL}/rest/v1/core_events`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      apikey: SERVICE_KEY,
+      authorization: `Bearer ${SERVICE_KEY}`,
+      "content-type": "application/json",
+      prefer: "return=representation",
+    },
+    body: JSON.stringify([row]),
+  });
 
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    console.log("[whatauto_ingest] missing_env");
-    return neutralOk;
+  // 201 ok, 409 conflict (dedupe) também é "ok" pro nosso caso
+  if (res.status === 409) {
+    return json(200, { ok: true, trace, code: "deduped", status: 409 });
   }
 
-  try {
-    const resp = await fetch(`${SUPABASE_URL}/rest/v1/core_events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: SUPABASE_SERVICE_ROLE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify(row),
-    });
-
-    console.log("[whatauto_ingest] insert_status", resp.status);
-    return neutralOk;
-  } catch (e) {
-    console.log("[whatauto_ingest] insert_exception");
-    return neutralOk;
+  const text = await res.text();
+  if (!res.ok) {
+    return json(500, { ok: false, trace, code: "insert_failed", status: res.status, body: text });
   }
+
+  return json(200, { ok: true, trace, code: "insert_ok", status: res.status });
 };
+                      
