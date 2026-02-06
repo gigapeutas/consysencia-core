@@ -2,76 +2,119 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ConSySencI.A • Observatório (v0)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>ConSySencI.A • Observatório</title>
   <meta name="description" content="Você vê a evolução, não vê o motor. Sinais, versões e pulsos." />
   <meta name="theme-color" content="#070A12" />
+
   <style>
     :root{
-      --bg:#05070d;
-      --panel:#07111a;
-      --panel2:#081a23;
+      --bg0:#03050a;
+      --bg1:#05070d;
+      --panel:rgba(7,17,26,.72);
+      --panel2:rgba(0,0,0,.18);
       --line:rgba(0,255,176,.16);
       --line2:rgba(0,255,176,.10);
-      --txt:rgba(220,255,244,.88);
-      --mut:rgba(220,255,244,.55);
-      --glow:rgba(0,255,176,.25);
+
+      --txt:rgba(220,255,244,.90);
+      --mut:rgba(220,255,244,.60);
+
       --neon:#00ffb0;
       --neon2:#00d7ff;
       --bad:#ff4d6d;
       --warn:#ffc857;
       --ok:#00ffb0;
+
+      --glowA: rgba(0,255,176,.22);
+      --glowB: rgba(0,215,255,.14);
+
       --shadow: 0 30px 90px rgba(0,0,0,.55);
       --r:24px;
+
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
     }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; font-family:var(--sans); color:var(--txt);
+      margin:0;
+      font-family:var(--sans);
+      color:var(--txt);
       background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(0,255,176,.10), transparent 60%),
-        radial-gradient(1000px 800px at 80% 30%, rgba(0,215,255,.08), transparent 60%),
-        radial-gradient(900px 900px at 60% 90%, rgba(0,255,176,.08), transparent 60%),
-        linear-gradient(180deg, #04060b 0%, #05070d 35%, #03050a 100%);
+        radial-gradient(1200px 800px at 20% 10%, var(--glowA), transparent 60%),
+        radial-gradient(1000px 800px at 80% 30%, var(--glowB), transparent 60%),
+        radial-gradient(900px 900px at 60% 90%, rgba(0,255,176,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 35%, var(--bg0) 100%);
       min-height:100vh;
-      padding:24px;
+      padding: calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom)) 18px;
       display:flex;
       justify-content:center;
     }
-    .wrap{width:min(980px, 100%); display:flex; flex-direction:column; gap:18px}
+
+    .wrap{
+      width:min(980px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
     .top{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:16px 18px; border-radius:999px;
-      background:rgba(7,17,26,.72);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border-radius:999px;
+      background:var(--panel);
       border:1px solid var(--line2);
       box-shadow: 0 20px 70px rgba(0,0,0,.35);
       backdrop-filter: blur(12px);
     }
+
     .brand{
-      display:flex; align-items:center; gap:12px;
-      letter-spacing:.18em; text-transform:uppercase;
-      font-weight:700; font-size:14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-weight:800;
+      font-size:13px;
     }
+    .brand small{
+      display:block;
+      letter-spacing:.08em;
+      text-transform:none;
+      font-weight:600;
+      color:var(--mut);
+      margin-top:2px;
+      font-size:12px;
+    }
+
     .orb{
       width:14px;height:14px;border-radius:50%;
       background:var(--neon);
-      box-shadow: 0 0 14px var(--glow), 0 0 34px rgba(0,255,176,.18);
-      opacity:.9;
+      box-shadow: 0 0 14px rgba(0,255,176,.28), 0 0 34px rgba(0,255,176,.18);
+      opacity:.92;
       animation:pulse 2.2s infinite ease-in-out;
+      flex:0 0 auto;
     }
     @keyframes pulse{
       0%,100%{transform:scale(1); opacity:.65}
       50%{transform:scale(1.35); opacity:1}
     }
-    .sub{color:var(--mut); font-weight:500; letter-spacing:.02em}
+
     .pill{
-      display:flex; align-items:center; gap:10px;
-      padding:10px 14px; border-radius:999px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
       border:1px solid var(--line);
       background:rgba(0,0,0,.15);
       color:var(--mut);
-      font-weight:600;
+      font-weight:700;
+      white-space:nowrap;
     }
     .dot{
       width:10px;height:10px;border-radius:50%;
@@ -80,19 +123,21 @@
     }
     .dot.ok{background:var(--ok); box-shadow:0 0 14px rgba(0,255,176,.25)}
     .dot.bad{background:var(--bad); box-shadow:0 0 14px rgba(255,77,109,.25)}
+
     .grid{
       display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:18px;
+      grid-template-columns: 1.15fr .85fr;
+      gap:16px;
     }
-    @media (max-width: 860px){
-      .grid{grid-template-columns: 1fr}
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
     }
+
     .card{
-      background:rgba(7,17,26,.72);
+      background:var(--panel);
       border:1px solid var(--line2);
       border-radius:var(--r);
-      padding:18px;
+      padding:16px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
       position:relative;
@@ -100,71 +145,98 @@
     }
     .card:before{
       content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(500px 220px at 15% 10%, rgba(0,255,176,.18), transparent 60%);
-      opacity:.65;
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(520px 240px at 12% 8%, rgba(0,255,176,.18), transparent 62%);
+      opacity:.70;
       pointer-events:none;
     }
+
     h2{
       margin:0 0 8px;
-      letter-spacing:.14em; text-transform:uppercase;
-      font-size:14px; color:rgba(220,255,244,.75)
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size:13px;
+      color:rgba(220,255,244,.78);
     }
-    .lead{margin:0 0 14px; color:var(--mut); line-height:1.45}
-    .big{
-      display:flex; align-items:end; gap:12px; margin-top:10px;
+    .lead{
+      margin:0 0 12px;
+      color:var(--mut);
+      line-height:1.45;
+    }
+
+    /* --- HERO --- */
+    .hero{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
     }
     .v{
-      font-weight:900; letter-spacing:.02em;
-      font-size:74px; line-height:1;
-      color:rgba(220,255,244,.9);
+      font-weight:950;
+      letter-spacing:.01em;
+      font-size:76px;
+      line-height:1;
+      color:rgba(220,255,244,.92);
+      text-shadow: 0 0 24px rgba(0,255,176,.06);
     }
     .v span{color:var(--neon)}
     .meta{
-      display:flex; flex-direction:column; gap:4px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
       font-family:var(--mono);
-      color:rgba(220,255,244,.65);
+      color:rgba(220,255,244,.68);
       font-size:12px;
+      text-align:left;
+      min-width: 220px;
     }
+    .meta .row{display:flex; gap:10px; align-items:center; justify-content:space-between}
+    .meta .k{color:rgba(220,255,244,.45)}
+    .meta .val{color:rgba(220,255,244,.82); font-weight:700}
+
     .chips{
       display:grid;
       grid-template-columns: 1fr 1fr;
-      gap:10px; margin-top:14px;
+      gap:10px;
+      margin-top:12px;
     }
     .chip{
-      padding:12px 12px; border-radius:16px;
+      padding:12px;
+      border-radius:16px;
       border:1px solid var(--line2);
       background:rgba(0,0,0,.16);
-      display:flex; justify-content:space-between; gap:10px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
       font-family:var(--mono);
       color:rgba(220,255,244,.72);
-      position:relative;
     }
-    .chip b{color:rgba(220,255,244,.92); font-weight:700}
+    .chip b{
+      color:rgba(220,255,244,.92);
+      font-weight:800;
+      max-width: 70%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
     .chip.full{grid-column: 1 / -1}
+
     .banner{
       margin-top:12px;
-      padding:14px 14px;
+      padding:13px 14px;
       border-radius:18px;
       border:1px solid var(--line2);
       background:rgba(0,0,0,.12);
-      color:rgba(220,255,244,.68);
+      color:rgba(220,255,244,.70);
       line-height:1.45;
     }
-    .log{
-      margin-top:12px;
-      padding:14px; border-radius:18px;
-      border:1px solid var(--line2);
-      background:rgba(0,0,0,.18);
-      font-family:var(--mono);
-      color:rgba(220,255,244,.70);
-      font-size:12px;
-      height:230px;
-      overflow:auto;
-      white-space:pre-wrap;
-    }
+
     .actions{
-      display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
     }
     button{
       cursor:pointer;
@@ -172,18 +244,22 @@
       border-radius:999px;
       border:1px solid var(--line);
       background:rgba(0,0,0,.20);
-      color:rgba(220,255,244,.86);
-      font-weight:700;
+      color:rgba(220,255,244,.88);
+      font-weight:800;
       letter-spacing:.02em;
       transition: transform .08s ease, border-color .12s ease, background .12s ease;
+      user-select:none;
     }
     button:hover{transform: translateY(-1px); border-color: rgba(0,255,176,.28)}
     button:active{transform: translateY(0px)}
     .foot{
       margin-top:12px;
-      color:rgba(220,255,244,.45);
+      color:rgba(220,255,244,.46);
       font-size:12px;
+      line-height:1.35;
+      word-break:break-word;
     }
+
     code.block{
       display:block;
       margin-top:12px;
@@ -196,77 +272,160 @@
       color:rgba(220,255,244,.72);
       white-space:pre-wrap;
       overflow:auto;
-      min-height:120px;
+      min-height:140px;
+    }
+
+    .log{
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      border:1px solid var(--line2);
+      background:rgba(0,0,0,.18);
+      font-family:var(--mono);
+      color:rgba(220,255,244,.70);
+      font-size:12px;
+      height:220px;
+      overflow:auto;
+      white-space:pre-wrap;
+    }
+
+    .slots{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .slot{
+      border-radius:18px;
+      border:1px dashed rgba(0,255,176,.16);
+      background:rgba(0,0,0,.10);
+      padding:12px 14px;
+      color:rgba(220,255,244,.56);
+      font-family:var(--mono);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .slot b{color:rgba(220,255,244,.82)}
+
+    /* ===== Mobile fix ===== */
+    @media (max-width: 520px){
+      body{ padding: calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom)) 12px; }
+
+      .top{
+        flex-direction:column;
+        align-items:flex-start;
+        border-radius:22px;
+      }
+      .pill{ width:100%; justify-content:flex-start; }
+
+      .card{ padding:14px; }
+
+      .hero{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+      }
+      .v{ font-size:62px; }
+
+      .meta{
+        min-width: 0;
+        width:100%;
+      }
+
+      .chips{ grid-template-columns:1fr; }
+      .chip.full{ grid-column:auto; }
+
+      .actions{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap:10px;
+      }
+      #btnHardRefresh{ grid-column: 1 / -1; }
+
+      code.block, .log{ overflow-x:auto; }
     }
   </style>
 </head>
-<body>
-<div class="wrap">
 
-  <div class="top">
-    <div class="brand">
-      <div class="orb"></div>
-      <div>
-        <div>CONSYSENCI.A</div>
-        <div class="sub">Realtime ligado • Núcleo observacional</div>
+<body>
+  <div class="wrap">
+
+    <div class="top">
+      <div class="brand">
+        <div class="orb"></div>
+        <div>
+          CONSYSENCI.A
+          <small>Realtime ligado • Núcleo observacional</small>
+        </div>
+      </div>
+      <div class="pill" id="pill">
+        <span class="dot" id="dot"></span>
+        <span id="rt">iniciando…</span>
       </div>
     </div>
-    <div class="pill" id="pill">
-      <span class="dot" id="dot"></span>
-      <span id="rt">iniciando…</span>
-    </div>
-  </div>
 
-  <div class="grid">
-    <div class="card">
-      <h2>Estado público</h2>
-      <p class="lead">Você vê a evolução, não vê o motor. O sistema muda o visual conforme a versão.</p>
+    <div class="grid">
 
-      <div class="big">
-        <div class="v"><span id="v">v0</span></div>
-        <div class="meta">
-          <div id="updated">updated —</div>
-          <div id="connected">conectado em —</div>
-          <div id="fog">fog:—</div>
+      <!-- LEFT -->
+      <div class="card">
+        <h2>Estado público</h2>
+        <p class="lead">Você vê a evolução, não vê o motor. O sistema muda o visual conforme a versão.</p>
+
+        <div class="hero">
+          <div class="v"><span id="v">v0</span></div>
+          <div class="meta">
+            <div class="row"><span class="k">updated</span><span class="val" id="m_updated">—</span></div>
+            <div class="row"><span class="k">conectado</span><span class="val" id="m_connected">—</span></div>
+            <div class="row"><span class="k">fog</span><span class="val" id="m_fog">—</span></div>
+          </div>
+        </div>
+
+        <div class="chips">
+          <div class="chip"><span>pulse</span><b id="c_pulse">—</b></div>
+          <div class="chip"><span>mode</span><b id="c_mode">—</b></div>
+          <div class="chip"><span>signal</span><b id="c_signal">—</b></div>
+          <div class="chip"><span>note</span><b id="c_note">—</b></div>
+
+          <!-- slots (pra você liberar via SQL depois, sem mudar layout) -->
+          <div class="chip full"><span>ui_hint</span><b id="c_ui_hint">—</b></div>
+          <div class="chip full"><span>milestone</span><b id="c_milestone">—</b></div>
+        </div>
+
+        <div class="banner" id="banner">Sinais recebidos. Observatório sincronizado.</div>
+
+        <div class="actions">
+          <button id="btnCopy">Copiar leitura</button>
+          <button id="btnPing">Forçar ping</button>
+          <button id="btnHardRefresh">Recarregar</button>
+        </div>
+
+        <div class="foot">
+          Acesso público • visão parcial ativa • qualquer detalhe interno permanece encapsulado.
         </div>
       </div>
 
-      <div class="chips">
-        <div class="chip"><span>updated</span><b id="c_updated">—</b></div>
-        <div class="chip"><span>pulse</span><b id="c_pulse">—</b></div>
-        <div class="chip"><span>mode</span><b id="c_mode">—</b></div>
-        <div class="chip"><span>signal</span><b id="c_signal">—</b></div>
-        <div class="chip full"><span>note</span><b id="c_note">—</b></div>
+      <!-- RIGHT -->
+      <div class="card">
+        <h2>Leitura (sem pistas)</h2>
+        <p class="lead">O que chega aqui é uma visão “nebulosa” (signals/milestones/status/ui_hint + fog).</p>
+        <code class="block" id="readout">{}</code>
+
+        <h2 style="margin-top:14px;">Logs</h2>
+        <div class="log" id="log"></div>
+
+        <div class="slots">
+          <div class="slot" id="slot_cfg"><b>cfg</b> • aguardando…</div>
+          <div class="slot"><b>slot aberto</b> • pronto para futuros sinais (SQL) sem mudar o front.</div>
+        </div>
+
+        <div class="foot" id="cfg"></div>
       </div>
 
-      <div class="banner" id="banner">Sinais recebidos. Observatório sincronizado.</div>
-
-      <div class="actions">
-        <button id="btnCopy">Copiar leitura</button>
-        <button id="btnPing">Forçar ping</button>
-        <button id="btnHardRefresh">Recarregar</button>
-      </div>
-
-      <div class="foot">
-        Acesso público • visão parcial ativa • qualquer detalhe interno permanece encapsulado.
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Leitura (sem pistas)</h2>
-      <p class="lead">O que chega aqui é uma visão “nebulosa” (signals/milestones/status/ui_hint + fog).</p>
-      <code class="block" id="readout">{}</code>
-
-      <h2 style="margin-top:14px;">Logs</h2>
-      <div class="log" id="log"></div>
-
-      <div class="foot" id="cfg">cfg • aguardando…</div>
     </div>
   </div>
-</div>
 
 <script type="module">
-  // ✅ COLE AQUI (somente você, no seu editor)
+  // ✅ COLE AQUI (somente você)
   const SUPABASE_URL = "https://nuodktnhscjipkgomila.supabase.co";
   const SUPABASE_KEY = "sb_publishable_44Ik_LlCTk_RTDKrYsjzyg_qRTTp7yY"; // publishable (sb_publishable...) ou anon legacy
 
@@ -287,15 +446,13 @@
   }
   function log(kind, msg){
     const line = `${ts()} ${kind} • ${msg}\n`;
-    logEl.textContent = (line + logEl.textContent).slice(0, 8000);
+    logEl.textContent = (line + logEl.textContent).slice(0, 9000);
   }
-
   function safeMask(s){
     if(!s || typeof s !== "string") return "—";
     if(s.length <= 10) return "****";
     return s.slice(0,6)+"…"+s.slice(-4);
   }
-
   function setRT(status){
     $("rt").textContent = status;
     const dot = $("dot");
@@ -303,7 +460,6 @@
     if(status.includes("online")) dot.classList.add("ok");
     else if(status.includes("erro")) dot.classList.add("bad");
   }
-
   function fmtDate(iso){
     if(!iso) return "—";
     try{
@@ -312,12 +468,14 @@
     }catch{ return iso; }
   }
 
+  // Visual muda por versão, sem pistas do motor
   function applyVisualByVersion(vnum){
-    // visual muda sem revelar motor: só "sinais" e variações suaves
     const root = document.documentElement;
-    const t = Math.min(1, Math.max(0, (vnum % 30) / 30));
-    const glow = 0.20 + t * 0.25;
-    root.style.setProperty("--glow", `rgba(0,255,176,${glow})`);
+    const t = (vnum % 40) / 40;              // 0..1
+    const a = 0.16 + t * 0.22;               // glowA alpha
+    const b = 0.10 + (1-t) * 0.16;           // glowB alpha
+    root.style.setProperty("--glowA", `rgba(0,255,176,${a.toFixed(3)})`);
+    root.style.setProperty("--glowB", `rgba(0,215,255,${b.toFixed(3)})`);
   }
 
   function render(row){
@@ -325,19 +483,22 @@
 
     const vnum = Number(row.version ?? 0);
     const ps = row.public_state ?? {};
-    const mode = (ps.mode ?? "idle");
-    const pulse = (ps.pulse ?? "—");
-    const signal = (ps.signal ?? "—");
-    const note = (ps.note ?? "—");
+    const mode = ps.mode ?? "idle";
+    const pulse = ps.pulse ?? "—";
+    const signal = ps.signal ?? "—";
+    const note = ps.note ?? "—";
+    const ui_hint = ps.ui_hint ?? "—";
+    const milestone = ps.milestone ?? ps.milestones?.[0] ?? "—";
     const updatedAt = row.updated_at;
 
     $("v").textContent = `v${vnum}`;
-    $("updated").textContent = `updated ${fmtDate(updatedAt)}`;
-    $("c_updated").textContent = fmtDate(updatedAt);
+    $("m_updated").textContent = fmtDate(updatedAt);
     $("c_pulse").textContent = String(pulse);
     $("c_mode").textContent = String(mode);
     $("c_signal").textContent = String(signal);
     $("c_note").textContent = String(note);
+    $("c_ui_hint").textContent = String(ui_hint);
+    $("c_milestone").textContent = String(milestone);
 
     $("readout").textContent = JSON.stringify({
       version: vnum,
@@ -345,8 +506,7 @@
       public_state: ps
     }, null, 2);
 
-    const banner = $("banner");
-    banner.textContent =
+    $("banner").textContent =
       (signal === "heartbeat")
         ? "Pulso detectado. Núcleo estável."
         : "Sinais recebidos. Observatório sincronizado.";
@@ -370,15 +530,16 @@
       log("warn", "singleton não encontrado (id=1)");
       return null;
     }
+
     state.lastSeen = Date.now();
     state.lastPayload = data;
+
     log("update", `mode ${data.public_state?.mode ?? "—"} • ${fmtDate(data.updated_at)}`);
     render(data);
     return data;
   }
 
   async function ping(client){
-    // força atualização via UPDATE leve no próprio registro (RLS bloqueia em anon, então aqui é só fetch)
     log("ping", "forçando atualização");
     await fetchState(client);
   }
@@ -388,12 +549,12 @@
     state.watchdog = setInterval(async ()=>{
       const now = Date.now();
       const last = state.lastSeen ?? 0;
-      if(now - last > 40_000){
-        log("fog", "silêncio detectado • tentando re-sincronizar");
-        $("fog").textContent = "fog:++";
+      if(now - last > 45_000){
+        log("fog", "silêncio detectado • re-sincronizando");
+        $("m_fog").textContent = "++";
         await fetchState(client);
       }else{
-        $("fog").textContent = "fog:-";
+        $("m_fog").textContent = "-";
       }
     }, 10_000);
   }
@@ -402,17 +563,17 @@
     if(!SUPABASE_URL || SUPABASE_URL.includes("__SUPABASE_URL__")){
       setRT("erro • config");
       log("erro", "SUPABASE_URL não definido");
-      $("cfg").textContent = "cfg • url:— • key:—";
+      $("slot_cfg").textContent = "cfg • url:— • key:—";
       return;
     }
     if(!SUPABASE_KEY || SUPABASE_KEY.includes("__SUPABASE_KEY__")){
       setRT("erro • config");
       log("erro", "SUPABASE_KEY não definido");
-      $("cfg").textContent = `cfg • url:${SUPABASE_URL} • key:—`;
+      $("slot_cfg").textContent = `cfg • url:${SUPABASE_URL} • key:—`;
       return;
     }
 
-    $("cfg").textContent = `cfg • url:${SUPABASE_URL} • key:${safeMask(SUPABASE_KEY)}`;
+    $("slot_cfg").textContent = `cfg • url:${SUPABASE_URL} • key:${safeMask(SUPABASE_KEY)}`;
 
     setRT("conectando…");
     log("boot", "iniciando cliente realtime…");
@@ -423,12 +584,10 @@
     });
 
     state.connectedAt = new Date();
-    $("connected").textContent = `conectado em ${fmtDate(state.connectedAt.toISOString())}`;
+    $("m_connected").textContent = fmtDate(state.connectedAt.toISOString());
 
-    // primeiro fetch
     await fetchState(client);
 
-    // realtime subscribe
     const channel = client.channel("obs_ai_state_public")
       .on("postgres_changes", {
         event: "*",
@@ -437,10 +596,10 @@
         filter: "id=eq.1"
       }, (payload)=>{
         setRT("online • sincronizado");
-        $("fog").textContent = "fog:-";
+        $("m_fog").textContent = "-";
         state.lastSeen = Date.now();
         const row = payload.new ?? payload.old ?? null;
-        log("realtime", `${payload.eventType?.toLowerCase?.() ?? "event"} recebido`);
+        log("realtime", `${(payload.eventType||"event").toLowerCase()} recebido`);
         if(row) render(row);
       })
       .subscribe((status)=>{
@@ -456,7 +615,6 @@
     state.sub = channel;
     startWatchdog(client);
 
-    // actions
     $("btnPing").onclick = ()=> ping(client);
     $("btnHardRefresh").onclick = ()=> location.reload();
     $("btnCopy").onclick = async ()=>{
@@ -468,12 +626,10 @@
       }
     };
 
-    // auto-ping inicial curto
     setTimeout(()=>ping(client), 2500);
   }
 
   boot();
 </script>
 </body>
-  </html>
-  
+</html>
