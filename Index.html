@@ -2,726 +2,478 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>ConSySencI.A — Observatório (v0)</title>
-  <meta name="description" content="Observatório público: você vê sinais e evolução. O motor permanece encapsulado." />
-  <meta name="theme-color" content="#050A12" />
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ConSySencI.A • Observatório (v0)</title>
+  <meta name="description" content="Você vê a evolução, não vê o motor. Sinais, versões e pulsos." />
+  <meta name="theme-color" content="#070A12" />
   <style>
     :root{
-      --bg0:#050712;
-      --bg1:#06101a;
-      --card:#071422cc;
-      --card2:#071422aa;
-      --stroke:rgba(0,255,170,.14);
-      --stroke2:rgba(0,255,170,.08);
-      --neon:#00ffaa;
-      --text:#d7f7ee;
-      --muted:rgba(215,247,238,.68);
-      --muted2:rgba(215,247,238,.45);
-      --danger:#ff3d71;
-      --ok:#00ffaa;
-      --shadow: 0 16px 60px rgba(0,0,0,.55);
-      --radius: 22px;
-      --radius2: 16px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      --bg:#05070d;
+      --panel:#07111a;
+      --panel2:#081a23;
+      --line:rgba(0,255,176,.16);
+      --line2:rgba(0,255,176,.10);
+      --txt:rgba(220,255,244,.88);
+      --mut:rgba(220,255,244,.55);
+      --glow:rgba(0,255,176,.25);
+      --neon:#00ffb0;
+      --neon2:#00d7ff;
+      --bad:#ff4d6d;
+      --warn:#ffc857;
+      --ok:#00ffb0;
+      --shadow: 0 30px 90px rgba(0,0,0,.55);
+      --r:24px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
     }
-
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
-      margin:0;
-      font-family: var(--sans);
-      color: var(--text);
+      margin:0; font-family:var(--sans); color:var(--txt);
       background:
-        radial-gradient(1200px 700px at 20% -10%, rgba(0,255,170,.12), transparent 60%),
-        radial-gradient(900px 600px at 110% 10%, rgba(0,255,170,.08), transparent 55%),
-        radial-gradient(700px 600px at 50% 120%, rgba(0,255,170,.06), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg0));
-      overflow-x:hidden;
-    }
-
-    /* subtle fog (no external deps) */
-    .fog{
-      position:fixed; inset:-40px;
-      pointer-events:none;
-      background:
-        radial-gradient(380px 240px at 18% 20%, rgba(0,255,170,.08), transparent 60%),
-        radial-gradient(420px 260px at 72% 32%, rgba(0,255,170,.06), transparent 60%),
-        radial-gradient(520px 320px at 40% 72%, rgba(0,255,170,.05), transparent 62%);
-      filter: blur(22px);
-      opacity:.8;
-      animation: drift 14s ease-in-out infinite alternate;
-      transform: translateZ(0);
-    }
-    @keyframes drift{
-      from{ transform: translate3d(-12px, -6px, 0) scale(1.02); opacity:.65; }
-      to  { transform: translate3d(16px, 10px, 0) scale(1.04); opacity:.9; }
-    }
-
-    .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 22px 14px 34px;
-    }
-
-    .topbar{
+        radial-gradient(1200px 800px at 20% 10%, rgba(0,255,176,.10), transparent 60%),
+        radial-gradient(1000px 800px at 80% 30%, rgba(0,215,255,.08), transparent 60%),
+        radial-gradient(900px 900px at 60% 90%, rgba(0,255,176,.08), transparent 60%),
+        linear-gradient(180deg, #04060b 0%, #05070d 35%, #03050a 100%);
+      min-height:100vh;
+      padding:24px;
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding: 16px 16px;
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(7,20,34,.75), rgba(7,20,34,.42));
-      border: 1px solid var(--stroke2);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      justify-content:center;
     }
-
+    .wrap{width:min(980px, 100%); display:flex; flex-direction:column; gap:18px}
+    .top{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 18px; border-radius:999px;
+      background:rgba(7,17,26,.72);
+      border:1px solid var(--line2);
+      box-shadow: 0 20px 70px rgba(0,0,0,.35);
+      backdrop-filter: blur(12px);
+    }
     .brand{
       display:flex; align-items:center; gap:12px;
-      min-width:0;
+      letter-spacing:.18em; text-transform:uppercase;
+      font-weight:700; font-size:14px;
     }
+    .orb{
+      width:14px;height:14px;border-radius:50%;
+      background:var(--neon);
+      box-shadow: 0 0 14px var(--glow), 0 0 34px rgba(0,255,176,.18);
+      opacity:.9;
+      animation:pulse 2.2s infinite ease-in-out;
+    }
+    @keyframes pulse{
+      0%,100%{transform:scale(1); opacity:.65}
+      50%{transform:scale(1.35); opacity:1}
+    }
+    .sub{color:var(--mut); font-weight:500; letter-spacing:.02em}
     .pill{
-      width:44px; height:44px; border-radius: 999px;
-      background:
-        radial-gradient(12px 12px at 50% 38%, rgba(0,255,170,.55), transparent 60%),
-        radial-gradient(28px 28px at 50% 60%, rgba(0,255,170,.18), transparent 70%),
-        linear-gradient(180deg, rgba(0,255,170,.08), rgba(0,0,0,.0));
-      border: 1px solid var(--stroke);
-      box-shadow: 0 0 24px rgba(0,255,170,.12);
-    }
-    .brand h1{
-      font-size: 16px;
-      letter-spacing: .22em;
-      margin:0;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .brand .sub{
-      margin:2px 0 0;
-      font-size: 12px;
-      color: var(--muted);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .statusPill{
       display:flex; align-items:center; gap:10px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--stroke2);
-      background: rgba(7,20,34,.35);
-      min-width: 164px;
-      justify-content:center;
-      backdrop-filter: blur(8px);
+      padding:10px 14px; border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.15);
+      color:var(--mut);
+      font-weight:600;
     }
     .dot{
-      width:10px; height:10px; border-radius:999px;
-      background: rgba(0,255,170,.95);
-      box-shadow: 0 0 16px rgba(0,255,170,.35);
-      opacity:.92;
+      width:10px;height:10px;border-radius:50%;
+      background:var(--warn);
+      box-shadow: 0 0 14px rgba(255,200,87,.25);
     }
-    .statusText{
-      font-size: 13px;
-      color: var(--muted);
-      letter-spacing:.02em;
-    }
-    .statusText b{ color: var(--text); font-weight:600; }
-
+    .dot.ok{background:var(--ok); box-shadow:0 0 14px rgba(0,255,176,.25)}
+    .dot.bad{background:var(--bad); box-shadow:0 0 14px rgba(255,77,109,.25)}
     .grid{
       display:grid;
       grid-template-columns: 1.2fr .8fr;
-      gap: 14px;
-      margin-top: 14px;
+      gap:18px;
     }
     @media (max-width: 860px){
-      .grid{ grid-template-columns: 1fr; }
-      .statusPill{ min-width: 0; }
+      .grid{grid-template-columns: 1fr}
     }
-
     .card{
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(7,20,34,.78), rgba(7,20,34,.44));
-      border: 1px solid var(--stroke2);
+      background:rgba(7,17,26,.72);
+      border:1px solid var(--line2);
+      border-radius:var(--r);
+      padding:18px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      overflow:hidden;
+      backdrop-filter: blur(12px);
       position:relative;
+      overflow:hidden;
     }
-    .card::before{
+    .card:before{
       content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(700px 260px at 20% 0%, rgba(0,255,170,.10), transparent 55%),
-        radial-gradient(520px 240px at 85% 10%, rgba(0,255,170,.06), transparent 55%);
-      opacity:.9;
+      position:absolute; inset:-2px;
+      background: radial-gradient(500px 220px at 15% 10%, rgba(0,255,176,.18), transparent 60%);
+      opacity:.65;
       pointer-events:none;
     }
-    .cardInner{
-      position:relative;
-      padding: 18px 18px 16px;
+    h2{
+      margin:0 0 8px;
+      letter-spacing:.14em; text-transform:uppercase;
+      font-size:14px; color:rgba(220,255,244,.75)
     }
-
-    .title{
-      font-size: 18px;
-      margin:0;
-      letter-spacing:.08em;
-      text-transform: uppercase;
+    .lead{margin:0 0 14px; color:var(--mut); line-height:1.45}
+    .big{
+      display:flex; align-items:end; gap:12px; margin-top:10px;
     }
-    .desc{
-      margin:8px 0 0;
-      color: var(--muted);
-      line-height:1.35;
+    .v{
+      font-weight:900; letter-spacing:.02em;
+      font-size:74px; line-height:1;
+      color:rgba(220,255,244,.9);
     }
-
-    .hero{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap: 10px;
-      margin-top: 18px;
-      flex-wrap:wrap;
+    .v span{color:var(--neon)}
+    .meta{
+      display:flex; flex-direction:column; gap:4px;
+      font-family:var(--mono);
+      color:rgba(220,255,244,.65);
+      font-size:12px;
     }
-
-    .vMark{
-      display:flex; align-items:baseline; gap: 10px;
-      padding: 8px 10px;
-      border-radius: 16px;
-      border: 1px solid var(--stroke2);
-      background: rgba(0,0,0,.10);
-    }
-    .vMark .vBig{
-      font-size: 74px;
-      line-height: .9;
-      letter-spacing:.04em;
-      margin:0;
-      font-weight: 700;
-    }
-    .vMark .vBig span{
-      color: var(--neon);
-      text-shadow: 0 0 20px rgba(0,255,170,.22);
-    }
-    .vMeta{
-      display:flex; flex-direction:column; gap: 6px;
-      padding-bottom: 10px;
-    }
-    .vMeta .small{
-      font-size: 13px;
-      color: var(--muted2);
-    }
-
     .chips{
-      display:flex;
-      gap: 10px;
-      flex-wrap:wrap;
-      margin-top: 14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px; margin-top:14px;
     }
     .chip{
-      display:flex; gap:10px; align-items:center;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--stroke2);
-      background: rgba(0,0,0,.12);
-      min-width: 150px;
-    }
-    .chip .k{ color: var(--muted2); font-size: 13px; }
-    .chip .v{ color: var(--text); font-size: 15px; font-weight:600; }
-    .chip.mini{ min-width: 110px; }
-
-    .banner{
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: var(--radius2);
-      border: 1px solid var(--stroke2);
-      background: rgba(0,0,0,.12);
-      color: var(--muted);
-      line-height:1.35;
-    }
-
-    .log{
-      margin-top: 12px;
-      padding: 14px 14px;
-      border-radius: var(--radius2);
-      border: 1px solid var(--stroke2);
-      background: rgba(0,0,0,.18);
-      font-family: var(--mono);
-      font-size: 13px;
-      color: rgba(215,247,238,.78);
-      max-height: 210px;
-      overflow:auto;
-      scrollbar-width: thin;
-    }
-    .log .line{
-      padding: 6px 8px;
-      border-radius: 12px;
+      padding:12px 12px; border-radius:16px;
+      border:1px solid var(--line2);
+      background:rgba(0,0,0,.16);
+      display:flex; justify-content:space-between; gap:10px;
+      font-family:var(--mono);
+      color:rgba(220,255,244,.72);
       position:relative;
+    }
+    .chip b{color:rgba(220,255,244,.92); font-weight:700}
+    .chip.full{grid-column: 1 / -1}
+    .banner{
+      margin-top:12px;
+      padding:14px 14px;
+      border-radius:18px;
+      border:1px solid var(--line2);
+      background:rgba(0,0,0,.12);
+      color:rgba(220,255,244,.68);
+      line-height:1.45;
+    }
+    .log{
+      margin-top:12px;
+      padding:14px; border-radius:18px;
+      border:1px solid var(--line2);
+      background:rgba(0,0,0,.18);
+      font-family:var(--mono);
+      color:rgba(220,255,244,.70);
+      font-size:12px;
+      height:230px;
+      overflow:auto;
       white-space:pre-wrap;
     }
-    .log .dim{ color: rgba(215,247,238,.55); }
-    .log .tag{ color: rgba(0,255,170,.85); }
-    .log .time{ color: rgba(215,247,238,.62); }
-
     .actions{
-      display:flex; gap:10px; flex-wrap:wrap;
-      margin-top: 14px;
+      display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;
     }
-    .btn{
-      border: 1px solid var(--stroke2);
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-      padding: 12px 14px;
-      border-radius: 999px;
-      font-weight: 600;
-      letter-spacing:.01em;
+    button{
       cursor:pointer;
-      transition: transform .08s ease, border-color .2s ease, background .2s ease;
-      user-select:none;
-      touch-action: manipulation;
-    }
-    .btn:active{ transform: scale(.98); }
-    .btn:hover{ border-color: rgba(0,255,170,.22); background: rgba(0,0,0,.24); }
-    .btn.secondary{ color: var(--muted); font-weight:600; }
-
-    .sideCard .cardInner{ padding: 16px; }
-    .sideTitle{
-      margin:0;
-      font-size: 14px;
-      letter-spacing:.12em;
-      text-transform: uppercase;
-      color: rgba(215,247,238,.86);
-    }
-    .sideDesc{
-      margin:10px 0 0;
-      color: var(--muted);
-      line-height:1.38;
-    }
-
-    pre{
-      margin: 12px 0 0;
-      padding: 14px;
-      border-radius: var(--radius2);
-      border: 1px solid var(--stroke2);
-      background: rgba(0,0,0,.20);
-      overflow:auto;
-      font-family: var(--mono);
-      font-size: 13px;
-      color: rgba(215,247,238,.82);
-    }
-
-    .footer{
-      margin-top: 14px;
-      color: rgba(215,247,238,.55);
-      font-size: 12px;
+      padding:12px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.20);
+      color:rgba(220,255,244,.86);
+      font-weight:700;
       letter-spacing:.02em;
-      text-align:left;
-      padding: 0 2px;
+      transition: transform .08s ease, border-color .12s ease, background .12s ease;
     }
-    .footer b{ color: rgba(215,247,238,.8); font-weight:600; }
-
-    /* === PULSE FX (v0) ===================================== */
-    .pulse-breathe { animation: pulseBreathe 520ms ease-out 1; }
-    @keyframes pulseBreathe {
-      0%   { box-shadow: 0 0 0 rgba(0,0,0,0); transform: translateZ(0); }
-      35%  { box-shadow: 0 0 28px rgba(0, 255, 170, .22); }
-      100% { box-shadow: 0 0 0 rgba(0,0,0,0); }
+    button:hover{transform: translateY(-1px); border-color: rgba(0,255,176,.28)}
+    button:active{transform: translateY(0px)}
+    .foot{
+      margin-top:12px;
+      color:rgba(220,255,244,.45);
+      font-size:12px;
     }
-
-    .pulse-dot { animation: pulseDot 420ms ease-out 1; }
-    @keyframes pulseDot {
-      0%   { transform: scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); opacity: .9; }
-      45%  { transform: scale(1.25); filter: drop-shadow(0 0 10px rgba(0, 255, 170, .45)); opacity: 1; }
-      100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(0,0,0,0)); opacity: .95; }
-    }
-
-    .log-echo { position: relative; }
-    .log-echo::after{
-      content:"";
-      position:absolute;
-      inset:-8px -10px;
-      border-radius: 14px;
-      background: radial-gradient(60% 60% at 30% 50%, rgba(0,255,170,.18), rgba(0,255,170,0));
-      opacity: 0;
-      animation: logEcho 900ms ease-out 1;
-      pointer-events:none;
-    }
-    @keyframes logEcho {
-      0%   { opacity: 0; transform: translateY(4px); filter: blur(6px); }
-      20%  { opacity: .9; }
-      100% { opacity: 0; transform: translateY(0); filter: blur(10px); }
+    code.block{
+      display:block;
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      border:1px solid var(--line2);
+      background:rgba(0,0,0,.22);
+      font-family:var(--mono);
+      font-size:12px;
+      color:rgba(220,255,244,.72);
+      white-space:pre-wrap;
+      overflow:auto;
+      min-height:120px;
     }
   </style>
 </head>
-
 <body>
-  <div class="fog" aria-hidden="true"></div>
+<div class="wrap">
 
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand">
-        <div class="pill" aria-hidden="true"></div>
-        <div style="min-width:0">
-          <h1>CONSYSENCI.A</h1>
-          <div class="sub">Realtime ligado • Núcleo observável (sem pistas)</div>
-        </div>
+  <div class="top">
+    <div class="brand">
+      <div class="orb"></div>
+      <div>
+        <div>CONSYSENCI.A</div>
+        <div class="sub">Realtime ligado • Núcleo observacional</div>
       </div>
-
-      <div class="statusPill" title="Estado do canal">
-        <span class="dot" id="onlineDot"></span>
-        <div class="statusText"><b id="netLabel">online</b> • <span id="rtLabel">sincronizado</span></div>
-      </div>
-    </header>
-
-    <main class="grid">
-      <!-- CORE -->
-      <section class="card" id="coreCard">
-        <div class="cardInner">
-          <h2 class="title">ESTADO PÚBLICO</h2>
-          <p class="desc">
-            Você vê a evolução, não vê o motor. O sistema muda o visual conforme a versão.
-          </p>
-
-          <div class="hero">
-            <div class="vMark">
-              <p class="vBig" id="vBig"><span>v</span>0</p>
-              <div class="vMeta">
-                <div class="small">updated <span id="updatedHuman">—</span></div>
-                <div class="small dim">conectado em <span id="connectedHuman">—</span> • fog:—</div>
-              </div>
-            </div>
-
-            <div class="chips" aria-label="sinais">
-              <div class="chip" title="Última atualização observável">
-                <span class="k">updated</span>
-                <span class="v" id="chipUpdated">—</span>
-              </div>
-              <div class="chip mini" title="batimento observável">
-                <span class="k">pulse</span>
-                <span class="v" id="chipPulse">—</span>
-              </div>
-              <div class="chip mini" title="modo (simbólico)">
-                <span class="k">mode</span>
-                <span class="v" id="chipMode">—</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="banner" id="bannerText">Sinais recebidos. Observatório sincronizado.</div>
-
-          <div class="log" id="logBox" aria-label="registro de eventos"></div>
-
-          <div class="actions">
-            <button class="btn" id="btnCopy">Copiar leitura</button>
-            <button class="btn secondary" id="btnPing">Forçar ping</button>
-          </div>
-
-          <div class="footer">
-            <b>Acesso público</b> • visão parcial ativa • qualquer detalhe interno permanece encapsulado.
-          </div>
-        </div>
-      </section>
-
-      <!-- SIDE: LEITURA -->
-      <aside class="card sideCard">
-        <div class="cardInner">
-          <h3 class="sideTitle">LEITURA (SEM PISTAS)</h3>
-          <p class="sideDesc">
-            O que chega aqui é uma visão “nebulosa” (signals/milestones/status/ui_hint + fog).
-          </p>
-          <pre id="readout">{}</pre>
-        </div>
-      </aside>
-    </main>
+    </div>
+    <div class="pill" id="pill">
+      <span class="dot" id="dot"></span>
+      <span id="rt">iniciando…</span>
+    </div>
   </div>
 
-  <!-- Supabase JS (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <div class="grid">
+    <div class="card">
+      <h2>Estado público</h2>
+      <p class="lead">Você vê a evolução, não vê o motor. O sistema muda o visual conforme a versão.</p>
 
-  <script>
-    /*********************************************************
-     * ConSySencI.A — Observatório Público (v0)
-     * - NÃO revela lógica interna
-     * - Mostra apenas sinais e evolução
-     * - Realtime + estado singleton (id=1)
-     *********************************************************/
+      <div class="big">
+        <div class="v"><span id="v">v0</span></div>
+        <div class="meta">
+          <div id="updated">updated —</div>
+          <div id="connected">conectado em —</div>
+          <div id="fog">fog:—</div>
+        </div>
+      </div>
 
-    // 1) CONFIG (substitua pelos seus valores)
-    const SUPABASE_URL = "https://SEU-PROJETO.supabase.co";
-    const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON_PUBLICA";
+      <div class="chips">
+        <div class="chip"><span>updated</span><b id="c_updated">—</b></div>
+        <div class="chip"><span>pulse</span><b id="c_pulse">—</b></div>
+        <div class="chip"><span>mode</span><b id="c_mode">—</b></div>
+        <div class="chip"><span>signal</span><b id="c_signal">—</b></div>
+        <div class="chip full"><span>note</span><b id="c_note">—</b></div>
+      </div>
 
-    // 2) TABELA / LINHA
-    const TABLE = "ai_state_public";
-    const SINGLETON_ID = 1;
+      <div class="banner" id="banner">Sinais recebidos. Observatório sincronizado.</div>
 
-    // 3) UI refs
-    const el = {
-      netLabel: document.getElementById("netLabel"),
-      rtLabel: document.getElementById("rtLabel"),
-      vBig: document.getElementById("vBig"),
-      updatedHuman: document.getElementById("updatedHuman"),
-      connectedHuman: document.getElementById("connectedHuman"),
-      chipUpdated: document.getElementById("chipUpdated"),
-      chipPulse: document.getElementById("chipPulse"),
-      chipMode: document.getElementById("chipMode"),
-      bannerText: document.getElementById("bannerText"),
-      logBox: document.getElementById("logBox"),
-      readout: document.getElementById("readout"),
-      coreCard: document.getElementById("coreCard"),
-      onlineDot: document.getElementById("onlineDot"),
-      btnCopy: document.getElementById("btnCopy"),
-      btnPing: document.getElementById("btnPing"),
-    };
+      <div class="actions">
+        <button id="btnCopy">Copiar leitura</button>
+        <button id="btnPing">Forçar ping</button>
+        <button id="btnHardRefresh">Recarregar</button>
+      </div>
 
-    // 4) Helpers
-    const nowISO = () => new Date().toISOString();
-    const pad2 = (n) => String(n).padStart(2, "0");
+      <div class="foot">
+        Acesso público • visão parcial ativa • qualquer detalhe interno permanece encapsulado.
+      </div>
+    </div>
 
-    function fmtHuman(ts){
-      if(!ts) return "—";
-      const d = new Date(ts);
-      if(Number.isNaN(d.getTime())) return "—";
-      // pt-BR friendly, sem depender de libs
-      const dd = pad2(d.getDate());
-      const mm = pad2(d.getMonth()+1);
-      const yy = d.getFullYear();
-      const hh = pad2(d.getHours());
-      const mi = pad2(d.getMinutes());
-      const ss = pad2(d.getSeconds());
-      return `${dd}/${mm}/${yy}, ${hh}:${mi}:${ss}`;
+    <div class="card">
+      <h2>Leitura (sem pistas)</h2>
+      <p class="lead">O que chega aqui é uma visão “nebulosa” (signals/milestones/status/ui_hint + fog).</p>
+      <code class="block" id="readout">{}</code>
+
+      <h2 style="margin-top:14px;">Logs</h2>
+      <div class="log" id="log"></div>
+
+      <div class="foot" id="cfg">cfg • aguardando…</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  // ✅ COLE AQUI (somente você, no seu editor)
+  const SUPABASE_URL = "https://nuodktnhscjipkgomila.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_44Ik_LlCTk_RTDKrYsjzyg_qRTTp7yY"; // publishable (sb_publishable...) ou anon legacy
+
+  const $ = (id)=>document.getElementById(id);
+  const logEl = $("log");
+
+  const state = {
+    connectedAt: null,
+    lastSeen: null,
+    sub: null,
+    watchdog: null,
+    lastPayload: null,
+  };
+
+  function ts(d=new Date()){
+    const pad=(n)=>String(n).padStart(2,"0");
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+  function log(kind, msg){
+    const line = `${ts()} ${kind} • ${msg}\n`;
+    logEl.textContent = (line + logEl.textContent).slice(0, 8000);
+  }
+
+  function safeMask(s){
+    if(!s || typeof s !== "string") return "—";
+    if(s.length <= 10) return "****";
+    return s.slice(0,6)+"…"+s.slice(-4);
+  }
+
+  function setRT(status){
+    $("rt").textContent = status;
+    const dot = $("dot");
+    dot.classList.remove("ok","bad");
+    if(status.includes("online")) dot.classList.add("ok");
+    else if(status.includes("erro")) dot.classList.add("bad");
+  }
+
+  function fmtDate(iso){
+    if(!iso) return "—";
+    try{
+      const d = new Date(iso);
+      return d.toLocaleString("pt-BR");
+    }catch{ return iso; }
+  }
+
+  function applyVisualByVersion(vnum){
+    // visual muda sem revelar motor: só "sinais" e variações suaves
+    const root = document.documentElement;
+    const t = Math.min(1, Math.max(0, (vnum % 30) / 30));
+    const glow = 0.20 + t * 0.25;
+    root.style.setProperty("--glow", `rgba(0,255,176,${glow})`);
+  }
+
+  function render(row){
+    if(!row) return;
+
+    const vnum = Number(row.version ?? 0);
+    const ps = row.public_state ?? {};
+    const mode = (ps.mode ?? "idle");
+    const pulse = (ps.pulse ?? "—");
+    const signal = (ps.signal ?? "—");
+    const note = (ps.note ?? "—");
+    const updatedAt = row.updated_at;
+
+    $("v").textContent = `v${vnum}`;
+    $("updated").textContent = `updated ${fmtDate(updatedAt)}`;
+    $("c_updated").textContent = fmtDate(updatedAt);
+    $("c_pulse").textContent = String(pulse);
+    $("c_mode").textContent = String(mode);
+    $("c_signal").textContent = String(signal);
+    $("c_note").textContent = String(note);
+
+    $("readout").textContent = JSON.stringify({
+      version: vnum,
+      updated_at: updatedAt,
+      public_state: ps
+    }, null, 2);
+
+    const banner = $("banner");
+    banner.textContent =
+      (signal === "heartbeat")
+        ? "Pulso detectado. Núcleo estável."
+        : "Sinais recebidos. Observatório sincronizado.";
+
+    applyVisualByVersion(vnum);
+  }
+
+  async function fetchState(client){
+    const { data, error } = await client
+      .from("ai_state_public")
+      .select("id,version,updated_at,public_state")
+      .eq("id", 1)
+      .maybeSingle();
+
+    if(error){
+      log("erro", `fetch ${error.message}`);
+      setRT("erro • fetch");
+      return null;
     }
-
-    function safeJSON(obj){
-      try{ return JSON.stringify(obj, null, 2); }
-      catch(_){ return "{}"; }
+    if(!data){
+      log("warn", "singleton não encontrado (id=1)");
+      return null;
     }
+    state.lastSeen = Date.now();
+    state.lastPayload = data;
+    log("update", `mode ${data.public_state?.mode ?? "—"} • ${fmtDate(data.updated_at)}`);
+    render(data);
+    return data;
+  }
 
-    function addLog(tag, msg){
-      const t = fmtHuman(new Date());
-      const line = document.createElement("div");
-      line.className = "line";
-      line.innerHTML = `<span class="time">${t}</span> <span class="tag">${tag}</span> <span class="dim">•</span> ${escapeHTML(msg)}`;
-      el.logBox.appendChild(line);
-      // mantém só últimas 40 linhas
-      while(el.logBox.children.length > 40) el.logBox.removeChild(el.logBox.firstChild);
-      el.logBox.scrollTop = el.logBox.scrollHeight;
-    }
+  async function ping(client){
+    // força atualização via UPDATE leve no próprio registro (RLS bloqueia em anon, então aqui é só fetch)
+    log("ping", "forçando atualização");
+    await fetchState(client);
+  }
 
-    function escapeHTML(s){
-      return String(s)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function setBanner(text){
-      el.bannerText.textContent = text;
-    }
-
-    function setNet(ok){
-      el.netLabel.textContent = ok ? "online" : "offline";
-      el.rtLabel.textContent = ok ? "sincronizado" : "desconectado";
-      el.onlineDot.style.background = ok ? "rgba(0,255,170,.95)" : "rgba(255,61,113,.92)";
-      el.onlineDot.style.boxShadow = ok ? "0 0 16px rgba(0,255,170,.35)" : "0 0 18px rgba(255,61,113,.25)";
-    }
-
-    // 5) PULSE ENGINE (visual only)
-    let __lastPulse = null;
-
-    function fxKick(node, className){
-      if(!node) return;
-      node.classList.remove(className);
-      void node.offsetWidth; // reflow
-      node.classList.add(className);
-      setTimeout(()=> node && node.classList.remove(className), 1100);
-    }
-
-    function pulseFX(){
-      // 1) Respiração do Núcleo
-      fxKick(el.coreCard, "pulse-breathe");
-      // 2) Bolinha online
-      fxKick(el.onlineDot, "pulse-dot");
-      // 3) Eco no log: última linha
-      const last = el.logBox.lastElementChild || el.logBox;
-      fxKick(last, "log-echo");
-    }
-
-    function onPublicStateArrive(state){
-      const p = state?.public_state?.pulse;
-      const pNorm = Number(p);
-      if(Number.isNaN(pNorm)) return;
-
-      if(__lastPulse === null){
-        __lastPulse = pNorm; // boot: sem "piscar" inicial
-        return;
+  function startWatchdog(client){
+    if(state.watchdog) clearInterval(state.watchdog);
+    state.watchdog = setInterval(async ()=>{
+      const now = Date.now();
+      const last = state.lastSeen ?? 0;
+      if(now - last > 40_000){
+        log("fog", "silêncio detectado • tentando re-sincronizar");
+        $("fog").textContent = "fog:++";
+        await fetchState(client);
+      }else{
+        $("fog").textContent = "fog:-";
       }
-      if(pNorm !== __lastPulse){
-        __lastPulse = pNorm;
-        pulseFX();
-      }
+    }, 10_000);
+  }
+
+  async function boot(){
+    if(!SUPABASE_URL || SUPABASE_URL.includes("__SUPABASE_URL__")){
+      setRT("erro • config");
+      log("erro", "SUPABASE_URL não definido");
+      $("cfg").textContent = "cfg • url:— • key:—";
+      return;
+    }
+    if(!SUPABASE_KEY || SUPABASE_KEY.includes("__SUPABASE_KEY__")){
+      setRT("erro • config");
+      log("erro", "SUPABASE_KEY não definido");
+      $("cfg").textContent = `cfg • url:${SUPABASE_URL} • key:—`;
+      return;
     }
 
-    // 6) Render (sem pistas)
-    function render(state){
-      const version = Number(state?.version ?? 0);
-      const updated_at = state?.updated_at ?? null;
-      const ps = state?.public_state ?? {};
-      const mode = (ps?.mode ?? "—");
-      const pulse = (ps?.pulse ?? "—");
+    $("cfg").textContent = `cfg • url:${SUPABASE_URL} • key:${safeMask(SUPABASE_KEY)}`;
 
-      el.vBig.innerHTML = `<span>v</span>${version}`;
-      el.updatedHuman.textContent = fmtHuman(updated_at);
-      el.chipUpdated.textContent = fmtHuman(updated_at);
-      el.chipPulse.textContent = String(pulse);
-      el.chipMode.textContent = String(mode);
+    setRT("conectando…");
+    log("boot", "iniciando cliente realtime…");
 
-      // leitura “nebulosa” (sem engine)
-      const read = {
-        version: version,
-        updated_at: updated_at,
-        public_state: ps
-      };
-      el.readout.textContent = safeJSON(read);
-    }
-
-    // 7) Supabase client
-    const supabase = window.supabase?.createClient?.(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: false },
-      realtime: { params: { eventsPerSecond: 5 } }
+    const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+    const client = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      realtime: { params: { eventsPerSecond: 10 } }
     });
 
-    if(!supabase){
-      setNet(false);
-      addLog("fatal", "cliente supabase não inicializou (verifique CDN).");
-    }
+    state.connectedAt = new Date();
+    $("connected").textContent = `conectado em ${fmtDate(state.connectedAt.toISOString())}`;
 
-    // 8) Boot
-    const connectedAt = new Date();
-    el.connectedHuman.textContent = fmtHuman(connectedAt);
+    // primeiro fetch
+    await fetchState(client);
 
-    async function fetchSingleton(){
-      const { data, error } = await supabase
-        .from(TABLE)
-        .select("*")
-        .eq("id", SINGLETON_ID)
-        .single();
-
-      if(error){
-        setNet(false);
-        addLog("error", `leitura falhou (${error.message})`);
-        setBanner("Ruído no canal. Visão parcial instável.");
-        return null;
-      }
-
-      setNet(true);
-      addLog("update", `mode ${data?.public_state?.mode ?? "—"} • ${fmtHuman(data?.updated_at)}`);
-      render(data);
-      onPublicStateArrive(data);
-      setBanner("Sinais recebidos. Observatório sincronizado.");
-      return data;
-    }
-
-    // 9) Realtime subscribe
-    function startRealtime(){
-      addLog("boot", "iniciando cliente realtime...");
-      const channel = supabase.channel("public:ai_state_public");
-
-      channel
-        .on(
-          "postgres_changes",
-          { event: "UPDATE", schema: "public", table: TABLE, filter: `id=eq.${SINGLETON_ID}` },
-          (payload) => {
-            const state = payload?.new;
-            addLog("realtime", "update recebido");
-            render(state);
-            onPublicStateArrive(state);
-            setNet(true);
-          }
-        )
-        .subscribe((status) => {
-          if(status === "SUBSCRIBED"){
-            addLog("realtime", "subscribed");
-            setNet(true);
-          } else if(status === "CHANNEL_ERROR" || status === "TIMED_OUT"){
-            addLog("realtime", `status ${status}`);
-            setNet(false);
-            setBanner("O canal oscila. A névoa aumenta.");
-          }
-        });
-
-      return channel;
-    }
-
-    // 10) Ping (só sinal) — incrementa pulse via UPDATE no singleton
-    // Observação: isso exige permissão de UPDATE no anon/authed.
-    // Se você estiver mantendo WRITE só service_role, este botão deve ser "somente local"
-    // ou você deve disparar o update por outro agente interno.
-    async function forcePing(){
-      addLog("ping", "forçando atualização");
-
-      // tenta incrementar pulse sem misturar tipos: ->> vira text, cast explícito no SQL
-      // Aqui fazemos pelo app: lê pulse atual, soma e atualiza.
-      // Não revela motor: é só um batimento público.
-      const { data: cur, error: readErr } = await supabase
-        .from(TABLE)
-        .select("public_state")
-        .eq("id", SINGLETON_ID)
-        .single();
-
-      if(readErr){
-        addLog("error", `ping leitura falhou (${readErr.message})`);
-        setBanner("Ping bloqueado. Sinal não propagou.");
-        return;
-      }
-
-      const curPulse = Number(cur?.public_state?.pulse ?? 0);
-      const nextPulse = Number.isNaN(curPulse) ? 1 : (curPulse + 1);
-
-      const nextState = Object.assign({}, cur.public_state || {}, {
-        pulse: nextPulse,
-        signal: "heartbeat"
+    // realtime subscribe
+    const channel = client.channel("obs_ai_state_public")
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "ai_state_public",
+        filter: "id=eq.1"
+      }, (payload)=>{
+        setRT("online • sincronizado");
+        $("fog").textContent = "fog:-";
+        state.lastSeen = Date.now();
+        const row = payload.new ?? payload.old ?? null;
+        log("realtime", `${payload.eventType?.toLowerCase?.() ?? "event"} recebido`);
+        if(row) render(row);
+      })
+      .subscribe((status)=>{
+        if(status === "SUBSCRIBED"){
+          setRT("online • sincronizado");
+          log("realtime", "subscribed");
+        }else{
+          setRT("online • conectando");
+          log("realtime", String(status));
+        }
       });
 
-      const { error: upErr } = await supabase
-        .from(TABLE)
-        .update({ public_state: nextState })
-        .eq("id", SINGLETON_ID);
+    state.sub = channel;
+    startWatchdog(client);
 
-      if(upErr){
-        addLog("error", `ping update falhou (${upErr.message})`);
-        setBanner("Ping bloqueado. O núcleo permaneceu silencioso.");
-        return;
-      }
-
-      // Realtime deve entregar; ainda assim, fazemos fetch para consistência
-      await fetchSingleton();
-    }
-
-    // 11) Clipboard
-    async function copyReadout(){
+    // actions
+    $("btnPing").onclick = ()=> ping(client);
+    $("btnHardRefresh").onclick = ()=> location.reload();
+    $("btnCopy").onclick = async ()=>{
       try{
-        await navigator.clipboard.writeText(el.readout.textContent);
-        addLog("clipboard", "leitura copiada");
-      } catch(e){
-        addLog("clipboard", "falha ao copiar (permissão do navegador)");
+        await navigator.clipboard.writeText($("readout").textContent);
+        log("clipboard", "leitura copiada");
+      }catch{
+        log("clipboard", "falha ao copiar");
       }
-    }
+    };
 
-    // 12) Bind UI
-    el.btnCopy.addEventListener("click", copyReadout);
-    el.btnPing.addEventListener("click", forcePing);
+    // auto-ping inicial curto
+    setTimeout(()=>ping(client), 2500);
+  }
 
-    // 13) Start
-    (async function init(){
-      if(!supabase) return;
-      setNet(true);
-      await fetchSingleton();
-      startRealtime();
-    })();
-  </script>
+  boot();
+</script>
 </body>
-</html>
+  </html>
+  
