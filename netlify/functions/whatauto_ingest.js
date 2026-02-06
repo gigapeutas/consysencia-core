@@ -1,158 +1,186 @@
 // netlify/functions/whatauto_ingest.js
+// Aceita JSON e também body estilo WhatsAuto (form / kv)
+// Persiste no Supabase em public.core_events
+// Sempre responde: { reply: "..." }
 
-export default async (req) => {
-  const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const INGEST_BEARER = process.env.INGEST_BEARER || "CONSYSENCIA_SECURE_INGEST_V1";
+const crypto = require("crypto");
+const { URLSearchParams } = require("url");
 
-  const nowIso = new Date().toISOString();
-  const trace =
-    (crypto?.randomUUID?.() || `t_${Date.now()}_${Math.random().toString(16).slice(2)}`).slice(0, 36);
+function sha256(input) {
+  return crypto.createHash("sha256").update(input).digest("hex");
+}
 
-  // --- Helpers
-  const json = (statusCode, obj) => ({
-    statusCode,
-    headers: { "content-type": "application/json; charset=utf-8" },
-    body: JSON.stringify(obj),
-  });
+function safeJsonParse(s) {
+  try { return JSON.parse(s); } catch { return null; }
+}
 
-  const safeText = async () => {
-    try {
-      return await req.text();
-    } catch {
-      return "";
-    }
-  };
+// tenta converter: "{a=b, c=d}" -> {a:"b", c:"d"}
+function parseWhatsAutoKvBlock(raw) {
+  if (!raw) return null;
+  const s = raw.trim();
 
-  const parseBody = async () => {
-    // 1) Tenta JSON
-    try {
-      const j = await req.json();
-      if (j && typeof j === "object") return { ok: true, data: j, mode: "json" };
-    } catch {}
+  // Se já é JSON
+  const j = safeJsonParse(s);
+  if (j && typeof j === "object") return j;
 
-    // 2) Tenta x-www-form-urlencoded / key=value
-    const raw = await safeText();
-    if (!raw) return { ok: false, data: null, mode: "empty", raw: "" };
+  // Remove chaves externas
+  const noBraces = s.replace(/^\{/, "").replace(/\}$/, "").trim();
+  if (!noBraces) return null;
 
-    // alguns WhatsAuto mandam algo tipo "{app=WhatsAuto, sender=..., message=...}"
-    // vamos normalizar e extrair por regex simples
-    const cleaned = raw
-      .trim()
-      .replace(/^\{/, "")
-      .replace(/\}$/, "")
-      .replace(/\s+/g, " ");
+  // Se é "a=b, c=d"
+  const obj = {};
+  const parts = noBraces.split(",").map(p => p.trim()).filter(Boolean);
+  for (const p of parts) {
+    const idx = p.indexOf("=");
+    if (idx === -1) continue;
+    const k = p.slice(0, idx).trim();
+    const v = p.slice(idx + 1).trim();
+    obj[k] = v;
+  }
+  return Object.keys(obj).length ? obj : null;
+}
 
-    // tenta URLSearchParams direto
-    try {
-      const p = new URLSearchParams(cleaned);
-      const obj = {};
-      for (const [k, v] of p.entries()) obj[k] = v;
-      if (Object.keys(obj).length) return { ok: true, data: obj, mode: "form", raw };
-    } catch {}
+function parseBody(event) {
+  const ct = (event.headers["content-type"] || event.headers["Content-Type"] || "").toLowerCase();
+  let raw = event.body || "";
 
-    // tenta parse por "chave=valor" separado por vírgula
+  if (event.isBase64Encoded) {
+    raw = Buffer.from(raw, "base64").toString("utf8");
+  }
+
+  // 1) JSON
+  if (ct.includes("application/json")) {
+    const j = safeJsonParse(raw);
+    if (j && typeof j === "object") return { data: j, raw };
+  }
+
+  // 2) x-www-form-urlencoded
+  if (ct.includes("application/x-www-form-urlencoded")) {
+    const params = new URLSearchParams(raw);
     const obj = {};
-    for (const part of cleaned.split(",")) {
-      const [k, ...rest] = part.split("=");
-      if (!k || !rest.length) continue;
-      obj[k.trim()] = rest.join("=").trim();
-    }
-    if (Object.keys(obj).length) return { ok: true, data: obj, mode: "kv", raw };
-
-    return { ok: false, data: null, mode: "unknown", raw };
-  };
-
-  const sha256Hex = async (input) => {
-    const enc = new TextEncoder().encode(input);
-    const digest = await crypto.subtle.digest("SHA-256", enc);
-    return Array.from(new Uint8Array(digest))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-  };
-
-  // --- Auth (Bearer)
-  const auth = req.headers.get("authorization") || "";
-  const token = auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : "";
-  if (!token || token !== INGEST_BEARER) {
-    return json(401, { ok: false, trace, code: "unauthorized" });
+    for (const [k, v] of params.entries()) obj[k] = v;
+    if (Object.keys(obj).length) return { data: obj, raw };
   }
 
-  if (!SUPABASE_URL || !SERVICE_KEY) {
-    return json(500, { ok: false, trace, code: "missing_env" });
+  // 3) WhatsAuto “kv block” no debug
+  const kv = parseWhatsAutoKvBlock(raw);
+  if (kv) return { data: kv, raw };
+
+  // 4) tenta como querystring simples
+  try {
+    const params = new URLSearchParams(raw);
+    const obj = {};
+    for (const [k, v] of params.entries()) obj[k] = v;
+    if (Object.keys(obj).length) return { data: obj, raw };
+  } catch {}
+
+  return { data: null, raw };
+}
+
+async function supabaseFetch(path, { method = "GET", headers = {}, body } = {}) {
+  const url = (process.env.SUPABASE_URL || "").replace(/\/$/, "") + path;
+  const res = await fetch(url, {
+    method,
+    headers: {
+      apikey: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
+      Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY || ""}`,
+      ...headers,
+    },
+    body,
+  });
+  const text = await res.text();
+  let json = null;
+  try { json = text ? JSON.parse(text) : null; } catch {}
+  return { res, text, json };
+}
+
+exports.handler = async (event) => {
+  const auth = event.headers.authorization || event.headers.Authorization || "";
+  const expected = `Bearer ${process.env.INGEST_BEARER || "CONSYSENCIA_SECURE_INGEST_V1"}`;
+
+  // auth simples (igual você configurou no WhatsAuto)
+  if (auth.trim() !== expected.trim()) {
+    return {
+      statusCode: 401,
+      headers: { "content-type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ reply: "Acesso negado." }),
+    };
   }
 
-  // --- Parse inbound
-  const parsed = await parseBody();
-  if (!parsed.ok) {
-    return json(400, { ok: false, trace, code: "bad_json", mode: parsed.mode, raw: parsed.raw || "" });
+  const { data, raw } = parseBody(event);
+  if (!data) {
+    console.log("[whatauto_ingest] bad_json");
+    return {
+      statusCode: 200,
+      headers: { "content-type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ reply: "Recebi, mas veio em formato inválido. Tente novamente." }),
+    };
   }
 
-  const b = parsed.data;
-
-  // WhatsAuto padrão: app, sender, message, group_name, phone
-  const app = String(b.app || "WhatsAuto");
-  const sender = String(b.sender || "");
-  const message = String(b.message || "");
-  const group_name = String(b.group_name || "");
-  const phone = String(b.phone || "");
-
-  // --- Normalize payload
+  // normalização mínima
   const payload = {
-    app,
-    sender,
-    message,
-    group_name,
-    phone,
-    received_at: nowIso,
-    trace,
-    parse_mode: parsed.mode,
+    app: data.app || "WhatsAuto",
+    sender: data.sender || data.from || "unknown",
+    message: data.message || data.text || "",
+    group_name: data.group_name || data.group || "",
+    phone: data.phone || data.number || "",
+    _raw: raw,
   };
 
-  // --- Dedupe key (evita 409 e duplicatas)
-  // Base: app + sender + phone + group + message + janela de tempo (minuto)
-  const minuteBucket = nowIso.slice(0, 16); // "YYYY-MM-DDTHH:MM"
-  const dedupeBase = [app, sender, phone, group_name, message, minuteBucket].join("|");
-  const dedupe_key = await sha256Hex(dedupeBase);
+  const kind = "whatsauto_ingest";
+  const source = "whatauto";
 
-  // --- Insert into core_events
-  // IMPORTANTES:
-  //  - source='whatauto'
-  //  - kind='whatauto_in'  (trigger vai disparar o reply)
-  //  - trace (ajuda auditoria)
-  //  - dedupe_key (evita duplicação)
-  const row = {
-    source: "whatauto",
-    kind: "whatauto_in",
+  // dedupe para evitar spam duplicado (gera 409 quando repetir)
+  const dedupe_key = sha256(
+    `${source}|${payload.phone}|${payload.group_name}|${payload.sender}|${payload.message}`.slice(0, 2000)
+  );
+
+  // INSERT em core_events
+  const insertBody = JSON.stringify([{
+    source,
+    kind,
     severity: 0,
-    trace,
+    trace: "whatauto_ingest",
     payload,
     dedupe_key,
-  };
+  }]);
 
-  // Supabase REST insert
-  const url = `${SUPABASE_URL}/rest/v1/core_events`;
-  const res = await fetch(url, {
+  const ins = await supabaseFetch("/rest/v1/core_events", {
     method: "POST",
     headers: {
-      apikey: SERVICE_KEY,
-      authorization: `Bearer ${SERVICE_KEY}`,
       "content-type": "application/json",
-      prefer: "return=representation",
+      Prefer: "return=minimal",
     },
-    body: JSON.stringify([row]),
+    body: insertBody,
   });
 
-  // 201 ok, 409 conflict (dedupe) também é "ok" pro nosso caso
-  if (res.status === 409) {
-    return json(200, { ok: true, trace, code: "deduped", status: 409 });
+  console.log("[whatauto_ingest] insert_status", ins.res.status);
+
+  // tenta gerar resposta via RPC (se existir)
+  // RPC esperada: public.fn_whatauto_reply_v1(input jsonb) returns json/jsonb/text
+  let reply = "Recebido ✅";
+
+  const rpc = await supabaseFetch("/rest/v1/rpc/fn_whatauto_reply_v1", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ input: payload }),
+  });
+
+  if (rpc.res.ok) {
+    // se vier string
+    if (typeof rpc.json === "string") reply = rpc.json;
+    // se vier objeto {reply:""}
+    else if (rpc.json && typeof rpc.json === "object") reply = rpc.json.reply || reply;
   }
 
-  const text = await res.text();
-  if (!res.ok) {
-    return json(500, { ok: false, trace, code: "insert_failed", status: res.status, body: text });
-  }
-
-  return json(200, { ok: true, trace, code: "insert_ok", status: res.status });
+  // SEMPRE responder JSON com a chave reply (o WhatsAuto espera isso)
+  return {
+    statusCode: 200,
+    headers: { "content-type": "application/json; charset=utf-8" },
+    body: JSON.stringify({
+      reply,
+      ok: true,
+      insert_status: ins.res.status, // 201 ou 409 etc
+    }),
+  };
 };
-                      
