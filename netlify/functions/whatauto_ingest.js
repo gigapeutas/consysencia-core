@@ -6,38 +6,41 @@ function sha256Hex(input) {
   return crypto.createHash("sha256").update(input, "utf8").digest("hex");
 }
 
+function getBearerToken(headers = {}) {
+  const auth = headers.authorization || headers.Authorization || "";
+  if (!auth) return "";
+  // Aceita: "Bearer TOKEN" (case-insensitive)
+  const m = auth.match(/^Bearer\s+(.+)$/i);
+  return (m ? m[1] : auth).trim(); // se vier sem Bearer, aceita também
+}
+
 exports.handler = async (event) => {
-  // 1) Só POST
-  if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reply: "" }),
-    };
-  }
-
-  // 2) Auth por token (não vaza motor)
-  const expectedToken = process.env.WHATAUTO_INGEST_TOKEN || "";
-  const auth = event.headers.authorization || event.headers.Authorization || "";
-  const gotToken = auth.startsWith("Bearer ") ? auth.slice(7).trim() : "";
-
-  // Resposta neutra sempre (pra não incentivar retry agressivo / nem expor nada)
+  // Resposta neutra SEMPRE (não incentiva retry agressivo, não vaza estado)
   const neutralOk = {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ reply: "" }),
   };
 
+  // 1) Só POST
+  if (event.httpMethod !== "POST") return neutralOk;
+
+  // 2) Autenticação por token (encapsulado)
+  const expectedToken = (process.env.WHATAUTO_INGEST_TOKEN || "").trim();
+  const gotToken = getBearerToken(event.headers);
+
   if (!expectedToken || gotToken !== expectedToken) {
-    // Não revela erro para o WhatsAuto, só ignora.
+    // Não revela erro; apenas ignora silenciosamente.
+    console.log("[whatauto_ingest] auth_failed");
     return neutralOk;
   }
 
-  // 3) Parse payload do WhatsAuto
+  // 3) Parse do payload
   let body;
   try {
     body = JSON.parse(event.body || "{}");
-  } catch (e) {
+  } catch {
+    console.log("[whatauto_ingest] bad_json");
     return neutralOk;
   }
 
@@ -47,41 +50,51 @@ exports.handler = async (event) => {
   const groupName = String(body.group_name || "");
   const phone = String(body.phone || "");
 
-  // 4) Normalização mínima (sem interpretar)
-  const occurredAt = new Date().toISOString();
-
-  // 5) Dedupe key determinística (idempotência)
-  // Como o WhatsAuto não manda message_id no payload do print, usamos um hash estável do conteúdo + contexto.
-  // (Se no futuro você tiver message_id real, trocamos por ele.)
+  // 4) Dedupe key (idempotência)
+  // Observação: o WhatsAuto não envia message_id no payload do seu print,
+  // então usamos um hash do conteúdo/contexto.
   const dedupeKey = "whatauto:" + sha256Hex([app, phone, groupName, sender, message].join("|"));
 
-  // 6) Hash irreversível do ator (não salva phone puro)
-  const actorHash = phone ? sha256Hex("phone:" + phone) : sha256Hex("anon:" + sender);
+  // 5) Hash irreversível do ator (não salva phone puro)
+  const actorHash = phone ? sha256Hex("phone:" + phone) : sha256Hex("sender:" + sender);
 
-  // 7) Monta evento para core_events (ledger)
-  const row = {
-    source: "whatauto",
-    event_type: groupName ? "message_in_group" : "message_in_dm",
-    occurred_at: occurredAt,
-    ingested_at: occurredAt,
+  // 6) Monta payload “legível” (tudo dentro de payload jsonb)
+  const nowIso = new Date().toISOString();
+
+  const payload = {
+    ts: nowIso,
+    app,
+    sender,
+    message,
+    group_name: groupName || null,
+    phone_last4: phone ? phone.slice(-4) : null,
     actor_hash: actorHash,
-    dedupe_key: dedupeKey,
-    payload_raw: body, // bruto
-    payload_norm: {
+    // Guarda o bruto SEM o phone completo (privacidade)
+    raw: {
       app,
       sender,
       message,
-      group_name: groupName,
-      // phone não vai aqui (preserva privacidade). Se quiser, guarde só os 4 últimos:
-      phone_last4: phone ? phone.slice(-4) : null,
+      group_name: groupName || null,
+      // phone omitido propositalmente
     },
   };
 
-  // 8) Insert server-side no Supabase com service role
-  const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // 7) Row compatível com o schema real da sua tabela core_events
+  const row = {
+    source: "whatauto",
+    kind: groupName ? "message_in_group" : "message_in_dm",
+    severity: 1,
+    trace: "whatauto_ingest_v1",
+    payload,
+    dedupe_key: dedupeKey,
+  };
+
+  // 8) Envia para Supabase REST (service role)
+  const SUPABASE_URL = (process.env.SUPABASE_URL || "").trim();
+  const SUPABASE_SERVICE_ROLE_KEY = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
 
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    console.log("[whatauto_ingest] missing_env");
     return neutralOk;
   }
 
@@ -97,10 +110,13 @@ exports.handler = async (event) => {
       body: JSON.stringify(row),
     });
 
-    // Se for duplicado (unique dedupe_key), Supabase tende a retornar erro 409.
-    // Mesmo assim, devolvemos neutralOk para o WhatsAuto.
+    // Não vaza detalhes sensíveis, mas loga status pra diagnóstico.
+    // 201/204 = ok; 409 = dedupe; 4xx/5xx = problema.
+    console.log("[whatauto_ingest] insert_status", resp.status);
+
     return neutralOk;
   } catch (e) {
+    console.log("[whatauto_ingest] insert_exception");
     return neutralOk;
   }
 };
