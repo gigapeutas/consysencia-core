@@ -3,166 +3,425 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ConSySencI.A — Biblioteca de Mídia</title>
+  <title>ConSySencI.A — Biblioteca de Mídia (links)</title>
   <style>
-    :root{--bg:#070A12;--card:#0B1020;--txt:#e8fff4;--mut:rgba(232,255,244,.68);--neon:#35ff9b;--line:rgba(53,255,155,.14);--danger:#ff5a5a;}
-    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
-    body{margin:0;color:var(--txt);background:radial-gradient(900px 600px at 15% 0%, rgba(53,255,155,.10), transparent 60%),var(--bg);}
-    header{position:sticky;top:0;background:rgba(7,10,18,.88);border-bottom:1px solid var(--line);backdrop-filter:blur(10px);}
-    .wrap{max-width:1100px;margin:0 auto;padding:16px;}
-    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
-    h1{margin:0;font-size:14px;letter-spacing:.6px;}
-    .card{background:rgba(11,16,32,.86);border:1px solid rgba(53,255,155,.12);border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.35);overflow:hidden;}
-    .card h2{margin:0;padding:12px 12px 0;font-size:13px;color:rgba(159,231,199,.92);}
-    .body{padding:12px;}
-    .mut{color:var(--mut);font-size:12px;line-height:1.35;}
-    input,textarea,button,select{width:100%;border-radius:12px;border:1px solid rgba(53,255,155,.16);background:rgba(7,10,18,.62);color:var(--txt);padding:10px 11px;outline:none;}
-    textarea{min-height:90px;resize:vertical;}
-    button{cursor:pointer;font-weight:800;}
-    .btn{background:rgba(53,255,155,.16);border:1px solid rgba(53,255,155,.34);}
-    .btn:hover{background:rgba(53,255,155,.24);}
-    .danger{background:rgba(255,90,90,.12);border:1px solid rgba(255,90,90,.35);}
-    .danger:hover{background:rgba(255,90,90,.18);}
-    .row{display:grid;grid-template-columns:1fr;gap:10px;}
-    @media(min-width:820px){.row.two{grid-template-columns:1fr 1fr;}}
-    table{width:100%;border-collapse:collapse;font-size:12px;}
-    th,td{border-bottom:1px solid rgba(53,255,155,.10);padding:10px 8px;vertical-align:top;}
-    th{text-align:left;color:rgba(159,231,199,.92);font-weight:800;}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;}
-    .actions button{width:auto;padding:7px 10px;border-radius:10px;}
-    a{color:rgba(53,255,155,.95);text-decoration:none}
+    :root{
+      --bg:#070b0f; --txt:#e9f1f0; --mut:#93a7a4;
+      --green:#21ff8a; --red:#ff4d6d; --line:#14302a;
+      --card: rgba(10,18,22,.80);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --r: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--txt);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1000px 700px at 25% 20%, rgba(33,255,138,.10), transparent 60%),
+        radial-gradient(900px 600px at 75% 35%, rgba(0,201,120,.08), transparent 55%),
+        linear-gradient(180deg, var(--bg), #04070a 60%, #030507);
+      min-height:100vh;
+      padding:16px;
+    }
+    .wrap{max-width:1100px;margin:0 auto;}
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin:8px 0 14px;
+      flex-wrap:wrap;
+    }
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{
+      border:1px solid rgba(33,255,138,.35);
+      background: linear-gradient(180deg, rgba(6,28,22,.9), rgba(4,16,13,.85));
+      color:var(--txt);
+      padding:12px 14px;
+      border-radius:16px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s transform ease, .15s opacity ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{transform: translateY(-1px);}
+    .btn:active{transform: translateY(0px); opacity:.9;}
+    .btn.secondary{
+      border-color: rgba(20,48,42,.9);
+      background: rgba(3,7,9,.55);
+      color: var(--green);
+    }
+    .btn.danger{
+      border-color: rgba(255,77,109,.45);
+      background: rgba(30,10,14,.65);
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      border:1px solid rgba(20,48,42,.9);
+      background: rgba(3,7,9,.55);
+      color:var(--mut);
+      font-size:12px;
+    }
+    .ok{color:var(--green)} .bad{color:var(--red)}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
+
+    .card{
+      background: linear-gradient(180deg, rgba(10,18,22,.82), rgba(7,16,15,.68));
+      border:1px solid rgba(20,48,42,.85);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding:14px;
+      margin:0 0 12px;
+    }
+    .input, .select, textarea{
+      padding:12px 14px;border-radius:14px;
+      border:1px solid rgba(20,48,42,.9);
+      background: rgba(3,7,9,.75);
+      color:var(--txt);
+      outline:none;
+      font-size:14px;
+      width:100%;
+    }
+    textarea{min-height:110px; resize:vertical}
+    .input::placeholder, textarea::placeholder{color:#7f9893}
+    .msg{
+      margin-top:10px;
+      padding:12px;border-radius:14px;
+      border:1px solid rgba(20,48,42,.9);
+      background: rgba(3,7,9,.55);
+      color:var(--mut);
+      font-size:13px;
+      white-space:pre-wrap;
+      line-height:1.45;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+    @media (min-width: 920px){
+      .grid{grid-template-columns: 1fr 1.15fr;}
+    }
+
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th{color:var(--mut);font-weight:800;text-align:left;font-size:12px;padding:0 10px}
+    td{
+      background: rgba(3,7,9,.55);
+      border:1px solid rgba(20,48,42,.75);
+      padding:10px;
+      font-size:13px;
+      vertical-align:top;
+    }
+    tr td:first-child{border-radius:14px 0 0 14px}
+    tr td:last-child{border-radius:0 14px 14px 0}
+    a{color:var(--green);text-decoration:none;border-bottom:1px dashed rgba(33,255,138,.35)}
+    .small{font-size:12px;color:var(--mut);line-height:1.45}
+    .kbd{
+      display:inline-block;
+      padding:2px 8px;
+      border:1px solid rgba(20,48,42,.85);
+      border-radius:999px;
+      background: rgba(3,7,9,.55);
+      color: var(--mut);
+      font-size:12px;
+      margin-left:6px;
+    }
   </style>
 </head>
 <body>
-<header>
-  <div class="wrap top">
-    <h1>🖼️ ConSySencI.A — Biblioteca de Mídia (links)</h1>
-    <div class="actions">
-      <a class="btn" style="display:inline-block;padding:9px 12px;border-radius:12px" href="/admin/">Painel Regras</a>
-      <button class="btn" onclick="refresh()">↻ Atualizar</button>
+  <div class="wrap">
+    <header>
+      <div class="row">
+        <h1>🖼️ ConSySencI.A — Biblioteca de Mídia (links)</h1>
+        <a class="btn secondary" href="/admin/">Painel</a>
+        <button class="btn" onclick="refresh()">🔄 Atualizar</button>
+      </div>
+      <div class="row">
+        <span class="pill">Status: <span id="status" class="mono">—</span></span>
+        <span class="pill">Token: <span id="tokenState" class="mono">vazio</span></span>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between;">
+        <div style="flex:1;min-width:260px;">
+          <div class="small">Token Admin (salvo no navegador)</div>
+          <input id="token" class="input mono" placeholder="Cole o token admin (sem Bearer)" autocomplete="off">
+        </div>
+        <div class="row">
+          <button class="btn" onclick="saveToken()">Salvar</button>
+          <button class="btn danger" onclick="clearToken()">Limpar</button>
+          <button class="btn" onclick="ping()">Testar</button>
+        </div>
+      </div>
+      <div id="err" class="msg" style="display:none"></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2 style="margin:0 0 6px;font-size:16px">Cadastrar / Editar</h2>
+        <div class="small">
+          Use um <b>alias</b> estável (ex: <span class="mono">catalogo_geral</span>, <span class="mono">pix_qr</span>, <span class="mono">banner_nivel1</span>).
+          Depois a IA pode responder com “envio por link”.
+        </div>
+
+        <div style="height:10px"></div>
+
+        <label class="small">Alias <span class="kbd">chave</span></label>
+        <input id="alias" class="input mono" placeholder="ex: catalogo_geral">
+
+        <div style="height:10px"></div>
+
+        <label class="small">Tipo</label>
+        <select id="kind" class="select">
+          <option value="image">image</option>
+          <option value="link">link</option>
+          <option value="pdf">pdf</option>
+          <option value="video">video</option>
+        </select>
+
+        <div style="height:10px"></div>
+
+        <label class="small">URL pública</label>
+        <input id="url" class="input mono" placeholder="https://...">
+
+        <div style="height:10px"></div>
+
+        <label class="small">Descrição (opcional)</label>
+        <textarea id="desc" placeholder="ex: Catálogo geral — versão fevereiro"></textarea>
+
+        <div style="height:12px"></div>
+
+        <div class="row">
+          <button class="btn" onclick="save()">Salvar</button>
+          <button class="btn secondary" onclick="clearForm()">Limpar</button>
+        </div>
+
+        <div class="small" style="margin-top:10px">
+          ⚠️ Se aparecer <span class="mono">unauthorized</span>, seu token do painel não bate com o token do backend.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin:0 0 6px;font-size:16px">Itens</h2>
+        <div class="row" style="margin-bottom:10px">
+          <input id="q" class="input" placeholder="Buscar (alias / descrição)…">
+          <button class="btn" onclick="refresh()">Buscar</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:210px">Alias</th>
+              <th style="width:90px">Tipo</th>
+              <th>URL / Descrição</th>
+              <th style="width:170px">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+
+        <div class="small">
+          Clique em “Editar” para carregar no formulário. “Excluir” remove do banco via function.
+        </div>
+      </div>
     </div>
   </div>
-</header>
 
-<div class="wrap" style="display:grid;gap:12px;grid-template-columns:1fr;">
-  <section class="card">
-    <h2>Cadastrar / Editar</h2>
-    <div class="body">
-      <div class="mut" id="status">Use este painel para registrar links (imagem/PDF/landing). Depois você referencia pelo alias nas respostas.</div>
-      <div style="height:10px"></div>
-      <div class="row two">
-        <div>
-          <div class="mut">Alias (ex: catalogo_geral)</div>
-          <input id="alias" placeholder="catalogo_geral" />
-        </div>
-        <div>
-          <div class="mut">Tipo</div>
-          <select id="kind">
-            <option value="image">image</option>
-            <option value="pdf">pdf</option>
-            <option value="link">link</option>
-          </select>
-        </div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="row">
-        <div>
-          <div class="mut">URL pública</div>
-          <input id="url" placeholder="https://..." />
-        </div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="row">
-        <div>
-          <div class="mut">Descrição (opcional)</div>
-          <textarea id="desc" placeholder="ex: Catálogo geral — versão fevereiro"></textarea>
-        </div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="actions">
-        <button class="btn" onclick="save()">Salvar</button>
-        <button class="danger" onclick="clearForm()">Limpar</button>
-      </div>
-    </div>
-  </section>
+  <script>
+    const TOKEN_KEY = "consysencia_admin_token";
 
-  <section class="card">
-    <h2>Itens</h2>
-    <div class="body">
-      <table>
-        <thead><tr><th>Alias</th><th>Tipo</th><th>URL</th><th>Descrição</th><th>Ações</th></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
-  </section>
-</div>
+    function getToken(){ return localStorage.getItem(TOKEN_KEY) || ""; }
+    function setToken(t){ localStorage.setItem(TOKEN_KEY, t); }
+    function delToken(){ localStorage.removeItem(TOKEN_KEY); }
 
-<script>
-  // Este painel espera functions:
-  // POST /.netlify/functions/media_list
-  // POST /.netlify/functions/media_upsert
-  // POST /.netlify/functions/media_delete
-
-  async function api(path, body){
-    const r = await fetch(path, { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify(body||{}) });
-    const j = await r.json().catch(()=>({}));
-    return { ok:r.ok, j };
-  }
-
-  function setStatus(t){ document.getElementById("status").textContent = t; }
-  function escapeHtml(s){ return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
-
-  async function refresh(){
-    const out = await api("/.netlify/functions/media_list", { limit: 500 });
-    if(!out.ok){ setStatus(out.j.error || "Erro ao listar."); return; }
-    render(out.j.items || []);
-    setStatus("OK — " + (out.j.items?.length||0) + " itens");
-  }
-
-  function clearForm(){
-    document.getElementById("alias").value="";
-    document.getElementById("kind").value="image";
-    document.getElementById("url").value="";
-    document.getElementById("desc").value="";
-  }
-
-  async function save(){
-    const alias = (document.getElementById("alias").value||"").trim();
-    const kind = document.getElementById("kind").value;
-    const url  = (document.getElementById("url").value||"").trim();
-    const desc = (document.getElementById("desc").value||"").trim();
-
-    if(!alias || !url){ setStatus("Alias e URL são obrigatórios."); return; }
-
-    const out = await api("/.netlify/functions/media_upsert", { alias, kind, url, desc });
-    if(!out.ok){ setStatus(out.j.error || "Erro ao salvar."); return; }
-    clearForm();
-    await refresh();
-  }
-
-  async function del(alias){
-    const out = await api("/.netlify/functions/media_delete", { alias });
-    if(!out.ok){ setStatus(out.j.error || "Erro ao remover."); return; }
-    await refresh();
-  }
-
-  function render(items){
-    const tb = document.getElementById("tbody");
-    tb.innerHTML = "";
-    for(const it of items){
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${escapeHtml(it.alias)}</td>
-        <td>${escapeHtml(it.kind)}</td>
-        <td><a href="${escapeHtml(it.url)}" target="_blank">abrir</a></td>
-        <td>${escapeHtml(it.desc||"")}</td>
-        <td><button class="danger" onclick="del('${it.alias.replaceAll("'","")}')">Excluir</button></td>
-      `;
-      tb.appendChild(tr);
+    function setStatus(text, ok){
+      const s = document.getElementById("status");
+      s.textContent = text || "—";
+      s.className = "mono " + (ok ? "ok" : (ok===false ? "bad" : ""));
+      const t = getToken();
+      document.getElementById("tokenState").textContent = t ? (t.slice(0,6)+"…"+t.slice(-4)) : "vazio";
     }
-  }
 
-  refresh();
-</script>
+    function showErr(obj){
+      const el = document.getElementById("err");
+      if(!obj){ el.style.display="none"; el.textContent=""; return; }
+      el.style.display="block";
+      el.textContent = typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
+    }
+
+    async function api(path, body){
+      const r = await fetch(path, {
+        method: "POST",
+        headers: {
+          "content-type":"application/json",
+          "authorization":"Bearer " + getToken()
+        },
+        body: JSON.stringify(body || {})
+      });
+      const j = await r.json().catch(()=>({ok:false,error:"invalid_json"}));
+      return { status: r.status, j };
+    }
+
+    function saveToken(){
+      const raw = (document.getElementById("token").value || "").trim();
+      const t = raw.replace(/^Bearer\s+/i,"").trim();
+      if(!t){ setStatus("token vazio", false); return; }
+      setToken(t);
+      setStatus("token salvo ✅", true);
+      showErr(null);
+      ping();
+    }
+
+    function clearToken(){
+      delToken();
+      document.getElementById("token").value = "";
+      setStatus("token limpo", false);
+      showErr(null);
+    }
+
+    async function ping(){
+      setStatus("testando…", null);
+      const out = await api("/.netlify/functions/admin_ping", {});
+      if(out.j && out.j.ok){
+        setStatus("ok ✅", true);
+        showErr(null);
+      }else{
+        setStatus("falhou ❌", false);
+        showErr(out.j);
+      }
+    }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function clearForm(){
+      document.getElementById("alias").value = "";
+      document.getElementById("kind").value = "image";
+      document.getElementById("url").value = "";
+      document.getElementById("desc").value = "";
+    }
+
+    function loadToForm(it){
+      document.getElementById("alias").value = it.alias || "";
+      document.getElementById("kind").value = it.kind || "image";
+      document.getElementById("url").value = it.url || "";
+      document.getElementById("desc").value = it.description || "";
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    async function save(){
+      showErr(null);
+      const alias = (document.getElementById("alias").value || "").trim();
+      const kind  = (document.getElementById("kind").value || "").trim();
+      const url   = (document.getElementById("url").value || "").trim();
+      const desc  = (document.getElementById("desc").value || "").trim();
+
+      if(!alias){ setStatus("alias obrigatório", false); return; }
+      if(!url){ setStatus("url obrigatória", false); return; }
+
+      setStatus("salvando…", null);
+      const out = await api("/.netlify/functions/media_upsert", {
+        alias, kind, url, description: desc
+      });
+
+      if(out.j && out.j.ok){
+        setStatus("salvo ✅", true);
+        clearForm();
+        refresh();
+      }else{
+        setStatus("erro ❌", false);
+        showErr(out.j);
+      }
+    }
+
+    async function del(alias){
+      if(!confirm("Excluir '" + alias + "' ?")) return;
+      setStatus("excluindo…", null);
+      const out = await api("/.netlify/functions/media_delete", { alias });
+      if(out.j && out.j.ok){
+        setStatus("excluído ✅", true);
+        refresh();
+      }else{
+        setStatus("erro ❌", false);
+        showErr(out.j);
+      }
+    }
+
+    function render(items){
+      const tb = document.getElementById("tbody");
+      tb.innerHTML = "";
+      const q = (document.getElementById("q").value || "").trim().toLowerCase();
+
+      const filtered = (items || []).filter(it=>{
+        if(!q) return true;
+        const hay = [(it.alias||""),(it.kind||""),(it.url||""),(it.description||"")].join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+
+      for(const it of filtered){
+        const alias = escapeHtml(it.alias || "");
+        const kind = escapeHtml(it.kind || "");
+        const url = escapeHtml(it.url || "");
+        const desc = escapeHtml(it.description || "");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="mono"><b>${alias}</b></td>
+          <td class="mono">${kind}</td>
+          <td>
+            <div><a href="${url}" target="_blank" rel="noreferrer">${url}</a></div>
+            <div class="small">${desc || ""}</div>
+          </td>
+          <td>
+            <div class="row">
+              <button class="btn secondary" onclick='editItem(${JSON.stringify(it)})'>Editar</button>
+              <button class="btn danger" onclick="del('${alias}')">Excluir</button>
+            </div>
+          </td>
+        `;
+        tb.appendChild(tr);
+      }
+
+      if(filtered.length === 0){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="4" class="mono">Sem itens (ou filtro muito restrito).</td>`;
+        tb.appendChild(tr);
+      }
+    }
+
+    function editItem(it){ loadToForm(it); }
+
+    async function refresh(){
+      setStatus("carregando…", null);
+      showErr(null);
+
+      const out = await api("/.netlify/functions/media_list", { limit: 200 });
+      if(out.j && out.j.ok){
+        setStatus("ok ✅", true);
+        render(out.j.items || []);
+      }else{
+        setStatus("erro ❌", false);
+        showErr(out.j);
+        render([]);
+      }
+    }
+
+    (function init(){
+      const t = getToken();
+      if(t) document.getElementById("token").value = t;
+      document.getElementById("tokenState").textContent = t ? (t.slice(0,6)+"…"+t.slice(-4)) : "vazio";
+      setStatus("—", null);
+      refresh();
+    })();
+  </script>
 </body>
 </html>
