@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ConSySencI.A — Eventos (core_events)</title>
+  <style>
+    :root{--bg:#070A12;--card:#0B1020;--txt:#e8fff4;--mut:rgba(232,255,244,.68);--neon:#35ff9b;--line:rgba(53,255,155,.14);}
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+    body{margin:0;color:var(--txt);background:radial-gradient(900px 600px at 15% 0%, rgba(53,255,155,.10), transparent 60%),var(--bg);}
+    header{position:sticky;top:0;background:rgba(7,10,18,.88);border-bottom:1px solid var(--line);backdrop-filter:blur(10px);}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px;}
+    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+    h1{margin:0;font-size:14px;letter-spacing:.6px;}
+    .card{background:rgba(11,16,32,.86);border:1px solid rgba(53,255,155,.12);border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.35);overflow:hidden;}
+    .body{padding:12px;}
+    .mut{color:var(--mut);font-size:12px;line-height:1.35;}
+    button{cursor:pointer;font-weight:800;border-radius:12px;border:1px solid rgba(53,255,155,.34);background:rgba(53,255,155,.16);color:var(--txt);padding:10px 11px;}
+    button:hover{background:rgba(53,255,155,.24);}
+    pre{white-space:pre-wrap;word-break:break-word;background:rgba(7,10,18,.55);border:1px solid rgba(53,255,155,.12);padding:10px;border-radius:12px;font-size:12px;}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <h1>📡 ConSySencI.A — Eventos Recentes (debug)</h1>
+    <div class="row">
+      <a href="/admin/" style="color:rgba(53,255,155,.95);text-decoration:none">Painel Regras</a>
+      <button onclick="refresh()">↻ Atualizar</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="card">
+    <div class="body">
+      <div class="mut" id="status">Carregando…</div>
+      <div style="height:10px"></div>
+      <div id="list"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+  async function api(){
+    const r = await fetch("/.netlify/functions/events_list", {
+      method:"POST",
+      headers:{ "content-type":"application/json" },
+      body: JSON.stringify({ limit: 100 })
+    });
+    const j = await r.json().catch(()=>({}));
+    return { ok:r.ok, j };
+  }
+
+  function esc(s){ return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+  async function refresh(){
+    document.getElementById("status").textContent = "Carregando…";
+    const out = await api();
+    if(!out.ok){ document.getElementById("status").textContent = out.j.error || "Erro."; return; }
+
+    const items = out.j.items || [];
+    document.getElementById("status").textContent = "OK — " + items.length + " eventos";
+    const el = document.getElementById("list");
+    el.innerHTML = items.map(e => `
+      <div style="margin-bottom:10px">
+        <div class="mut"><b>${esc(e.created_at||"")}</b> — ${esc(e.source||"")} / ${esc(e.kind||"")} — trace: ${esc(e.trace||"")}</div>
+        <pre>${esc(JSON.stringify(e.payload||{}, null, 2))}</pre>
+      </div>
+    `).join("");
+  }
+
+  refresh();
+</script>
+</body>
+</html>
