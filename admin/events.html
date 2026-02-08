@@ -3,75 +3,308 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ConSySencI.A — Eventos (core_events)</title>
+  <title>ConSySencI.A — Eventos Recentes (debug)</title>
   <style>
-    :root{--bg:#070A12;--card:#0B1020;--txt:#e8fff4;--mut:rgba(232,255,244,.68);--neon:#35ff9b;--line:rgba(53,255,155,.14);}
-    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
-    body{margin:0;color:var(--txt);background:radial-gradient(900px 600px at 15% 0%, rgba(53,255,155,.10), transparent 60%),var(--bg);}
-    header{position:sticky;top:0;background:rgba(7,10,18,.88);border-bottom:1px solid var(--line);backdrop-filter:blur(10px);}
-    .wrap{max-width:1200px;margin:0 auto;padding:16px;}
-    .top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
-    h1{margin:0;font-size:14px;letter-spacing:.6px;}
-    .card{background:rgba(11,16,32,.86);border:1px solid rgba(53,255,155,.12);border-radius:16px;box-shadow:0 12px 34px rgba(0,0,0,.35);overflow:hidden;}
-    .body{padding:12px;}
-    .mut{color:var(--mut);font-size:12px;line-height:1.35;}
-    button{cursor:pointer;font-weight:800;border-radius:12px;border:1px solid rgba(53,255,155,.34);background:rgba(53,255,155,.16);color:var(--txt);padding:10px 11px;}
-    button:hover{background:rgba(53,255,155,.24);}
-    pre{white-space:pre-wrap;word-break:break-word;background:rgba(7,10,18,.55);border:1px solid rgba(53,255,155,.12);padding:10px;border-radius:12px;font-size:12px;}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    :root{
+      --bg:#070b0f; --txt:#e9f1f0; --mut:#93a7a4;
+      --green:#21ff8a; --red:#ff4d6d; --line:#14302a;
+      --card: rgba(10,18,22,.80);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --r: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--txt);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1000px 700px at 25% 20%, rgba(33,255,138,.10), transparent 60%),
+        radial-gradient(900px 600px at 75% 35%, rgba(0,201,120,.08), transparent 55%),
+        linear-gradient(180deg, var(--bg), #04070a 60%, #030507);
+      min-height:100vh;
+      padding:16px;
+    }
+    .wrap{max-width:1100px;margin:0 auto;}
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin:8px 0 14px;
+      flex-wrap:wrap;
+    }
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{
+      border:1px solid rgba(33,255,138,.35);
+      background: linear-gradient(180deg, rgba(6,28,22,.9), rgba(4,16,13,.85));
+      color:var(--txt);
+      padding:12px 14px;
+      border-radius:16px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s transform ease, .15s opacity ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{transform: translateY(-1px);}
+    .btn:active{transform: translateY(0px); opacity:.9;}
+    .btn.secondary{
+      border-color: rgba(20,48,42,.9);
+      background: rgba(3,7,9,.55);
+      color: var(--green);
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      border:1px solid rgba(20,48,42,.9);
+      background: rgba(3,7,9,.55);
+      color:var(--mut);
+      font-size:12px;
+    }
+    .ok{color:var(--green)} .bad{color:var(--red)}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
+
+    .card{
+      background: linear-gradient(180deg, rgba(10,18,22,.82), rgba(7,16,15,.68));
+      border:1px solid rgba(20,48,42,.85);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding:14px;
+      margin:0 0 12px;
+    }
+    .input{
+      padding:12px 14px;border-radius:14px;
+      border:1px solid rgba(20,48,42,.9);
+      background: rgba(3,7,9,.75);
+      color:var(--txt);
+      outline:none;
+      font-size:14px;
+      width:min(520px, 100%);
+    }
+    .input::placeholder{color:#7f9893}
+    .msg{
+      margin-top:10px;
+      padding:12px;border-radius:14px;
+      border:1px solid rgba(20,48,42,.9);
+      background: rgba(3,7,9,.55);
+      color:var(--mut);
+      font-size:13px;
+      white-space:pre-wrap;
+      line-height:1.45;
+    }
+
+    table{width:100%;border-collapse:separate;border-spacing:0 10px}
+    th{color:var(--mut);font-weight:800;text-align:left;font-size:12px;padding:0 10px}
+    td{
+      background: rgba(3,7,9,.55);
+      border:1px solid rgba(20,48,42,.75);
+      padding:10px;
+      font-size:13px;
+      vertical-align:top;
+    }
+    tr td:first-child{border-radius:14px 0 0 14px}
+    tr td:last-child{border-radius:0 14px 14px 0}
+    .small{font-size:12px;color:var(--mut);line-height:1.45}
   </style>
 </head>
 <body>
-<header>
-  <div class="wrap top">
-    <h1>📡 ConSySencI.A — Eventos Recentes (debug)</h1>
-    <div class="row">
-      <a href="/admin/" style="color:rgba(53,255,155,.95);text-decoration:none">Painel Regras</a>
-      <button onclick="refresh()">↻ Atualizar</button>
+  <div class="wrap">
+    <header>
+      <div class="row">
+        <h1>📡 ConSySencI.A — Eventos Recentes (debug)</h1>
+        <a class="btn secondary" href="/admin/">Painel</a>
+        <button class="btn" onclick="refresh()">🔄 Atualizar</button>
+      </div>
+      <div class="row">
+        <span class="pill">Status: <span id="status" class="mono">—</span></span>
+        <span class="pill">Token: <span id="tokenState" class="mono">vazio</span></span>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between;">
+        <div style="flex:1;min-width:260px;">
+          <div class="small">Token Admin (salvo no navegador)</div>
+          <input id="token" class="input mono" placeholder="Cole o token admin (sem Bearer)" autocomplete="off">
+        </div>
+        <div class="row">
+          <button class="btn" onclick="saveToken()">Salvar</button>
+          <button class="btn" onclick="clearToken()" style="border-color:rgba(255,77,109,.45);background:rgba(30,10,14,.65)">Limpar</button>
+          <button class="btn" onclick="ping()">Testar</button>
+        </div>
+      </div>
+      <div id="err" class="msg" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <input id="q" class="input" placeholder="Filtro rápido (contém texto no message / sender / group)…">
+        <button class="btn" onclick="refresh()">Aplicar</button>
+        <span class="pill">Fonte: <span class="mono">events_list</span></span>
+      </div>
+      <div class="small" style="margin-top:10px">
+        Mostra os últimos eventos capturados do WhatsAuto (ingest). Se aparecer <span class="mono">unauthorized</span>, arrume o token.
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:150px">Quando</th>
+            <th style="width:170px">Source</th>
+            <th style="width:220px">Sender / Phone</th>
+            <th>Message / Group</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="small">Se não vier nada, ou não tem eventos, ou a function está bloqueando (token/método).</div>
     </div>
   </div>
-</header>
 
-<div class="wrap">
-  <section class="card">
-    <div class="body">
-      <div class="mut" id="status">Carregando…</div>
-      <div style="height:10px"></div>
-      <div id="list"></div>
-    </div>
-  </section>
-</div>
+  <script>
+    const TOKEN_KEY = "consysencia_admin_token";
 
-<script>
-  async function api(){
-    const r = await fetch("/.netlify/functions/events_list", {
-      method:"POST",
-      headers:{ "content-type":"application/json" },
-      body: JSON.stringify({ limit: 100 })
-    });
-    const j = await r.json().catch(()=>({}));
-    return { ok:r.ok, j };
-  }
+    function getToken(){ return localStorage.getItem(TOKEN_KEY) || ""; }
+    function setToken(t){ localStorage.setItem(TOKEN_KEY, t); }
+    function delToken(){ localStorage.removeItem(TOKEN_KEY); }
 
-  function esc(s){ return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+    function setStatus(text, ok){
+      const s = document.getElementById("status");
+      s.textContent = text || "—";
+      s.className = "mono " + (ok ? "ok" : (ok===false ? "bad" : ""));
+      const t = getToken();
+      document.getElementById("tokenState").textContent = t ? (t.slice(0,6)+"…"+t.slice(-4)) : "vazio";
+    }
 
-  async function refresh(){
-    document.getElementById("status").textContent = "Carregando…";
-    const out = await api();
-    if(!out.ok){ document.getElementById("status").textContent = out.j.error || "Erro."; return; }
+    function showErr(obj){
+      const el = document.getElementById("err");
+      if(!obj){ el.style.display="none"; el.textContent=""; return; }
+      el.style.display="block";
+      el.textContent = typeof obj === "string" ? obj : JSON.stringify(obj, null, 2);
+    }
 
-    const items = out.j.items || [];
-    document.getElementById("status").textContent = "OK — " + items.length + " eventos";
-    const el = document.getElementById("list");
-    el.innerHTML = items.map(e => `
-      <div style="margin-bottom:10px">
-        <div class="mut"><b>${esc(e.created_at||"")}</b> — ${esc(e.source||"")} / ${esc(e.kind||"")} — trace: ${esc(e.trace||"")}</div>
-        <pre>${esc(JSON.stringify(e.payload||{}, null, 2))}</pre>
-      </div>
-    `).join("");
-  }
+    async function api(path, body){
+      const r = await fetch(path, {
+        method: "POST",
+        headers: {
+          "content-type":"application/json",
+          "authorization":"Bearer " + getToken()
+        },
+        body: JSON.stringify(body || {})
+      });
+      const j = await r.json().catch(()=>({ok:false,error:"invalid_json"}));
+      return { status: r.status, j };
+    }
 
-  refresh();
-</script>
+    function saveToken(){
+      const raw = (document.getElementById("token").value || "").trim();
+      const t = raw.replace(/^Bearer\s+/i,"").trim();
+      if(!t){ setStatus("token vazio", false); return; }
+      setToken(t);
+      setStatus("token salvo ✅", true);
+      showErr(null);
+      ping();
+    }
+
+    function clearToken(){
+      delToken();
+      document.getElementById("token").value = "";
+      setStatus("token limpo", false);
+      showErr(null);
+    }
+
+    async function ping(){
+      setStatus("testando…", null);
+      const out = await api("/.netlify/functions/admin_ping", {});
+      if(out.j && out.j.ok){
+        setStatus("ok ✅", true);
+        showErr(null);
+      }else{
+        setStatus("falhou ❌", false);
+        showErr(out.j);
+      }
+    }
+
+    function escapeHtml(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function render(items){
+      const tb = document.getElementById("tbody");
+      tb.innerHTML = "";
+      const q = (document.getElementById("q").value || "").trim().toLowerCase();
+
+      const filtered = (items || []).filter(it=>{
+        if(!q) return true;
+        const hay = [
+          it.created_at, it.source, it.sender, it.phone, it.group_name, it.message
+        ].join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+
+      for(const it of filtered){
+        const when = escapeHtml(it.created_at || "");
+        const source = escapeHtml(it.source || "");
+        const sender = escapeHtml(it.sender || "");
+        const phone = escapeHtml(it.phone || "");
+        const msg = escapeHtml(it.message || "");
+        const group = escapeHtml(it.group_name || "");
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><div class="mono">${when}</div></td>
+          <td><div class="mono">${source}</div></td>
+          <td>
+            <div><b>${sender || "-"}</b></div>
+            <div class="mono">${phone || ""}</div>
+          </td>
+          <td>
+            <div style="margin-bottom:6px">${msg || "-"}</div>
+            <div class="small mono">${group ? ("group: " + group) : ""}</div>
+          </td>
+        `;
+        tb.appendChild(tr);
+      }
+
+      if(filtered.length === 0){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td colspan="4" class="mono">Sem eventos para mostrar (ou filtro muito restrito).</td>
+        `;
+        tb.appendChild(tr);
+      }
+    }
+
+    async function refresh(){
+      setStatus("carregando…", null);
+      showErr(null);
+
+      const out = await api("/.netlify/functions/events_list", { limit: 50 });
+      if(out.j && out.j.ok){
+        setStatus("ok ✅", true);
+        render(out.j.items || []);
+      }else{
+        setStatus("erro ❌", false);
+        showErr(out.j);
+        render([]);
+      }
+    }
+
+    (function init(){
+      const t = getToken();
+      if(t) document.getElementById("token").value = t;
+      document.getElementById("tokenState").textContent = t ? (t.slice(0,6)+"…"+t.slice(-4)) : "vazio";
+      setStatus("—", null);
+      // auto load
+      refresh();
+    })();
+  </script>
 </body>
 </html>
