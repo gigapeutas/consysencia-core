@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ConSySencI.A — Painel de Regras</title>
+  <style>
+    :root{
+      --bg:#050a07; --card:#07110c; --card2:#06100b;
+      --txt:#d7ffe8; --mut:#82caa4; --line:rgba(0,255,140,.12);
+      --g:#00ff8c; --g2:#00d57a; --bad:#ff4d6d;
+      --shadow: 0 20px 70px rgba(0,0,0,.55);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--txt); background: radial-gradient(900px 900px at 20% 10%, rgba(0,255,140,.12), transparent 60%),
+      radial-gradient(700px 700px at 80% 35%, rgba(0,255,140,.08), transparent 55%),
+      linear-gradient(180deg, #040806, #020403 60%, #000 100%);
+      min-height:100vh;
+    }
+    a{color:var(--g); text-decoration:none}
+    .wrap{max-width:1100px; margin:0 auto; padding:22px 16px 60px}
+    .top{
+      display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      padding:14px 14px; border:1px solid var(--line); border-radius:var(--r); background:rgba(6,16,11,.55); box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .brand{display:flex; align-items:center; gap:10px}
+    .dot{width:12px;height:12px;border-radius:50%;background:var(--g); box-shadow:0 0 20px rgba(0,255,140,.55)}
+    h1{margin:0; font-size:18px; letter-spacing:.3px}
+    .sub{color:var(--mut); font-size:12px; margin-top:2px}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .btn{
+      border:1px solid var(--line); background:linear-gradient(180deg, rgba(0,255,140,.16), rgba(0,255,140,.06));
+      color:var(--txt); padding:10px 12px; border-radius:14px; cursor:pointer; font-weight:650;
+    }
+    .btn:hover{border-color:rgba(0,255,140,.30)}
+    .btn.bad{background:linear-gradient(180deg, rgba(255,77,109,.20), rgba(255,77,109,.08));}
+    .pill{
+      border:1px solid var(--line); padding:8px 10px; border-radius:14px; color:var(--mut); font-size:12px;
+      background:rgba(7,17,12,.55);
+    }
+
+    .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:14px; margin-top:14px}
+    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      border:1px solid var(--line); border-radius:var(--r);
+      background:rgba(7,17,12,.55); box-shadow:var(--shadow); overflow:hidden;
+    }
+    .card .hd{
+      padding:14px 14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+      background:linear-gradient(180deg, rgba(0,255,140,.08), transparent);
+    }
+    .card .bd{padding:14px}
+    label{display:block; font-size:12px; color:var(--mut); margin:12px 0 6px}
+    input, select, textarea{
+      width:100%; padding:12px; border-radius:14px; border:1px solid var(--line);
+      background:rgba(6,16,11,.55); color:var(--txt); outline:none;
+    }
+    textarea{min-height:110px; resize:vertical}
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+    @media (max-width: 520px){ .row{grid-template-columns:1fr} }
+
+    .status{margin-top:10px; font-size:12px; color:var(--mut)}
+    .status.err{color:var(--bad)}
+    .tableWrap{overflow:auto; border-top:1px solid var(--line)}
+    table{width:100%; border-collapse:collapse; min-width:880px}
+    th, td{padding:10px 10px; border-bottom:1px solid rgba(0,255,140,.08); vertical-align:top}
+    th{font-size:12px; color:var(--mut); text-align:left; position:sticky; top:0; background:rgba(7,17,12,.85); backdrop-filter: blur(8px)}
+    td{font-size:13px}
+    .tag{
+      display:inline-block; padding:4px 8px; border-radius:999px; border:1px solid var(--line);
+      color:var(--mut); font-size:12px; background:rgba(0,255,140,.06);
+    }
+    .mini{font-size:12px; color:var(--mut)}
+    .tdBtns{display:flex; gap:8px; flex-wrap:wrap}
+    .small{padding:7px 10px; border-radius:12px; font-size:12px}
+    .muted{opacity:.8}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px}
+    .hr{height:1px; background:rgba(0,255,140,.10); margin:12px 0}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="dot"></div>
+        <div>
+          <h1>ConSySencI.A — Painel de Regras</h1>
+          <div class="sub">CRUD visual de gatilhos: prioridade, match, grupos, remetentes e resposta</div>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="pill" href="/admin/" title="Voltar ao painel">Painel</a>
+        <button class="btn" onclick="refresh()">Atualizar</button>
+        <button class="btn bad" onclick="logout()">Sair</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <div style="font-weight:750">Cadastrar / Editar regra</div>
+            <div class="mini">Dica: prioridade menor = executa antes. Ex: 10 é acima de 100.</div>
+          </div>
+          <span class="tag" id="authTag">não autenticado</span>
+        </div>
+        <div class="bd">
+          <div class="row">
+            <div>
+              <label>ID (auto ao salvar)</label>
+              <input id="id" class="mono" placeholder="(vazio = nova regra)" />
+            </div>
+            <div>
+              <label>Ativa?</label>
+              <select id="is_active">
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Prioridade</label>
+              <input id="priority" type="number" value="100" />
+            </div>
+            <div>
+              <label>Source</label>
+              <input id="source" placeholder="admin" value="admin" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Tipo de match</label>
+              <select id="match_kind">
+                <option value="equals">equals (igual)</option>
+                <option value="contains" selected>contains (contém)</option>
+                <option value="starts_with">starts_with (começa com)</option>
+                <option value="regex">regex (avançado)</option>
+              </select>
+            </div>
+            <div>
+              <label>Gatilho (match_text)</label>
+              <input id="match_text" placeholder="ex: pix" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Filtro por grupo (match_group) — opcional</label>
+              <input id="match_group" placeholder="ex: Grupo Oficial Afiliados" />
+            </div>
+            <div>
+              <label>Filtro por remetente (match_sender) — opcional</label>
+              <input id="match_sender" placeholder="ex: João Vitor" />
+            </div>
+          </div>
+
+          <label>Resposta (reply_text)</label>
+          <textarea id="reply_text" placeholder="Escreva aqui a resposta…"></textarea>
+
+          <div class="hr"></div>
+
+          <div class="row">
+            <button class="btn" onclick="saveRule()">Salvar (Upsert)</button>
+            <button class="btn" onclick="clearForm()">Limpar</button>
+          </div>
+
+          <div class="status" id="status">Pronto.</div>
+
+          <div class="hr"></div>
+
+          <div class="row">
+            <div>
+              <label>Buscar</label>
+              <input id="q" placeholder="busca em gatilho/resposta/grupo/remetente" onkeydown="if(event.key==='Enter') refresh()" />
+            </div>
+            <div>
+              <label>Mostrar apenas ativas?</label>
+              <select id="activeOnly" onchange="refresh()">
+                <option value="1" selected>Sim</option>
+                <option value="0">Não</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Ativa</th>
+                <th>Prioridade</th>
+                <th>Match</th>
+                <th>Gatilho</th>
+                <th>Grupo / Remetente</th>
+                <th>Resposta (preview)</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="7" class="mini">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd">
+          <div style="font-weight:750">Login do Admin</div>
+          <div class="mini">Usa a Function <span class="mono">/.netlify/functions/admin_login</span></div>
+        </div>
+        <div class="bd">
+          <label>Login</label>
+          <input id="login" value="Consysencia" />
+          <label>Senha</label>
+          <input id="senha" type="password" value="aprenda" />
+          <div class="row" style="margin-top:12px">
+            <button class="btn" onclick="doLogin()">Entrar</button>
+            <button class="btn" onclick="testAuth()">Testar acesso</button>
+          </div>
+          <div class="status" id="authStatus">Sem login.</div>
+
+          <div class="hr"></div>
+
+          <div class="mini">
+            <b>Por que isso existe?</b><br/>
+            Suas Functions (rules/media/events) exigem o header:<br/>
+            <span class="mono">Authorization: Bearer ADMIN_TOKEN</span><br/>
+            Esse painel guarda o token no <span class="mono">localStorage</span>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const LS_KEY = "CONSYSENCIA_ADMIN_TOKEN";
+
+  function setStatus(msg, isErr=false){
+    const el = document.getElementById("status");
+    el.textContent = msg;
+    el.className = "status" + (isErr ? " err" : "");
+  }
+  function setAuthStatus(msg, isErr=false){
+    const el = document.getElementById("authStatus");
+    el.textContent = msg;
+    el.className = "status" + (isErr ? " err" : "");
+  }
+
+  function getToken(){ return (localStorage.getItem(LS_KEY) || "").trim(); }
+  function setToken(t){
+    if(!t) localStorage.removeItem(LS_KEY);
+    else localStorage.setItem(LS_KEY, t);
+    paintAuth();
+  }
+  function paintAuth(){
+    const t = getToken();
+    const tag = document.getElementById("authTag");
+    if(t){
+      tag.textContent = "autenticado";
+      tag.style.color = "var(--txt)";
+      tag.style.background = "rgba(0,255,140,.10)";
+      tag.style.borderColor = "rgba(0,255,140,.30)";
+    } else {
+      tag.textContent = "não autenticado";
+      tag.style.color = "var(--mut)";
+      tag.style.background = "rgba(7,17,12,.55)";
+      tag.style.borderColor = "var(--line)";
+    }
+  }
+
+  async function api(path, method="GET", body=null){
+    const headers = { "Content-Type":"application/json" };
+    const t = getToken();
+    if(t) headers["Authorization"] = "Bearer " + t;
+
+    const res = await fetch(path, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null
+    });
+    const text = await res.text();
+    let j = null;
+    try { j = text ? JSON.parse(text) : null; } catch { j = { ok:false, error:"bad_json", raw:text }; }
+    return { res, j };
+  }
+
+  async function doLogin(){
+    setAuthStatus("Entrando…");
+    const login = document.getElementById("login").value.trim();
+    const senha = document.getElementById("senha").value.trim();
+    const out = await api("/.netlify/functions/admin_login", "POST", { login, senha });
+    if(!out.j?.ok){
+      setToken("");
+      setAuthStatus("Falhou: " + (out.j?.error || out.res.status), true);
+      return;
+    }
+    setToken(out.j.token);
+    setAuthStatus("OK ✅ Token carregado.");
+    await refresh();
+  }
+
+  async function testAuth(){
+    setAuthStatus("Testando…");
+    const out = await api("/.netlify/functions/rules_list?limit=1&offset=0", "GET");
+    if(out.j?.ok) setAuthStatus("Acesso OK ✅");
+    else setAuthStatus("Sem acesso: " + (out.j?.error || out.res.status), true);
+  }
+
+  function logout(){
+    setToken("");
+    setAuthStatus("Saiu.");
+    setStatus("Token removido.");
+  }
+
+  function clearForm(){
+    ["id","priority","source","match_text","match_group","match_sender","reply_text"].forEach(id=>{
+      document.getElementById(id).value = "";
+    });
+    document.getElementById("is_active").value = "true";
+    document.getElementById("priority").value = "100";
+    document.getElementById("source").value = "admin";
+    document.getElementById("match_kind").value = "contains";
+    setStatus("Form limpo.");
+  }
+
+  function fillForm(it){
+    document.getElementById("id").value = it.id || "";
+    document.getElementById("is_active").value = String(!!it.is_active);
+    document.getElementById("priority").value = it.priority ?? 100;
+    document.getElementById("source").value = it.source || "admin";
+    document.getElementById("match_kind").value = it.match_kind || "contains";
+    document.getElementById("match_text").value = it.match_text || "";
+    document.getElementById("match_group").value = it.match_group || "";
+    document.getElementById("match_sender").value = it.match_sender || "";
+    document.getElementById("reply_text").value = it.reply_text || "";
+    setStatus("Editando regra: " + (it.id || ""));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function esc(s){ return String(s ?? "").replace(/[&<>"]/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m])); }
+  function preview(s){
+    s = String(s ?? "");
+    if(s.length > 120) s = s.slice(0,120) + "…";
+    return s;
+  }
+
+  async function refresh(){
+    setStatus("Carregando regras…");
+    const q = document.getElementById("q").value.trim();
+    const active = document.getElementById("activeOnly").value;
+
+    const url = new URL("/.netlify/functions/rules_list", location.origin);
+    url.searchParams.set("limit","500");
+    url.searchParams.set("offset","0");
+    url.searchParams.set("active", active);
+    if(q) url.searchParams.set("q", q);
+
+    const out = await api(url.pathname + url.search, "GET");
+    if(!out.j?.ok){
+      document.getElementById("tbody").innerHTML =
+        `<tr><td colspan="7" class="mini">Erro: ${esc(out.j?.error || out.res.status)} — ${esc(out.j?.details || "")}</td></tr>`;
+      setStatus("Falhou: " + (out.j?.error || out.res.status), true);
+      return;
+    }
+
+    const items = out.j.items || [];
+    render(items);
+    setStatus(`OK ✅ ${items.length} regra(s).`);
+  }
+
+  function render(items){
+    const tb = document.getElementById("tbody");
+    if(!items.length){
+      tb.innerHTML = `<tr><td colspan="7" class="mini">Nenhuma regra encontrada.</td></tr>`;
+      return;
+    }
+    tb.innerHTML = "";
+    for(const it of items){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${it.is_active ? "✅" : "⛔"}</td>
+        <td class="mono">${esc(it.priority)}</td>
+        <td><span class="tag">${esc(it.match_kind)}</span></td>
+        <td class="mono">${esc(it.match_text)}</td>
+        <td class="mini">
+          <div>Grupo: <span class="mono">${esc(it.match_group || "-")}</span></div>
+          <div>Remetente: <span class="mono">${esc(it.match_sender || "-")}</span></div>
+        </td>
+        <td>${esc(preview(it.reply_text))}</td>
+        <td>
+          <div class="tdBtns">
+            <button class="btn small" onclick='editById("${it.id}")'>Editar</button>
+            <button class="btn small" onclick='toggleActive("${it.id}", ${it.is_active ? "false":"true"})'>${it.is_active ? "Desativar":"Ativar"}</button>
+            <button class="btn small bad" onclick='delRule("${it.id}")'>Excluir</button>
+          </div>
+        </td>
+      `;
+      tb.appendChild(tr);
+    }
+
+    // cache local pra editar por id sem outra chamada
+    window.__RULES = items;
+  }
+
+  function editById(id){
+    const it = (window.__RULES || []).find(x=>x.id===id);
+    if(it) fillForm(it);
+  }
+
+  async function saveRule(){
+    const payload = {
+      id: document.getElementById("id").value.trim() || undefined,
+      is_active: document.getElementById("is_active").value === "true",
+      priority: parseInt(document.getElementById("priority").value || "100", 10),
+      source: document.getElementById("source").value.trim() || "admin",
+      match_kind: document.getElementById("match_kind").value,
+      match_text: document.getElementById("match_text").value.trim(),
+      match_group: document.getElementById("match_group").value.trim() || null,
+      match_sender: document.getElementById("match_sender").value.trim() || null,
+      reply_text: document.getElementById("reply_text").value.trim(),
+    };
+
+    setStatus("Salvando…");
+    const out = await api("/.netlify/functions/rules_upsert", "POST", payload);
+    if(!out.j?.ok){
+      setStatus("Falhou: " + (out.j?.error || out.res.status) + " " + (out.j?.details || ""), true);
+      return;
+    }
+    const row = out.j.row || {};
+    document.getElementById("id").value = row.id || "";
+    setStatus("Salvo ✅");
+    await refresh();
+  }
+
+  async function toggleActive(id, nextActive){
+    const it = (window.__RULES || []).find(x=>x.id===id);
+    if(!it) return;
+
+    setStatus("Atualizando status…");
+    const out = await api("/.netlify/functions/rules_upsert", "POST", {
+      ...it,
+      is_active: !!nextActive
+    });
+    if(!out.j?.ok){
+      setStatus("Falhou: " + (out.j?.error || out.res.status), true);
+      return;
+    }
+    setStatus("OK ✅");
+    await refresh();
+  }
+
+  async function delRule(id){
+    if(!confirm("Excluir regra? Isso é irreversível.")) return;
+    setStatus("Excluindo…");
+    const out = await api("/.netlify/functions/rules_delete", "POST", { id });
+    if(!out.j?.ok){
+      setStatus("Falhou: " + (out.j?.error || out.res.status), true);
+      return;
+    }
+    setStatus("Excluída ✅");
+    await refresh();
+  }
+
+  paintAuth();
+  refresh();
+</script>
+</body>
+  </html>
+  
