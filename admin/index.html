@@ -7,385 +7,179 @@
   <meta name="color-scheme" content="dark" />
   <style>
     :root{
-      --bg:#050a08;
-      --bg2:#07120d;
-      --card:rgba(7,18,13,.72);
-      --card2:rgba(4,10,8,.62);
+      --bg:#050a08; --bg2:#07120d;
       --line:rgba(0,255,163,.18);
       --line2:rgba(0,255,163,.10);
       --txt:rgba(236,255,247,.92);
       --muted:rgba(236,255,247,.65);
       --muted2:rgba(236,255,247,.45);
       --green:#00ffa3;
-      --green2:#2affc2;
       --red:#ff4d6d;
-      --yellow:#ffd166;
-      --shadow:0 20px 60px rgba(0,0,0,.55);
+      --shadow:0 18px 50px rgba(0,0,0,.55);
       --radius:22px;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
       background:
         radial-gradient(900px 500px at 20% 15%, rgba(0,255,163,.16), transparent 55%),
         radial-gradient(700px 400px at 75% 30%, rgba(0,255,163,.10), transparent 60%),
-        radial-gradient(800px 500px at 50% 85%, rgba(0,255,163,.08), transparent 60%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
+        linear-gradient(180deg,var(--bg),var(--bg2));
       color:var(--txt);
     }
-    .wrap{
-      max-width:980px;
-      margin:0 auto;
-      padding:22px 16px 60px;
+    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 60px}
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 14px;border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:linear-gradient(180deg,rgba(0,255,163,.08),rgba(0,0,0,.18));
+      box-shadow:var(--shadow); position:sticky; top:10px; z-index:10; backdrop-filter:blur(10px);
     }
-    .topbar{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 14px;
-      border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(0,255,163,.08), rgba(0,0,0,.15));
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      position:sticky;
-      top:10px;
-      z-index:5;
-      backdrop-filter: blur(10px);
-    }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      min-width:0;
-    }
-    .dot{
-      width:12px;height:12px;border-radius:99px;
-      background:var(--green);
-      box-shadow: 0 0 0 6px rgba(0,255,163,.12), 0 0 24px rgba(0,255,163,.35);
-      flex:0 0 auto;
-    }
-    h1{
-      font-size:22px;
-      margin:0;
-      letter-spacing:.2px;
-      line-height:1.1;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .subtitle{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
-      margin-top:4px;
-    }
-    .rightbar{display:flex; gap:10px; align-items:center; flex:0 0 auto;}
-    .pill{
-      padding:9px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      color:var(--muted);
-      font-size:12px;
-      display:flex; gap:8px; align-items:center;
-    }
-    .pill strong{color:var(--green); font-weight:700; letter-spacing:.4px}
+    .brand{display:flex;gap:12px;align-items:center;min-width:0}
+    .dot{width:12px;height:12px;border-radius:999px;background:var(--green);
+      box-shadow:0 0 0 6px rgba(0,255,163,.12),0 0 24px rgba(0,255,163,.35)}
+    h1{margin:0;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sub{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .pill{padding:9px 12px;border-radius:999px;border:1px solid var(--line);
+      background:rgba(0,0,0,.25);color:var(--muted);font-size:12px}
+    .pill b{color:var(--green)}
     .btn{
-      appearance:none;
       border:1px solid var(--line);
-      background: rgba(0,255,163,.05);
+      background:rgba(0,255,163,.06);
       color:var(--txt);
-      padding:10px 12px;
-      border-radius: 999px;
-      font-weight:650;
-      font-size:13px;
-      cursor:pointer;
-      transition: .15s ease;
-      display:inline-flex;
-      gap:8px; align-items:center; justify-content:center;
-      user-select:none;
+      padding:10px 12px;border-radius:999px;
+      font-weight:650;font-size:13px;cursor:pointer;
     }
-    .btn:hover{transform: translateY(-1px); border-color: rgba(0,255,163,.35); background: rgba(0,255,163,.08)}
-    .btn:active{transform: translateY(0px); opacity:.95}
-    .btn.ghost{background: rgba(0,0,0,.18)}
-    .btn.danger{border-color: rgba(255,77,109,.35); background: rgba(255,77,109,.08)}
-    .btn.danger:hover{border-color: rgba(255,77,109,.55); background: rgba(255,77,109,.12)}
-    .btn.primary{
-      border-color: rgba(0,255,163,.45);
-      background: linear-gradient(180deg, rgba(0,255,163,.14), rgba(0,255,163,.05));
+    .btn:hover{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.10)}
+    .btn.ghost{background:rgba(0,0,0,.20)}
+    .btn.danger{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.10)}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    @media(min-width:920px){.grid{grid-template-columns:1.1fr .9fr}}
+    .card{border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;
+      background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.10))}
+    .head{padding:16px;border-bottom:1px solid var(--line2);background:linear-gradient(180deg,rgba(0,255,163,.06),transparent)}
+    .head h2{margin:0;font-size:16px}
+    .head p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
+    .body{padding:16px}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    input,select,textarea{
+      width:100%;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--txt);
+      padding:12px;border-radius:16px;outline:none;font-size:14px
     }
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-      margin-top:16px;
-    }
-    @media (min-width: 920px){
-      .grid{grid-template-columns: 1.1fr .9fr;}
-    }
-    .card{
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.10));
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .card .head{
-      padding:16px 16px 12px;
-      border-bottom:1px solid var(--line2);
-      background: linear-gradient(180deg, rgba(0,255,163,.06), rgba(0,0,0,.0));
-    }
-    .card .head h2{
-      margin:0;
-      font-size:16px;
-      letter-spacing:.2px;
-    }
-    .card .head p{margin:6px 0 0; color:var(--muted); font-size:13px;}
-    .card .body{padding:16px;}
-    label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
-    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end}
-    .field{
-      flex:1 1 240px;
-      min-width: 220px;
-    }
-    input, textarea, select{
-      width:100%;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.35);
-      color:var(--txt);
-      padding:12px 12px;
-      border-radius: 16px;
-      outline:none;
-      font-size:14px;
-    }
-    input::placeholder, textarea::placeholder{color: rgba(236,255,247,.35)}
-    textarea{min-height:130px; resize:vertical; line-height:1.35}
+    textarea{min-height:120px;resize:vertical;line-height:1.35}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+    .field{flex:1 1 240px;min-width:220px}
     .hint{
-      margin-top:10px;
-      padding:12px 12px;
-      border:1px dashed rgba(0,255,163,.25);
-      border-radius: 16px;
-      color: var(--muted);
-      font-size:12.5px;
-      background: rgba(0,255,163,.04);
+      margin-top:10px;padding:12px;border:1px dashed rgba(0,255,163,.25);
+      border-radius:16px;background:rgba(0,255,163,.04);color:var(--muted);font-size:12.5px
     }
-    details{
-      border:1px solid var(--line2);
-      border-radius: 18px;
-      background: rgba(0,0,0,.18);
-      overflow:hidden;
-    }
-    summary{
-      cursor:pointer;
-      list-style:none;
-      padding:12px 14px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      color: var(--txt);
-      user-select:none;
-    }
-    summary::-webkit-details-marker{display:none}
-    .chev{
-      width:10px;height:10px;border-right:2px solid rgba(236,255,247,.65);
-      border-bottom:2px solid rgba(236,255,247,.65);
-      transform: rotate(45deg);
-      transition: .2s ease;
-      margin-left:auto;
-      opacity:.8;
-    }
-    details[open] .chev{transform: rotate(225deg)}
-    .details-body{padding:12px 14px 14px; border-top:1px solid var(--line2); color:var(--muted); font-size:13px; line-height:1.45}
-    .statusline{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-      margin-top:10px;
-    }
-    .badge{
-      padding:9px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.22);
-      font-size:12px;
-      color:var(--muted);
-      display:inline-flex; gap:8px; align-items:center;
-    }
-    .badge b{color:var(--green)}
-    .badge.red b{color:var(--red)}
-    .badge.yellow b{color:var(--yellow)}
     .result{
-      margin-top:14px;
-      padding:14px;
-      border-radius: 18px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      overflow:auto;
-      max-height: 360px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:12.5px;
-      line-height:1.35;
-      white-space:pre;
+      margin-top:12px;padding:12px;border-radius:16px;border:1px solid var(--line);
+      background:rgba(0,0,0,.25);
+      white-space:pre;overflow:auto;max-height:360px;
+      font-family: ui-monospace, Menlo, Consolas, monospace; font-size:12.5px; line-height:1.35
     }
-    .result.ok{border-color: rgba(0,255,163,.38); background: rgba(0,255,163,.06)}
-    .result.err{border-color: rgba(255,77,109,.38); background: rgba(255,77,109,.06); color: rgba(255,240,245,.92)}
-    table{
-      width:100%;
-      border-collapse: collapse;
-      overflow:hidden;
-      border-radius: 16px;
-      border:1px solid var(--line2);
-    }
-    th, td{
-      padding:10px 10px;
-      border-bottom:1px solid rgba(0,255,163,.08);
-      vertical-align:top;
-      font-size:12.5px;
-    }
-    th{color:var(--muted); font-weight:650; text-align:left; background: rgba(0,255,163,.04)}
-    td{color:rgba(236,255,247,.85)}
-    .small{font-size:12px; color:var(--muted2)}
-    .footer{
-      margin-top:16px;
-      color:var(--muted2);
-      font-size:12px;
-      text-align:center;
-    }
-    a{color:var(--green); text-decoration:none}
-    a:hover{text-decoration:underline}
+    .ok{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.06)}
+    .err{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.08);color:rgba(255,240,245,.92)}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--line2);border-radius:16px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid rgba(0,255,163,.08);font-size:12.5px;vertical-align:top}
+    th{color:var(--muted);text-align:left;background:rgba(0,255,163,.04)}
+    .small{font-size:12px;color:var(--muted2)}
   </style>
 </head>
-
 <body>
   <div class="wrap">
-    <div class="topbar">
+    <div class="top">
       <div class="brand">
         <div class="dot"></div>
         <div style="min-width:0">
           <h1>ConSySencI.A — Painel</h1>
-          <p class="subtitle">Gestão rápida de events, mídia e automações (Admin)</p>
+          <p class="sub">Observatório Admin (GET leitura / POST ingest)</p>
         </div>
       </div>
-
-      <div class="rightbar">
-        <div class="pill"><span>Status:</span> <strong id="uiStatus">desconhecido</strong></div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="pill">Status: <b id="uiStatus">deslogado</b></div>
         <button class="btn ghost" id="btnLogout" type="button">Sair</button>
       </div>
     </div>
 
     <div class="grid">
-      <!-- LEFT -->
       <section class="card">
         <div class="head">
-          <h2>Autenticação & Diagnóstico</h2>
-          <p>Salvar token, testar acesso e enxergar o erro real (método, auth, Supabase, etc.).</p>
+          <h2>Token & Diagnóstico</h2>
+          <p>O painel envia <b>GET</b> com Bearer para leitura e <b>POST</b> para gravar eventos.</p>
         </div>
         <div class="body">
           <div class="row">
             <div class="field">
-              <label for="tokenInput">Token Admin</label>
-              <input id="tokenInput" type="text" placeholder="Ex: ACORDADO" autocomplete="off" spellcheck="false" />
-              <div class="statusline">
-                <div class="badge" id="tokenBadge"><b>Token:</b> <span id="tokenState">vazio</span></div>
-                <div class="badge" id="endpointBadge"><b>Endpoint:</b> <span id="endpointState">/.netlify/functions/observatory</span></div>
-              </div>
+              <label>Token Admin</label>
+              <input id="token" placeholder="Cole o token (ex: ACORDADO)" autocomplete="off" spellcheck="false"/>
             </div>
-
-            <div style="display:flex; gap:10px; flex-wrap:wrap">
-              <button class="btn primary" id="btnSaveToken" type="button">Salvar token</button>
-              <button class="btn" id="btnTest" type="button">Testar acesso</button>
-              <button class="btn ghost" id="btnClear" type="button">Limpar</button>
-            </div>
+            <button class="btn" id="btnSave" type="button">Salvar token</button>
+            <button class="btn" id="btnTest" type="button">Testar acesso</button>
+            <button class="btn ghost" id="btnCopy" type="button">Copiar resultado</button>
           </div>
 
           <div class="hint">
-            Dica: <b>method_not_allowed</b> é erro de método HTTP. Este painel usa <b>GET</b> com Bearer para leitura e <b>POST</b> para ingest.
-            Se der <b>unauthorized</b>, token/env secret está divergente.
+            Se der <b>404</b>: Netlify não publicou a function (ver pasta de functions e deploy).<br>
+            Se der <b>405</b>: método errado (sua function não aceita GET/POST).<br>
+            Se der <b>401</b>: token/env secret divergente.<br>
+            Se der <b>supabase_read_failed</b>: tabela ou RLS/URL/KEY.
           </div>
 
-          <details style="margin-top:14px" open>
-            <summary>
-              Resultado do diagnóstico (bruto)
-              <span class="chev"></span>
-            </summary>
-            <div class="details-body">
-              Aqui aparece o retorno completo da Function. É a verdade do sistema (sem achismo).
-              <div id="rawResult" class="result" aria-live="polite"></div>
+          <div id="diag" class="result ok">{ "ok": true, "info": "Pronto. Salve o token e teste." }</div>
 
-              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px">
-                <button class="btn ghost" id="btnCopyResult" type="button">Copiar resultado</button>
-                <button class="btn ghost" id="btnOpenFunction" type="button">Abrir function no navegador</button>
-              </div>
-            </div>
-          </details>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <button class="btn ghost" id="btnOpenFn" type="button">Abrir function</button>
+            <button class="btn ghost" id="btnOpenEvents" type="button">Abrir events.html</button>
+          </div>
         </div>
       </section>
 
-      <!-- RIGHT -->
       <section class="card">
         <div class="head">
-          <h2>Eventos (WhatsAuto → Observatório)</h2>
-          <p>Fluxo real de mensagens, status, filtros e sinais para debugging e melhoria de respostas.</p>
+          <h2>Eventos</h2>
+          <p>Lista eventos do Supabase e permite enviar um evento teste.</p>
         </div>
         <div class="body">
           <div class="row">
             <div class="field">
-              <label for="limitSelect">Carregar últimos</label>
-              <select id="limitSelect">
-                <option value="10">10 eventos</option>
-                <option value="25" selected>25 eventos</option>
-                <option value="50">50 eventos</option>
-                <option value="100">100 eventos</option>
+              <label>Quantidade</label>
+              <select id="limit">
+                <option value="10">10</option>
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
               </select>
             </div>
-
-            <div style="display:flex; gap:10px; flex-wrap:wrap">
-              <button class="btn primary" id="btnLoadEvents" type="button">Carregar eventos</button>
-              <button class="btn ghost" id="btnDownloadJSON" type="button">Baixar JSON</button>
-              <button class="btn ghost" id="btnOpenEventsHtml" type="button">Abrir events.html</button>
-            </div>
+            <button class="btn" id="btnLoad" type="button">Carregar eventos</button>
+            <button class="btn ghost" id="btnDownload" type="button">Baixar JSON</button>
           </div>
 
-          <details style="margin-top:14px">
-            <summary>
-              Ingest de teste (POST)
-              <span class="chev"></span>
-            </summary>
-            <div class="details-body">
-              <div class="row">
-                <div class="field">
-                  <label for="testPayload">Payload</label>
-                  <textarea id="testPayload" spellcheck="false"></textarea>
-                </div>
-                <div style="display:flex; gap:10px; flex-wrap:wrap">
-                  <button class="btn" id="btnSendTest" type="button">Enviar evento teste</button>
-                  <button class="btn ghost" id="btnResetPayload" type="button">Reset payload</button>
-                </div>
-              </div>
+          <label style="margin-top:12px">Payload de teste (POST)</label>
+          <textarea id="payload" spellcheck="false"></textarea>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <button class="btn" id="btnPost" type="button">Enviar evento teste</button>
+            <button class="btn ghost" id="btnReset" type="button">Reset payload</button>
+          </div>
+          <div id="postRes" class="result ok">{ "ok": true, "info": "POST pronto." }</div>
 
-              <div id="ingestResult" class="result" style="margin-top:12px"></div>
-            </div>
-          </details>
-
-          <div style="margin-top:14px; overflow:auto">
+          <div style="margin-top:12px;overflow:auto">
             <table>
               <thead>
                 <tr>
                   <th style="width:130px">created_at</th>
                   <th style="width:110px">source</th>
-                  <th style="width:140px">event_type</th>
-                  <th style="width:140px">affiliate_id</th>
-                  <th>payload (resumo)</th>
+                  <th style="width:130px">event_type</th>
+                  <th style="width:120px">affiliate</th>
+                  <th>payload</th>
                 </tr>
               </thead>
-              <tbody id="eventsTbody">
+              <tbody id="tb">
                 <tr><td colspan="5" class="small">Carregue eventos para visualizar.</td></tr>
               </tbody>
             </table>
-          </div>
-
-          <div class="footer">
-            ConSySencI.A © Todos os direitos reservados — Operação cognitiva institucional.
           </div>
         </div>
       </section>
@@ -393,347 +187,196 @@
   </div>
 
 <script>
-  // ===== CONFIG =====
-  const FN_PATH = "/.netlify/functions/observatory";
-  const LS_TOKEN_KEY = "ADMIN_TOKEN";
-  const LS_STATUS_KEY = "ADMIN_STATUS";
-  const EVENTS_HTML_PATH = "/admin/events.html"; // ajuste se necessário
+  const FN = "/.netlify/functions/observatory";
+  const EVENTS = "/admin/events.html";
+  const LS = "ADMIN_TOKEN";
 
-  // ===== HELPERS =====
-  const $ = (q) => document.querySelector(q);
-  const nowISO = () => new Date().toISOString();
+  const el = (id) => document.getElementById(id);
 
-  function setStatus(text, ok=null){
-    const el = $("#uiStatus");
-    el.textContent = text;
-    if (ok === true) el.style.color = "var(--green)";
-    else if (ok === false) el.style.color = "var(--red)";
-    else el.style.color = "rgba(236,255,247,.75)";
-    localStorage.setItem(LS_STATUS_KEY, text);
+  function setStatus(v, ok=null){
+    el("uiStatus").textContent = v;
+    el("uiStatus").style.color = ok===true ? "var(--green)" : ok===false ? "var(--red)" : "rgba(236,255,247,.85)";
   }
 
-  function getToken(){
-    return (localStorage.getItem(LS_TOKEN_KEY) || $("#tokenInput").value || "").trim();
+  function pretty(x){
+    try { return JSON.stringify(x, null, 2); } catch { return String(x); }
   }
 
-  function setTokenUI(token){
-    $("#tokenInput").value = token || "";
-    $("#tokenState").textContent = token ? "definido" : "vazio";
-    $("#tokenBadge").style.opacity = token ? "1" : ".75";
-  }
-
-  function pretty(obj){
-    try{ return JSON.stringify(obj, null, 2); } catch { return String(obj); }
-  }
-
-  function renderRawResult(ok, obj){
-    const box = $("#rawResult");
+  function setBox(boxId, ok, obj){
+    const box = el(boxId);
     box.className = "result " + (ok ? "ok" : "err");
     box.textContent = typeof obj === "string" ? obj : pretty(obj);
   }
 
-  function renderIngestResult(ok, obj){
-    const box = $("#ingestResult");
-    box.className = "result " + (ok ? "ok" : "err");
-    box.textContent = typeof obj === "string" ? obj : pretty(obj);
+  function token(){
+    return (localStorage.getItem(LS) || el("token").value || "").trim();
   }
 
   async function apiGet(limit){
-    const token = getToken();
-    const res = await fetch(`${FN_PATH}?limit=${encodeURIComponent(limit)}`, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Accept": "application/json"
-      }
+    const res = await fetch(`${FN}?limit=${encodeURIComponent(limit)}`, {
+      method:"GET",
+      headers:{ "Authorization": `Bearer ${token()}`, "Accept":"application/json" }
     });
-    const txt = await res.text();
-    let data;
-    try{ data = txt ? JSON.parse(txt) : {}; }catch{ data = txt; }
+    const t = await res.text();
+    let data; try{ data = t ? JSON.parse(t) : {}; } catch { data = t; }
     return { res, data };
   }
 
   async function apiPost(payload){
-    const token = getToken();
-    const res = await fetch(FN_PATH, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "content-type": "application/json",
-        "Accept": "application/json"
+    const res = await fetch(FN, {
+      method:"POST",
+      headers:{
+        "Authorization": `Bearer ${token()}`,
+        "content-type":"application/json",
+        "Accept":"application/json"
       },
       body: JSON.stringify(payload)
     });
-    const txt = await res.text();
-    let data;
-    try{ data = txt ? JSON.parse(txt) : {}; }catch{ data = txt; }
+    const t = await res.text();
+    let data; try{ data = t ? JSON.parse(t) : {}; } catch { data = t; }
     return { res, data };
   }
 
-  function summarizePayload(p){
-    if (!p) return "";
-    if (typeof p !== "object") return String(p).slice(0, 160);
-    const keys = Object.keys(p);
-    const pick = {};
-    const preferred = ["message","text","status","from","to","phone","telefone","affiliate_id","afiliado","type","event_type","source"];
-    for (const k of preferred){
-      if (k in p) pick[k] = p[k];
-    }
-    if (!Object.keys(pick).length){
-      pick.keys = keys.slice(0, 8);
-    }
-    const s = JSON.stringify(pick);
-    return s.length > 180 ? s.slice(0, 180) + "…" : s;
+  function escapeHTML(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;").replaceAll("<","&lt;")
+      .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
   }
 
-  function renderEventsTable(list){
-    const tb = $("#eventsTbody");
+  function renderTable(list){
+    const tb = el("tb");
     tb.innerHTML = "";
-    if (!Array.isArray(list) || list.length === 0){
+    if (!Array.isArray(list) || !list.length){
       tb.innerHTML = `<tr><td colspan="5" class="small">Sem eventos retornados.</td></tr>`;
       return;
     }
-    for (const row of list){
+    for (const r of list){
+      const created = (r.created_at||"").toString().slice(0,19).replace("T"," ");
+      const payload = pretty(r.payload || {}).slice(0,200);
       const tr = document.createElement("tr");
-      const created = (row.created_at || "").toString().slice(0,19).replace("T"," ");
-      const source = row.source ?? "";
-      const event_type = row.event_type ?? "";
-      const affiliate_id = row.affiliate_id ?? "";
-      const payload = summarizePayload(row.payload);
-
       tr.innerHTML = `
-        <td><span class="small">${escapeHTML(created)}</span></td>
-        <td>${escapeHTML(String(source))}</td>
-        <td>${escapeHTML(String(event_type))}</td>
-        <td>${escapeHTML(String(affiliate_id))}</td>
-        <td class="small">${escapeHTML(String(payload))}</td>
+        <td class="small">${escapeHTML(created)}</td>
+        <td>${escapeHTML(r.source)}</td>
+        <td>${escapeHTML(r.event_type)}</td>
+        <td>${escapeHTML(r.affiliate_id)}</td>
+        <td class="small">${escapeHTML(payload)}${payload.length>=200?"…":""}</td>
       `;
       tb.appendChild(tr);
     }
   }
 
-  function escapeHTML(str){
-    return str
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-
-  function downloadJSON(filename, obj){
-    const blob = new Blob([pretty(obj)], { type: "application/json;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  async function copyText(text){
-    try{
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch {
-      // fallback
+  async function copy(text){
+    try{ await navigator.clipboard.writeText(text); return true; }
+    catch{
       const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      const ok = document.execCommand("copy");
-      ta.remove();
-      return ok;
+      ta.value = text; document.body.appendChild(ta);
+      ta.select(); const ok = document.execCommand("copy");
+      ta.remove(); return ok;
     }
   }
 
-  // ===== INIT =====
-  (function init(){
-    $("#endpointState").textContent = FN_PATH;
-
-    const savedToken = localStorage.getItem(LS_TOKEN_KEY) || "";
-    setTokenUI(savedToken);
-
-    const savedStatus = localStorage.getItem(LS_STATUS_KEY) || "deslogado";
-    setStatus(savedStatus, null);
-
-    // payload default
-    $("#testPayload").value = pretty({
-      source: "panel",
-      event_type: "debug_test",
-      affiliate_id: "0001",
-      phone: "+55DD999999999",
-      message: "Evento de teste ConSySencI.A",
-      ts: nowISO()
+  function resetPayload(){
+    el("payload").value = pretty({
+      source:"panel",
+      event_type:"debug_test",
+      affiliate_id:"0001",
+      phone:"+55DD999999999",
+      message:"Evento teste ConSySencI.A",
+      ts: new Date().toISOString()
     });
+  }
+  resetPayload();
 
-    renderRawResult(true, { ok:true, info:"Painel pronto. Salve o token e clique em Testar acesso." });
-    renderIngestResult(true, { ok:true, info:"Pronto para enviar POST de teste (opcional)." });
-  })();
+  // INIT
+  const saved = localStorage.getItem(LS) || "";
+  el("token").value = saved;
+  setStatus(saved ? "logado" : "deslogado", saved ? true : null);
 
-  // ===== EVENTS =====
-  $("#btnSaveToken").addEventListener("click", async () => {
-    const token = ($("#tokenInput").value || "").trim();
-    localStorage.setItem(LS_TOKEN_KEY, token);
-    setTokenUI(token);
-    setStatus(token ? "logado" : "deslogado", token ? true : null);
-    renderRawResult(true, { ok:true, saved: !!token, token_state: token ? "definido" : "vazio" });
-  });
+  // HANDLERS
+  el("btnSave").onclick = () => {
+    const t = (el("token").value||"").trim();
+    localStorage.setItem(LS, t);
+    setStatus(t ? "logado" : "deslogado", t ? true : null);
+    setBox("diag", true, { ok:true, saved:!!t });
+  };
 
-  $("#btnLogout").addEventListener("click", () => {
-    localStorage.removeItem(LS_TOKEN_KEY);
-    setTokenUI("");
+  el("btnLogout").onclick = () => {
+    localStorage.removeItem(LS);
+    el("token").value = "";
     setStatus("deslogado", null);
-    renderRawResult(true, { ok:true, action:"logout", next:"Cole o token e salve." });
-  });
+    setBox("diag", true, { ok:true, logout:true });
+  };
 
-  $("#btnClear").addEventListener("click", () => {
-    renderRawResult(true, { ok:true, cleared:true });
-    $("#eventsTbody").innerHTML = `<tr><td colspan="5" class="small">Carregue eventos para visualizar.</td></tr>`;
-  });
+  el("btnOpenFn").onclick = () => window.open(FN, "_blank");
+  el("btnOpenEvents").onclick = () => (window.location.href = EVENTS);
 
-  $("#btnTest").addEventListener("click", async () => {
-    const token = getToken();
-    if (!token){
-      renderRawResult(false, { ok:false, error:"token_vazio", hint:"Cole o token e clique em Salvar token." });
-      setStatus("token vazio", false);
-      return;
-    }
+  el("btnCopy").onclick = async () => {
+    const ok = await copy(el("diag").textContent || "");
+    setBox("diag", ok, ok ? { ok:true, copied:true } : { ok:false, copied:false });
+  };
 
+  el("btnTest").onclick = async () => {
+    if (!token()){ setBox("diag", false, { ok:false, error:"token_vazio" }); setStatus("falha", false); return; }
     setStatus("testando...", null);
-    renderRawResult(true, { ok:true, step:"GET /observatory", sending:true });
-
     try{
-      const limit = $("#limitSelect").value || "25";
-      const { res, data } = await apiGet(limit);
-
-      const ok = !!res.ok && data && data.ok === true;
-      renderRawResult(ok, {
-        http_ok: res.ok,
-        status: res.status,
-        statusText: res.statusText,
-        data
-      });
-
-      if (ok){
-        setStatus("logado", true);
-      } else {
-        setStatus("falha", false);
-      }
-
-    } catch (e){
-      renderRawResult(false, { ok:false, error:"network_or_server", details: String(e?.message || e) });
+      const { res, data } = await apiGet(el("limit").value || "25");
+      const ok = res.ok && data && data.ok === true;
+      setBox("diag", ok, { http_ok:res.ok, status:res.status, data });
+      setStatus(ok ? "logado" : "falha", ok);
+    }catch(e){
+      setBox("diag", false, { ok:false, error:"network_or_server", details:String(e?.message||e) });
       setStatus("falha", false);
     }
-  });
+  };
 
-  $("#btnOpenFunction").addEventListener("click", () => {
-    // Abre a function no browser (vai dar unauthorized se não mandar header — mas é útil pra ver 405/404)
-    window.open(FN_PATH, "_blank");
-  });
-
-  $("#btnCopyResult").addEventListener("click", async () => {
-    const text = $("#rawResult").textContent || "";
-    const ok = await copyText(text);
-    if (ok) renderRawResult(true, { ok:true, copied:true });
-    else renderRawResult(false, { ok:false, copied:false });
-  });
-
-  $("#btnLoadEvents").addEventListener("click", async () => {
-    const token = getToken();
-    if (!token){
-      renderRawResult(false, { ok:false, error:"token_vazio", hint:"Cole o token e clique em Salvar token." });
-      return;
-    }
-    const limit = $("#limitSelect").value || "25";
-    setStatus("carregando eventos...", null);
-
+  el("btnLoad").onclick = async () => {
+    if (!token()){ setBox("diag", false, { ok:false, error:"token_vazio" }); return; }
+    setStatus("carregando...", null);
     try{
-      const { res, data } = await apiGet(limit);
-      const ok = !!res.ok && data && data.ok === true;
-
-      renderRawResult(ok, {
-        action: "load_events",
-        http_ok: res.ok,
-        status: res.status,
-        data_summary: ok ? { count: data.count, mode: data.mode } : undefined,
-        data
-      });
-
-      if (ok){
-        renderEventsTable(data.data || []);
-        setStatus("logado", true);
-      } else {
-        setStatus("falha", false);
-      }
-    } catch (e){
-      renderRawResult(false, { ok:false, error:"network_or_server", details: String(e?.message || e) });
+      const { res, data } = await apiGet(el("limit").value || "25");
+      const ok = res.ok && data && data.ok === true;
+      setBox("diag", ok, { action:"load_events", status:res.status, data_summary: ok ? {count:data.count}: null, data });
+      if (ok) renderTable(data.data || []);
+      setStatus(ok ? "logado" : "falha", ok);
+    }catch(e){
+      setBox("diag", false, { ok:false, error:"network_or_server", details:String(e?.message||e) });
       setStatus("falha", false);
     }
-  });
+  };
 
-  $("#btnDownloadJSON").addEventListener("click", async () => {
-    const limit = $("#limitSelect").value || "25";
+  el("btnDownload").onclick = async () => {
     try{
-      const { res, data } = await apiGet(limit);
-      const name = `consysencia_events_${new Date().toISOString().slice(0,19).replaceAll(":","-")}.json`;
-      downloadJSON(name, { status: res.status, data });
-    } catch (e){
-      renderRawResult(false, { ok:false, error:"download_failed", details: String(e?.message || e) });
+      const { res, data } = await apiGet(el("limit").value || "25");
+      const name = `events_${new Date().toISOString().slice(0,19).replaceAll(":","-")}.json`;
+      const blob = new Blob([pretty({ status: res.status, data })], {type:"application/json;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }catch(e){
+      setBox("diag", false, { ok:false, error:"download_failed", details:String(e?.message||e) });
     }
-  });
+  };
 
-  $("#btnOpenEventsHtml").addEventListener("click", () => {
-    window.location.href = EVENTS_HTML_PATH;
-  });
+  el("btnReset").onclick = () => { resetPayload(); setBox("postRes", true, { ok:true, reset:true }); };
 
-  $("#btnResetPayload").addEventListener("click", () => {
-    $("#testPayload").value = pretty({
-      source: "panel",
-      event_type: "debug_test",
-      affiliate_id: "0001",
-      phone: "+55DD999999999",
-      message: "Evento de teste ConSySencI.A",
-      ts: nowISO()
-    });
-    renderIngestResult(true, { ok:true, reset:true });
-  });
-
-  $("#btnSendTest").addEventListener("click", async () => {
-    const token = getToken();
-    if (!token){
-      renderIngestResult(false, { ok:false, error:"token_vazio" });
-      return;
-    }
-
+  el("btnPost").onclick = async () => {
+    if (!token()){ setBox("postRes", false, { ok:false, error:"token_vazio" }); return; }
     let payload;
-    try{
-      payload = JSON.parse($("#testPayload").value || "{}");
-    } catch {
-      renderIngestResult(false, { ok:false, error:"invalid_json", hint:"O payload precisa ser JSON válido." });
-      return;
-    }
+    try{ payload = JSON.parse(el("payload").value || "{}"); }
+    catch{ setBox("postRes", false, { ok:false, error:"invalid_json" }); return; }
 
     try{
       const { res, data } = await apiPost(payload);
-      const ok = !!res.ok && data && data.ok === true;
-
-      renderIngestResult(ok, {
-        http_ok: res.ok,
-        status: res.status,
-        data
-      });
-
-      if (ok){
-        // atualiza tabela automaticamente
-        $("#btnLoadEvents").click();
-      }
-    } catch (e){
-      renderIngestResult(false, { ok:false, error:"network_or_server", details: String(e?.message || e) });
+      const ok = res.ok && data && data.ok === true;
+      setBox("postRes", ok, { status:res.status, data });
+      if (ok) el("btnLoad").click();
+    }catch(e){
+      setBox("postRes", false, { ok:false, error:"network_or_server", details:String(e?.message||e) });
     }
-  });
+  };
 </script>
 </body>
 </html>
