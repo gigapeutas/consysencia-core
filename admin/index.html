@@ -1,221 +1,739 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ConSySencI.A — Painel (Admin)</title>
-  <meta name="robots" content="noindex,nofollow" />
+  <meta name="color-scheme" content="dark" />
   <style>
     :root{
-      --bg:#05080a; --card:#071014cc; --line:#0f2a22; --txt:#e9fff6; --mut:#9bd8c2;
-      --g:#22ff9a; --g2:#0fe28a; --bad:#ff4d6d; --warn:#ffd166;
-      --shadow: 0 24px 80px rgba(0,0,0,.55);
-      --r:22px;
+      --bg:#050a08;
+      --bg2:#07120d;
+      --card:rgba(7,18,13,.72);
+      --card2:rgba(4,10,8,.62);
+      --line:rgba(0,255,163,.18);
+      --line2:rgba(0,255,163,.10);
+      --txt:rgba(236,255,247,.92);
+      --muted:rgba(236,255,247,.65);
+      --muted2:rgba(236,255,247,.45);
+      --green:#00ffa3;
+      --green2:#2affc2;
+      --red:#ff4d6d;
+      --yellow:#ffd166;
+      --shadow:0 20px 60px rgba(0,0,0,.55);
+      --radius:22px;
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; color:var(--txt); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       background:
-        radial-gradient(1200px 700px at 20% -10%, rgba(34,255,154,.18), transparent 60%),
-        radial-gradient(900px 600px at 110% 10%, rgba(15,226,138,.14), transparent 55%),
-        radial-gradient(800px 600px at 50% 120%, rgba(34,255,154,.08), transparent 60%),
-        linear-gradient(180deg, #030607, #050a0c 55%, #040809);
-      min-height:100vh;
-    }
-    .wrap{max-width:980px;margin:0 auto;padding:22px 18px 70px}
-    .top{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
-      padding:18px 18px 10px;
-    }
-    .brand{display:flex; gap:12px; align-items:center}
-    .dot{width:12px;height:12px;border-radius:999px;background:var(--g); box-shadow: 0 0 24px rgba(34,255,154,.55)}
-    h1{margin:0;font-size:28px;letter-spacing:.2px}
-    .sub{margin-top:4px;color:var(--mut);font-size:13px;line-height:1.35}
-    .btn{
-      appearance:none;border:1px solid rgba(34,255,154,.35); background:linear-gradient(180deg, rgba(34,255,154,.10), rgba(34,255,154,.03));
-      color:var(--txt); padding:12px 16px; border-radius:18px; cursor:pointer;
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
-      font-weight:650; letter-spacing:.2px;
-    }
-    .btn:hover{border-color:rgba(34,255,154,.6)}
-    .btn.ghost{background:transparent}
-    .btn.bad{border-color:rgba(255,77,109,.35); background:linear-gradient(180deg, rgba(255,77,109,.08), rgba(255,77,109,.02))}
-    .panel{
-      margin-top:10px; padding:18px; border-radius:var(--r); border:1px solid rgba(34,255,154,.18);
-      background: linear-gradient(180deg, rgba(7,16,20,.78), rgba(7,16,20,.52));
-      box-shadow: var(--shadow);
-    }
-    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
-    .pill{
-      display:inline-flex; gap:10px; align-items:center;
-      padding:10px 14px; border-radius:999px; border:1px solid rgba(34,255,154,.22);
-      background: rgba(0,0,0,.22); color:var(--mut); font-size:13px;
-    }
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
-    .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; margin-top:14px}
-    .card{
-      grid-column: span 12;
-      padding:16px; border-radius:var(--r); border:1px solid rgba(34,255,154,.16);
-      background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.08));
-    }
-    .card h2{margin:0 0 6px;font-size:18px}
-    .desc{color:var(--mut); font-size:13px; line-height:1.4}
-    .card .actions{margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .small{font-size:12px;color:rgba(155,216,194,.9)}
-    .msg{
-      margin-top:12px; padding:12px 14px; border-radius:16px; border:1px solid rgba(34,255,154,.18);
-      background: rgba(0,0,0,.20); color:var(--mut); min-height:44px;
-      overflow:auto;
-    }
-    .danger{color:var(--bad)}
-    .ok{color:var(--g)}
-    .input{
-      width: min(520px, 100%);
-      padding:12px 14px;
-      border-radius:16px;
-      border:1px solid rgba(34,255,154,.22);
-      background: rgba(0,0,0,.28);
+        radial-gradient(900px 500px at 20% 15%, rgba(0,255,163,.16), transparent 55%),
+        radial-gradient(700px 400px at 75% 30%, rgba(0,255,163,.10), transparent 60%),
+        radial-gradient(800px 500px at 50% 85%, rgba(0,255,163,.08), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
       color:var(--txt);
+    }
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:22px 16px 60px;
+    }
+    .topbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 14px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(0,255,163,.08), rgba(0,0,0,.15));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position:sticky;
+      top:10px;
+      z-index:5;
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      min-width:0;
+    }
+    .dot{
+      width:12px;height:12px;border-radius:99px;
+      background:var(--green);
+      box-shadow: 0 0 0 6px rgba(0,255,163,.12), 0 0 24px rgba(0,255,163,.35);
+      flex:0 0 auto;
+    }
+    h1{
+      font-size:22px;
+      margin:0;
+      letter-spacing:.2px;
+      line-height:1.1;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      margin-top:4px;
+    }
+    .rightbar{display:flex; gap:10px; align-items:center; flex:0 0 auto;}
+    .pill{
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color:var(--muted);
+      font-size:12px;
+      display:flex; gap:8px; align-items:center;
+    }
+    .pill strong{color:var(--green); font-weight:700; letter-spacing:.4px}
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(0,255,163,.05);
+      color:var(--txt);
+      padding:10px 12px;
+      border-radius: 999px;
+      font-weight:650;
+      font-size:13px;
+      cursor:pointer;
+      transition: .15s ease;
+      display:inline-flex;
+      gap:8px; align-items:center; justify-content:center;
+      user-select:none;
+    }
+    .btn:hover{transform: translateY(-1px); border-color: rgba(0,255,163,.35); background: rgba(0,255,163,.08)}
+    .btn:active{transform: translateY(0px); opacity:.95}
+    .btn.ghost{background: rgba(0,0,0,.18)}
+    .btn.danger{border-color: rgba(255,77,109,.35); background: rgba(255,77,109,.08)}
+    .btn.danger:hover{border-color: rgba(255,77,109,.55); background: rgba(255,77,109,.12)}
+    .btn.primary{
+      border-color: rgba(0,255,163,.45);
+      background: linear-gradient(180deg, rgba(0,255,163,.14), rgba(0,255,163,.05));
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:16px;
+    }
+    @media (min-width: 920px){
+      .grid{grid-template-columns: 1.1fr .9fr;}
+    }
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.10));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .head{
+      padding:16px 16px 12px;
+      border-bottom:1px solid var(--line2);
+      background: linear-gradient(180deg, rgba(0,255,163,.06), rgba(0,0,0,.0));
+    }
+    .card .head h2{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    .card .head p{margin:6px 0 0; color:var(--muted); font-size:13px;}
+    .card .body{padding:16px;}
+    label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end}
+    .field{
+      flex:1 1 240px;
+      min-width: 220px;
+    }
+    input, textarea, select{
+      width:100%;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.35);
+      color:var(--txt);
+      padding:12px 12px;
+      border-radius: 16px;
       outline:none;
+      font-size:14px;
     }
-    .input:focus{border-color:rgba(34,255,154,.55)}
-    @media (min-width: 860px){
-      .card.span6{grid-column: span 6;}
+    input::placeholder, textarea::placeholder{color: rgba(236,255,247,.35)}
+    textarea{min-height:130px; resize:vertical; line-height:1.35}
+    .hint{
+      margin-top:10px;
+      padding:12px 12px;
+      border:1px dashed rgba(0,255,163,.25);
+      border-radius: 16px;
+      color: var(--muted);
+      font-size:12.5px;
+      background: rgba(0,255,163,.04);
     }
+    details{
+      border:1px solid var(--line2);
+      border-radius: 18px;
+      background: rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+    summary{
+      cursor:pointer;
+      list-style:none;
+      padding:12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      color: var(--txt);
+      user-select:none;
+    }
+    summary::-webkit-details-marker{display:none}
+    .chev{
+      width:10px;height:10px;border-right:2px solid rgba(236,255,247,.65);
+      border-bottom:2px solid rgba(236,255,247,.65);
+      transform: rotate(45deg);
+      transition: .2s ease;
+      margin-left:auto;
+      opacity:.8;
+    }
+    details[open] .chev{transform: rotate(225deg)}
+    .details-body{padding:12px 14px 14px; border-top:1px solid var(--line2); color:var(--muted); font-size:13px; line-height:1.45}
+    .statusline{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      margin-top:10px;
+    }
+    .badge{
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.22);
+      font-size:12px;
+      color:var(--muted);
+      display:inline-flex; gap:8px; align-items:center;
+    }
+    .badge b{color:var(--green)}
+    .badge.red b{color:var(--red)}
+    .badge.yellow b{color:var(--yellow)}
+    .result{
+      margin-top:14px;
+      padding:14px;
+      border-radius: 18px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      overflow:auto;
+      max-height: 360px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:12.5px;
+      line-height:1.35;
+      white-space:pre;
+    }
+    .result.ok{border-color: rgba(0,255,163,.38); background: rgba(0,255,163,.06)}
+    .result.err{border-color: rgba(255,77,109,.38); background: rgba(255,77,109,.06); color: rgba(255,240,245,.92)}
+    table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 16px;
+      border:1px solid var(--line2);
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(0,255,163,.08);
+      vertical-align:top;
+      font-size:12.5px;
+    }
+    th{color:var(--muted); font-weight:650; text-align:left; background: rgba(0,255,163,.04)}
+    td{color:rgba(236,255,247,.85)}
+    .small{font-size:12px; color:var(--muted2)}
+    .footer{
+      margin-top:16px;
+      color:var(--muted2);
+      font-size:12px;
+      text-align:center;
+    }
+    a{color:var(--green); text-decoration:none}
+    a:hover{text-decoration:underline}
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="top">
+    <div class="topbar">
       <div class="brand">
         <div class="dot"></div>
-        <div>
+        <div style="min-width:0">
           <h1>ConSySencI.A — Painel</h1>
-          <div class="sub">Gestão rápida de events, mídia e automações (Admin)</div>
+          <p class="subtitle">Gestão rápida de events, mídia e automações (Admin)</p>
         </div>
       </div>
-      <button class="btn bad" id="logoutBtn">Sair</button>
-    </div>
 
-    <div class="panel">
-      <div class="row" style="margin-bottom:10px">
-        <span class="pill">Status: <b id="statusTxt" class="ok">deslogado</b></span>
-        <span class="pill">Token: <span id="tokenPreview" class="mono">—</span></span>
+      <div class="rightbar">
+        <div class="pill"><span>Status:</span> <strong id="uiStatus">desconhecido</strong></div>
+        <button class="btn ghost" id="btnLogout" type="button">Sair</button>
       </div>
-
-      <div class="row">
-        <input class="input mono" id="tokenInput" placeholder="Cole aqui o ADMIN_TOKEN (Netlify env var)" />
-        <button class="btn" id="saveBtn">Salvar token</button>
-        <button class="btn ghost" id="testBtn">Testar acesso</button>
-      </div>
-
-      <div class="small" style="margin-top:10px">
-        Dica: se aparecer <span class="mono">unauthorized</span> ao abrir functions direto no navegador, é normal.
-        O painel chama com token e resolve. <b>Se continuar “unauthorized” aqui</b>, falta criar a env var <span class="mono">ADMIN_TOKEN</span> no Netlify e redeploy.
-      </div>
-
-      <div class="msg mono" id="out">Pronto.</div>
     </div>
 
     <div class="grid">
-      <div class="card span6">
-        <h2>Eventos (WhatsAuto → Observatório)</h2>
-        <div class="desc">Fluxo real de mensagens, status, filtros e sinais para debugging e melhoria de respostas.</div>
-        <div class="actions">
-          <button class="btn" onclick="openPage('events.html')">Abrir events.html</button>
-          <span class="pill">URL: <span class="mono">/admin/events.html</span></span>
+      <!-- LEFT -->
+      <section class="card">
+        <div class="head">
+          <h2>Autenticação & Diagnóstico</h2>
+          <p>Salvar token, testar acesso e enxergar o erro real (método, auth, Supabase, etc.).</p>
         </div>
-      </div>
+        <div class="body">
+          <div class="row">
+            <div class="field">
+              <label for="tokenInput">Token Admin</label>
+              <input id="tokenInput" type="text" placeholder="Ex: ACORDADO" autocomplete="off" spellcheck="false" />
+              <div class="statusline">
+                <div class="badge" id="tokenBadge"><b>Token:</b> <span id="tokenState">vazio</span></div>
+                <div class="badge" id="endpointBadge"><b>Endpoint:</b> <span id="endpointState">/.netlify/functions/observatory</span></div>
+              </div>
+            </div>
 
-      <div class="card span6">
-        <h2>Mídia (imagens / links / catálogo)</h2>
-        <div class="desc">Cadastre aliases e links para respostas. Base para enviar “imagem por link” no WhatsAuto.</div>
-        <div class="actions">
-          <button class="btn" onclick="openPage('media.html')">Abrir media.html</button>
-          <span class="pill">URL: <span class="mono">/admin/media.html</span></span>
-        </div>
-      </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap">
+              <button class="btn primary" id="btnSaveToken" type="button">Salvar token</button>
+              <button class="btn" id="btnTest" type="button">Testar acesso</button>
+              <button class="btn ghost" id="btnClear" type="button">Limpar</button>
+            </div>
+          </div>
 
-      <div class="card span12">
-        <h2>Regras (gatilhos / respostas)</h2>
-        <div class="desc">Crie, edite, desative e exclua regras. Ajuste prioridade, tipo de match e teste respostas.</div>
-        <div class="actions">
-          <button class="btn" onclick="openPage('rules.html')">Abrir rules.html</button>
-          <span class="pill">URL: <span class="mono">/admin/rules.html</span></span>
+          <div class="hint">
+            Dica: <b>method_not_allowed</b> é erro de método HTTP. Este painel usa <b>GET</b> com Bearer para leitura e <b>POST</b> para ingest.
+            Se der <b>unauthorized</b>, token/env secret está divergente.
+          </div>
+
+          <details style="margin-top:14px" open>
+            <summary>
+              Resultado do diagnóstico (bruto)
+              <span class="chev"></span>
+            </summary>
+            <div class="details-body">
+              Aqui aparece o retorno completo da Function. É a verdade do sistema (sem achismo).
+              <div id="rawResult" class="result" aria-live="polite"></div>
+
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px">
+                <button class="btn ghost" id="btnCopyResult" type="button">Copiar resultado</button>
+                <button class="btn ghost" id="btnOpenFunction" type="button">Abrir function no navegador</button>
+              </div>
+            </div>
+          </details>
         </div>
-      </div>
+      </section>
+
+      <!-- RIGHT -->
+      <section class="card">
+        <div class="head">
+          <h2>Eventos (WhatsAuto → Observatório)</h2>
+          <p>Fluxo real de mensagens, status, filtros e sinais para debugging e melhoria de respostas.</p>
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="field">
+              <label for="limitSelect">Carregar últimos</label>
+              <select id="limitSelect">
+                <option value="10">10 eventos</option>
+                <option value="25" selected>25 eventos</option>
+                <option value="50">50 eventos</option>
+                <option value="100">100 eventos</option>
+              </select>
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap">
+              <button class="btn primary" id="btnLoadEvents" type="button">Carregar eventos</button>
+              <button class="btn ghost" id="btnDownloadJSON" type="button">Baixar JSON</button>
+              <button class="btn ghost" id="btnOpenEventsHtml" type="button">Abrir events.html</button>
+            </div>
+          </div>
+
+          <details style="margin-top:14px">
+            <summary>
+              Ingest de teste (POST)
+              <span class="chev"></span>
+            </summary>
+            <div class="details-body">
+              <div class="row">
+                <div class="field">
+                  <label for="testPayload">Payload</label>
+                  <textarea id="testPayload" spellcheck="false"></textarea>
+                </div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap">
+                  <button class="btn" id="btnSendTest" type="button">Enviar evento teste</button>
+                  <button class="btn ghost" id="btnResetPayload" type="button">Reset payload</button>
+                </div>
+              </div>
+
+              <div id="ingestResult" class="result" style="margin-top:12px"></div>
+            </div>
+          </details>
+
+          <div style="margin-top:14px; overflow:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:130px">created_at</th>
+                  <th style="width:110px">source</th>
+                  <th style="width:140px">event_type</th>
+                  <th style="width:140px">affiliate_id</th>
+                  <th>payload (resumo)</th>
+                </tr>
+              </thead>
+              <tbody id="eventsTbody">
+                <tr><td colspan="5" class="small">Carregue eventos para visualizar.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="footer">
+            ConSySencI.A © Todos os direitos reservados — Operação cognitiva institucional.
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
 <script>
-  const LS_KEY = "CONSYSENCIA_ADMIN_TOKEN_V1";
+  // ===== CONFIG =====
+  const FN_PATH = "/.netlify/functions/observatory";
+  const LS_TOKEN_KEY = "ADMIN_TOKEN";
+  const LS_STATUS_KEY = "ADMIN_STATUS";
+  const EVENTS_HTML_PATH = "/admin/events.html"; // ajuste se necessário
 
-  function maskToken(t){
-    if(!t) return "—";
-    const s = String(t);
-    if(s.length <= 8) return s;
-    return s.slice(0,4) + "…" + s.slice(-4);
+  // ===== HELPERS =====
+  const $ = (q) => document.querySelector(q);
+  const nowISO = () => new Date().toISOString();
+
+  function setStatus(text, ok=null){
+    const el = $("#uiStatus");
+    el.textContent = text;
+    if (ok === true) el.style.color = "var(--green)";
+    else if (ok === false) el.style.color = "var(--red)";
+    else el.style.color = "rgba(236,255,247,.75)";
+    localStorage.setItem(LS_STATUS_KEY, text);
   }
 
-  function setStatus(){
-    const t = localStorage.getItem(LS_KEY) || "";
-    document.getElementById("tokenPreview").textContent = maskToken(t);
-    document.getElementById("statusTxt").textContent = t ? "logado" : "deslogado";
-    document.getElementById("statusTxt").className = t ? "ok" : "danger";
-    document.getElementById("tokenInput").value = t;
+  function getToken(){
+    return (localStorage.getItem(LS_TOKEN_KEY) || $("#tokenInput").value || "").trim();
   }
 
-  function out(msg, ok=true){
-    const el = document.getElementById("out");
-    el.textContent = msg;
-    el.className = "msg mono " + (ok ? "" : "danger");
+  function setTokenUI(token){
+    $("#tokenInput").value = token || "";
+    $("#tokenState").textContent = token ? "definido" : "vazio";
+    $("#tokenBadge").style.opacity = token ? "1" : ".75";
   }
 
-  function openPage(p){ location.href = p; }
+  function pretty(obj){
+    try{ return JSON.stringify(obj, null, 2); } catch { return String(obj); }
+  }
 
-  async function api(path, body){
-    const token = (localStorage.getItem(LS_KEY) || "").trim();
-    const res = await fetch(path, {
-      method: "POST",
+  function renderRawResult(ok, obj){
+    const box = $("#rawResult");
+    box.className = "result " + (ok ? "ok" : "err");
+    box.textContent = typeof obj === "string" ? obj : pretty(obj);
+  }
+
+  function renderIngestResult(ok, obj){
+    const box = $("#ingestResult");
+    box.className = "result " + (ok ? "ok" : "err");
+    box.textContent = typeof obj === "string" ? obj : pretty(obj);
+  }
+
+  async function apiGet(limit){
+    const token = getToken();
+    const res = await fetch(`${FN_PATH}?limit=${encodeURIComponent(limit)}`, {
+      method: "GET",
       headers: {
-        "content-type":"application/json",
-        "authorization": token ? `Bearer ${token}` : ""
-      },
-      body: JSON.stringify(body || {})
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json"
+      }
     });
     const txt = await res.text();
-    let j=null;
-    try{ j = JSON.parse(txt); } catch(e){ j = { ok:false, error:"non_json", details: txt.slice(0,500) }; }
-    return { ok: res.ok, status: res.status, j };
+    let data;
+    try{ data = txt ? JSON.parse(txt) : {}; }catch{ data = txt; }
+    return { res, data };
   }
 
-  async function testAccess(){
-    out("Testando…");
-    const r = await api("/.netlify/functions/events_list", { limit: 5, offset: 0 });
-    if(r.ok && r.j && r.j.ok){
-      out("Acesso OK ✅ Functions respondendo. Você está pronto para operar o painel.");
-    } else {
-      out("Falha ❌ " + JSON.stringify(r.j), false);
+  async function apiPost(payload){
+    const token = getToken();
+    const res = await fetch(FN_PATH, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "content-type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    const txt = await res.text();
+    let data;
+    try{ data = txt ? JSON.parse(txt) : {}; }catch{ data = txt; }
+    return { res, data };
+  }
+
+  function summarizePayload(p){
+    if (!p) return "";
+    if (typeof p !== "object") return String(p).slice(0, 160);
+    const keys = Object.keys(p);
+    const pick = {};
+    const preferred = ["message","text","status","from","to","phone","telefone","affiliate_id","afiliado","type","event_type","source"];
+    for (const k of preferred){
+      if (k in p) pick[k] = p[k];
+    }
+    if (!Object.keys(pick).length){
+      pick.keys = keys.slice(0, 8);
+    }
+    const s = JSON.stringify(pick);
+    return s.length > 180 ? s.slice(0, 180) + "…" : s;
+  }
+
+  function renderEventsTable(list){
+    const tb = $("#eventsTbody");
+    tb.innerHTML = "";
+    if (!Array.isArray(list) || list.length === 0){
+      tb.innerHTML = `<tr><td colspan="5" class="small">Sem eventos retornados.</td></tr>`;
+      return;
+    }
+    for (const row of list){
+      const tr = document.createElement("tr");
+      const created = (row.created_at || "").toString().slice(0,19).replace("T"," ");
+      const source = row.source ?? "";
+      const event_type = row.event_type ?? "";
+      const affiliate_id = row.affiliate_id ?? "";
+      const payload = summarizePayload(row.payload);
+
+      tr.innerHTML = `
+        <td><span class="small">${escapeHTML(created)}</span></td>
+        <td>${escapeHTML(String(source))}</td>
+        <td>${escapeHTML(String(event_type))}</td>
+        <td>${escapeHTML(String(affiliate_id))}</td>
+        <td class="small">${escapeHTML(String(payload))}</td>
+      `;
+      tb.appendChild(tr);
     }
   }
 
-  document.getElementById("saveBtn").onclick = () => {
-    const t = (document.getElementById("tokenInput").value || "").trim();
-    if(!t){ localStorage.removeItem(LS_KEY); setStatus(); out("Token removido."); return; }
-    localStorage.setItem(LS_KEY, t);
-    setStatus();
-    out("Token salvo. Agora clique em “Testar acesso”.");
-  };
+  function escapeHTML(str){
+    return str
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
 
-  document.getElementById("testBtn").onclick = testAccess;
+  function downloadJSON(filename, obj){
+    const blob = new Blob([pretty(obj)], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
 
-  document.getElementById("logoutBtn").onclick = () => {
-    localStorage.removeItem(LS_KEY);
-    setStatus();
-    out("Deslogado.");
-  };
+  async function copyText(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // fallback
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove();
+      return ok;
+    }
+  }
 
-  setStatus();
+  // ===== INIT =====
+  (function init(){
+    $("#endpointState").textContent = FN_PATH;
+
+    const savedToken = localStorage.getItem(LS_TOKEN_KEY) || "";
+    setTokenUI(savedToken);
+
+    const savedStatus = localStorage.getItem(LS_STATUS_KEY) || "deslogado";
+    setStatus(savedStatus, null);
+
+    // payload default
+    $("#testPayload").value = pretty({
+      source: "panel",
+      event_type: "debug_test",
+      affiliate_id: "0001",
+      phone: "+55DD999999999",
+      message: "Evento de teste ConSySencI.A",
+      ts: nowISO()
+    });
+
+    renderRawResult(true, { ok:true, info:"Painel pronto. Salve o token e clique em Testar acesso." });
+    renderIngestResult(true, { ok:true, info:"Pronto para enviar POST de teste (opcional)." });
+  })();
+
+  // ===== EVENTS =====
+  $("#btnSaveToken").addEventListener("click", async () => {
+    const token = ($("#tokenInput").value || "").trim();
+    localStorage.setItem(LS_TOKEN_KEY, token);
+    setTokenUI(token);
+    setStatus(token ? "logado" : "deslogado", token ? true : null);
+    renderRawResult(true, { ok:true, saved: !!token, token_state: token ? "definido" : "vazio" });
+  });
+
+  $("#btnLogout").addEventListener("click", () => {
+    localStorage.removeItem(LS_TOKEN_KEY);
+    setTokenUI("");
+    setStatus("deslogado", null);
+    renderRawResult(true, { ok:true, action:"logout", next:"Cole o token e salve." });
+  });
+
+  $("#btnClear").addEventListener("click", () => {
+    renderRawResult(true, { ok:true, cleared:true });
+    $("#eventsTbody").innerHTML = `<tr><td colspan="5" class="small">Carregue eventos para visualizar.</td></tr>`;
+  });
+
+  $("#btnTest").addEventListener("click", async () => {
+    const token = getToken();
+    if (!token){
+      renderRawResult(false, { ok:false, error:"token_vazio", hint:"Cole o token e clique em Salvar token." });
+      setStatus("token vazio", false);
+      return;
+    }
+
+    setStatus("testando...", null);
+    renderRawResult(true, { ok:true, step:"GET /observatory", sending:true });
+
+    try{
+      const limit = $("#limitSelect").value || "25";
+      const { res, data } = await apiGet(limit);
+
+      const ok = !!res.ok && data && data.ok === true;
+      renderRawResult(ok, {
+        http_ok: res.ok,
+        status: res.status,
+        statusText: res.statusText,
+        data
+      });
+
+      if (ok){
+        setStatus("logado", true);
+      } else {
+        setStatus("falha", false);
+      }
+
+    } catch (e){
+      renderRawResult(false, { ok:false, error:"network_or_server", details: String(e?.message || e) });
+      setStatus("falha", false);
+    }
+  });
+
+  $("#btnOpenFunction").addEventListener("click", () => {
+    // Abre a function no browser (vai dar unauthorized se não mandar header — mas é útil pra ver 405/404)
+    window.open(FN_PATH, "_blank");
+  });
+
+  $("#btnCopyResult").addEventListener("click", async () => {
+    const text = $("#rawResult").textContent || "";
+    const ok = await copyText(text);
+    if (ok) renderRawResult(true, { ok:true, copied:true });
+    else renderRawResult(false, { ok:false, copied:false });
+  });
+
+  $("#btnLoadEvents").addEventListener("click", async () => {
+    const token = getToken();
+    if (!token){
+      renderRawResult(false, { ok:false, error:"token_vazio", hint:"Cole o token e clique em Salvar token." });
+      return;
+    }
+    const limit = $("#limitSelect").value || "25";
+    setStatus("carregando eventos...", null);
+
+    try{
+      const { res, data } = await apiGet(limit);
+      const ok = !!res.ok && data && data.ok === true;
+
+      renderRawResult(ok, {
+        action: "load_events",
+        http_ok: res.ok,
+        status: res.status,
+        data_summary: ok ? { count: data.count, mode: data.mode } : undefined,
+        data
+      });
+
+      if (ok){
+        renderEventsTable(data.data || []);
+        setStatus("logado", true);
+      } else {
+        setStatus("falha", false);
+      }
+    } catch (e){
+      renderRawResult(false, { ok:false, error:"network_or_server", details: String(e?.message || e) });
+      setStatus("falha", false);
+    }
+  });
+
+  $("#btnDownloadJSON").addEventListener("click", async () => {
+    const limit = $("#limitSelect").value || "25";
+    try{
+      const { res, data } = await apiGet(limit);
+      const name = `consysencia_events_${new Date().toISOString().slice(0,19).replaceAll(":","-")}.json`;
+      downloadJSON(name, { status: res.status, data });
+    } catch (e){
+      renderRawResult(false, { ok:false, error:"download_failed", details: String(e?.message || e) });
+    }
+  });
+
+  $("#btnOpenEventsHtml").addEventListener("click", () => {
+    window.location.href = EVENTS_HTML_PATH;
+  });
+
+  $("#btnResetPayload").addEventListener("click", () => {
+    $("#testPayload").value = pretty({
+      source: "panel",
+      event_type: "debug_test",
+      affiliate_id: "0001",
+      phone: "+55DD999999999",
+      message: "Evento de teste ConSySencI.A",
+      ts: nowISO()
+    });
+    renderIngestResult(true, { ok:true, reset:true });
+  });
+
+  $("#btnSendTest").addEventListener("click", async () => {
+    const token = getToken();
+    if (!token){
+      renderIngestResult(false, { ok:false, error:"token_vazio" });
+      return;
+    }
+
+    let payload;
+    try{
+      payload = JSON.parse($("#testPayload").value || "{}");
+    } catch {
+      renderIngestResult(false, { ok:false, error:"invalid_json", hint:"O payload precisa ser JSON válido." });
+      return;
+    }
+
+    try{
+      const { res, data } = await apiPost(payload);
+      const ok = !!res.ok && data && data.ok === true;
+
+      renderIngestResult(ok, {
+        http_ok: res.ok,
+        status: res.status,
+        data
+      });
+
+      if (ok){
+        // atualiza tabela automaticamente
+        $("#btnLoadEvents").click();
+      }
+    } catch (e){
+      renderIngestResult(false, { ok:false, error:"network_or_server", details: String(e?.message || e) });
+    }
+  });
 </script>
 </body>
 </html>
