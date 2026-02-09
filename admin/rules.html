@@ -1,306 +1,307 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ConSySencI.A — Regras (gatilhos / respostas)</title>
-  <meta name="robots" content="noindex,nofollow" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ConSySencI.A — Regras</title>
+  <meta name="color-scheme" content="dark"/>
   <style>
-    :root{--bg:#05080a;--card:#071014cc;--line:#0f2a22;--txt:#e9fff6;--mut:#9bd8c2;--g:#22ff9a;--bad:#ff4d6d;--r:22px;}
+    :root{--bg:#050a08;--bg2:#07120d;--line:rgba(0,255,163,.18);--line2:rgba(0,255,163,.10);--txt:rgba(236,255,247,.92);--muted:rgba(236,255,247,.65);--muted2:rgba(236,255,247,.45);--green:#00ffa3;--red:#ff4d6d;--shadow:0 18px 50px rgba(0,0,0,.55);--r:22px;}
     *{box-sizing:border-box}
-    body{margin:0;color:var(--txt);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background: radial-gradient(1100px 650px at 20% -10%, rgba(34,255,154,.18), transparent 60%),
-                  radial-gradient(850px 600px at 110% 10%, rgba(15,226,138,.14), transparent 55%),
-                  linear-gradient(180deg,#030607,#050a0c 55%,#040809);
-      min-height:100vh;}
-    .wrap{max-width:1200px;margin:0 auto;padding:22px 16px 70px}
-    .top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
-    h1{margin:0;font-size:18px;letter-spacing:.2px}
-    .btn{appearance:none;border:1px solid rgba(34,255,154,.35);background:linear-gradient(180deg, rgba(34,255,154,.10), rgba(34,255,154,.03));
-      color:var(--txt);padding:10px 14px;border-radius:18px;cursor:pointer;font-weight:650}
-    .btn:hover{border-color:rgba(34,255,154,.6)}
-    .btn.ghost{background:transparent}
-    .btn.bad{border-color:rgba(255,77,109,.35); background:linear-gradient(180deg, rgba(255,77,109,.08), rgba(255,77,109,.02))}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px}
-    @media(min-width:980px){.grid{grid-template-columns: 460px 1fr}}
-    .card{padding:16px;border-radius:var(--r);border:1px solid rgba(34,255,154,.16);background:linear-gradient(180deg, rgba(7,16,20,.78), rgba(7,16,20,.52));}
-    .label{font-size:12px;color:var(--mut);margin:10px 0 6px}
-    .input,.sel,textarea{
-      width:100%;padding:11px 12px;border-radius:16px;border:1px solid rgba(34,255,154,.22);
-      background:rgba(0,0,0,.26);color:var(--txt);outline:none
-    }
-    .input:focus,.sel:focus,textarea:focus{border-color:rgba(34,255,154,.55)}
-    textarea{min-height:120px;resize:vertical}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .msg{margin-top:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(34,255,154,.18);background:rgba(0,0,0,.20);color:var(--mut);min-height:44px;overflow:auto}
-    table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
-    th,td{padding:10px 8px;border-bottom:1px solid rgba(34,255,154,.10);vertical-align:top}
-    th{color:var(--mut);font-weight:700;text-align:left}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
-    .badtxt{color:var(--bad)}
-    .tag{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid rgba(34,255,154,.22);background:rgba(0,0,0,.22);color:var(--mut)}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--txt);
+      background:radial-gradient(900px 520px at 20% 15%, rgba(0,255,163,.16), transparent 55%),
+      radial-gradient(700px 420px at 75% 30%, rgba(0,255,163,.10), transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg2));}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 70px}
+    .top{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:var(--r);
+      background:linear-gradient(180deg,rgba(0,255,163,.08),rgba(0,0,0,.18));box-shadow:var(--shadow);position:sticky;top:10px;z-index:10;backdrop-filter:blur(10px);}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .dot{width:12px;height:12px;border-radius:999px;background:var(--green);box-shadow:0 0 0 6px rgba(0,255,163,.12),0 0 24px rgba(0,255,163,.35)}
+    h1{margin:0;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sub{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .btn{border:1px solid var(--line);background:rgba(0,255,163,.06);color:var(--txt);padding:10px 12px;border-radius:999px;font-weight:650;font-size:13px;cursor:pointer}
+    .btn:hover{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.10)}
+    .btn.ghost{background:rgba(0,0,0,.22)}
+    .btn.danger{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.10)}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    @media(min-width:980px){.grid{grid-template-columns:1.05fr .95fr}}
+    .card{border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.10))}
+    .head{padding:16px;border-bottom:1px solid var(--line2);background:linear-gradient(180deg,rgba(0,255,163,.06),transparent)}
+    .head h2{margin:0;font-size:16px}
+    .head p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
+    .body{padding:16px}
+    label{display:block;margin-bottom:6px;color:var(--muted);font-size:12px}
+    input,select,textarea{width:100%;padding:12px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--txt);outline:none;font-size:14px}
+    textarea{min-height:170px;resize:vertical;line-height:1.35}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+    .field{flex:1 1 220px;min-width:200px}
+    .result{margin-top:12px;padding:12px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.25);white-space:pre;overflow:auto;max-height:280px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.35}
+    .ok{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.06)}
+    .err{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.08);color:rgba(255,240,245,.92)}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--line2);border-radius:16px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid rgba(0,255,163,.08);font-size:12.5px;vertical-align:top}
+    th{color:var(--muted);text-align:left;background:rgba(0,255,163,.04)}
+    .small{font-size:12px;color:var(--muted2)}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line2);background:rgba(0,0,0,.20);color:var(--muted);font-size:12px}
+    .click{cursor:pointer}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="top">
-      <h1>🧩 ConSySencI.A — Regras (gatilhos / respostas)</h1>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn ghost" onclick="location.href='index.html'">Painel</button>
-        <button class="btn" id="refreshBtn">Atualizar</button>
+      <div class="brand">
+        <div class="dot"></div>
+        <div style="min-width:0">
+          <h1>Regras</h1>
+          <p class="sub">rules_list • rules_upsert • rules_delete</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <a class="btn ghost" href="/admin/index.html">Voltar</a>
+        <a class="btn ghost" href="/admin/events.html">Eventos</a>
+        <a class="btn ghost" href="/admin/media.html">Mídia</a>
+        <button class="btn danger" id="btnLogout" type="button">Sair</button>
       </div>
     </div>
 
     <div class="grid">
-      <div class="card">
-        <div class="row" style="justify-content:space-between">
-          <b>Criar / Editar Regra</b>
-          <button class="btn bad" id="clearBtn">Limpar</button>
+      <section class="card">
+        <div class="head">
+          <h2>Lista</h2>
+          <p>Clique em uma regra para carregar no editor. Filtro busca em todo o JSON.</p>
         </div>
-
-        <div class="label">ID (auto)</div>
-        <input class="input mono" id="id" placeholder="(deixe vazio para criar novo)" />
-
-        <div class="row">
-          <div style="flex:1">
-            <div class="label">Ativa?</div>
-            <select class="sel mono" id="is_active">
-              <option value="true">true</option>
-              <option value="false">false</option>
-            </select>
-          </div>
-          <div style="flex:1">
-            <div class="label">Prioridade</div>
-            <input class="input mono" id="priority" value="100" />
-          </div>
-        </div>
-
-        <div class="label">match_kind</div>
-        <select class="sel mono" id="match_kind">
-          <option value="equals">equals</option>
-          <option value="contains">contains</option>
-          <option value="starts_with">starts_with</option>
-          <option value="regex">regex</option>
-        </select>
-
-        <div class="label">match_text (gatilho)</div>
-        <input class="input mono" id="match_text" placeholder="pix" />
-
-        <div class="label">match_group (opcional)</div>
-        <input class="input mono" id="match_group" placeholder="nome do grupo (se quiser travar por grupo)" />
-
-        <div class="label">match_sender (opcional)</div>
-        <input class="input mono" id="match_sender" placeholder="nome do sender (se quiser travar por pessoa)" />
-
-        <div class="label">reply_text (resposta)</div>
-        <textarea id="reply_text" placeholder="Texto que o bot vai enviar…"></textarea>
-
-        <div class="row" style="margin-top:12px">
-          <button class="btn" id="saveBtn">Salvar</button>
-          <button class="btn ghost" id="toggleBtn">Ativar/Desativar</button>
-          <button class="btn bad" id="deleteBtn">Excluir</button>
-        </div>
-
-        <div class="msg mono" id="out">Pronto.</div>
-
-        <div class="label">Teste rápido (simula entrada)</div>
-        <div class="row">
-          <input class="input mono" id="testMsg" placeholder="Digite uma mensagem (ex: pix)" style="flex:1">
-          <button class="btn" id="testBtn">Testar</button>
-        </div>
-        <div class="msg mono" id="testOut">—</div>
-      </div>
-
-      <div class="card">
-        <div class="row" style="justify-content:space-between;align-items:center">
-          <b>Regras ativas (por prioridade)</b>
+        <div class="body">
           <div class="row">
-            <span class="tag">buscar</span>
-            <input class="input mono" id="q" placeholder="pix / catálogo / suporte…" style="width:260px">
-            <button class="btn ghost" id="searchBtn">Buscar</button>
+            <div class="field">
+              <label>Filtro</label>
+              <input id="q" placeholder="Ex: nome, keyword, contains, status..." autocomplete="off" spellcheck="false"/>
+            </div>
+            <button class="btn" id="btnLoad" type="button">Carregar</button>
+            <button class="btn ghost" id="btnExport" type="button">Export JSON</button>
+          </div>
+
+          <div id="diag" class="result ok">{ "ok": true, "info": "Carregue para ver as regras." }</div>
+
+          <div style="margin-top:12px;overflow:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:110px">id</th>
+                  <th style="width:220px">nome</th>
+                  <th style="width:120px">enabled</th>
+                  <th>resumo</th>
+                </tr>
+              </thead>
+              <tbody id="tb">
+                <tr><td colspan="4" class="small">Sem dados ainda.</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </section>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Ativa</th>
-              <th>Pri</th>
-              <th>kind</th>
-              <th>match_text</th>
-              <th>preview</th>
-              <th style="width:160px">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
+      <section class="card">
+        <div class="head">
+          <h2>Editor</h2>
+          <p>Edite o JSON livremente e clique em <b>Salvar (Upsert)</b>. Para deletar, precisa de id.</p>
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="field">
+              <label>ID (opcional, para editar/deletar)</label>
+              <input id="id" placeholder="Ex: 123 / uuid / slug..." autocomplete="off" spellcheck="false"/>
+            </div>
+            <div class="field">
+              <label>Nome (ajuda no resumo)</label>
+              <input id="name" placeholder="Ex: Regra Boas-vindas" autocomplete="off" spellcheck="false"/>
+            </div>
+            <div class="field">
+              <label>Enabled</label>
+              <select id="enabled">
+                <option value="true" selected>true</option>
+                <option value="false">false</option>
+              </select>
+            </div>
+          </div>
+
+          <label style="margin-top:10px">JSON da regra</label>
+          <textarea id="json" spellcheck="false"></textarea>
+
+          <div class="row" style="margin-top:10px">
+            <button class="btn" id="btnSave" type="button">Salvar (Upsert)</button>
+            <button class="btn ghost" id="btnNew" type="button">Nova regra</button>
+            <button class="btn danger" id="btnDelete" type="button">Deletar</button>
+          </div>
+
+          <div id="res" class="result ok">{ "ok": true, "info": "Pronto." }</div>
+        </div>
+      </section>
     </div>
   </div>
-<script src="/admin/boot.js"></script>
-<script>
-  const LS_KEY = "CONSYSENCIA_ADMIN_TOKEN_V1";
 
-  function token(){ return (localStorage.getItem(LS_KEY)||"").trim(); }
-  function out(msg, ok=true){
-    const el = document.getElementById("out");
-    el.textContent = msg;
-    el.className = "msg mono " + (ok ? "" : "badtxt");
-  }
-  function testOut(msg, ok=true){
-    const el = document.getElementById("testOut");
-    el.textContent = msg;
-    el.className = "msg mono " + (ok ? "" : "badtxt");
-  }
+  <script src="/admin/boot.js"></script>
+  <script>
+    const FN_LIST   = "/.netlify/functions/rules_list";
+    const FN_UPSERT = "/.netlify/functions/rules_upsert";
+    const FN_DELETE = "/.netlify/functions/rules_delete";
 
-  async function api(path, body){
-    const t = token();
-    const res = await fetch(path, {
-      method:"POST",
-      headers:{
-        "content-type":"application/json",
-        "authorization": t ? `Bearer ${t}` : ""
-      },
-      body: JSON.stringify(body||{})
-    });
-    const txt = await res.text();
-    let j=null;
-    try{ j = JSON.parse(txt); } catch(e){ j = { ok:false, error:"non_json", details: txt.slice(0,900) }; }
-    return { ok: res.ok, status: res.status, j };
-  }
+    const el = (id)=>document.getElementById(id);
+    const pretty = (x)=>ADMIN.pretty(x);
+    let lastList = [];
 
-  function esc(s){ return String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-  function fillForm(it){
-    document.getElementById("id").value = it.id || "";
-    document.getElementById("is_active").value = String(it.is_active ?? true);
-    document.getElementById("priority").value = String(it.priority ?? 100);
-    document.getElementById("match_kind").value = it.match_kind || "equals";
-    document.getElementById("match_text").value = it.match_text || "";
-    document.getElementById("match_group").value = it.match_group || "";
-    document.getElementById("match_sender").value = it.match_sender || "";
-    document.getElementById("reply_text").value = it.reply_text || it.preview || "";
-  }
-
-  function clearForm(){
-    fillForm({ id:"", is_active:true, priority:100, match_kind:"equals", match_text:"", match_group:"", match_sender:"", reply_text:"" });
-  }
-
-  function getForm(){
-    const id = (document.getElementById("id").value||"").trim();
-    const is_active = (document.getElementById("is_active").value||"true") === "true";
-    const priority = parseInt(document.getElementById("priority").value||"100",10);
-    const match_kind = (document.getElementById("match_kind").value||"equals").trim();
-    const match_text = (document.getElementById("match_text").value||"").trim();
-    const match_group = (document.getElementById("match_group").value||"").trim();
-    const match_sender = (document.getElementById("match_sender").value||"").trim();
-    const reply_text = (document.getElementById("reply_text").value||"").trim();
-    return { id, is_active, priority, match_kind, match_text, match_group, match_sender, reply_text };
-  }
-
-  function render(items){
-    const tb = document.getElementById("tbody");
-    tb.innerHTML = "";
-    for(const it of (items||[])){
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="mono">${it.is_active ? "✅" : "—"}</td>
-        <td class="mono">${esc(it.priority)}</td>
-        <td class="mono">${esc(it.match_kind)}</td>
-        <td class="mono"><b>${esc(it.match_text||"")}</b></td>
-        <td class="mono" style="white-space:pre-wrap;opacity:.9">${esc(it.preview||it.reply_text||"")}</td>
-        <td>
-          <button class="btn ghost" data-act="edit">Editar</button>
-          <button class="btn bad" data-act="del">Excluir</button>
-        </td>
-      `;
-      tr.querySelector('[data-act="edit"]').onclick = async () => {
-        // carregar regra completa pelo id (se sua function listar já vier completa, funciona igual)
-        fillForm(it);
-        out("Editando: " + it.match_text);
-      };
-      tr.querySelector('[data-act="del"]').onclick = async () => { await del(it.id); };
-      tb.appendChild(tr);
+    function setBox(id, ok, obj){
+      const box = el(id);
+      box.className = "result " + (ok ? "ok":"err");
+      box.textContent = pretty(obj);
     }
-  }
 
-  async function refresh(){
-    if(!token()){ out("Sem token. Volte ao /admin/ e cole seu ADMIN_TOKEN.", false); return; }
-    out("Carregando…");
-    const q = (document.getElementById("q").value||"").trim();
-    const r = await api("/.netlify/functions/rules_list", { q });
-    if(r.ok && r.j && r.j.ok){
-      render(r.j.items || []);
-      out("OK ✅ regras=" + (r.j.items||[]).length);
-    } else {
-      out("Erro ❌ " + JSON.stringify(r.j), false);
+    function escapeHTML(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;")
+        .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
-  }
 
-  async function save(){
-    if(!token()){ out("Sem token.", false); return; }
-    const f = getForm();
-    if(!f.match_text){ out("match_text é obrigatório.", false); return; }
-    if(!f.reply_text){ out("reply_text é obrigatório.", false); return; }
-    out("Salvando…");
-    const r = await api("/.netlify/functions/rules_upsert", f);
-    if(r.ok && r.j && r.j.ok){
-      out("Salvo ✅");
-      await refresh();
-    } else {
-      out("Erro ❌ " + JSON.stringify(r.j), false);
+    function filterList(list, query){
+      const q = (query || "").trim().toLowerCase();
+      if (!q) return list;
+      return list.filter(r => JSON.stringify(r).toLowerCase().includes(q));
     }
-  }
 
-  async function del(id){
-    if(!token()){ out("Sem token.", false); return; }
-    if(!id){ out("Selecione uma regra (id).", false); return; }
-    out("Excluindo…");
-    const r = await api("/.netlify/functions/rules_delete", { id });
-    if(r.ok && r.j && r.j.ok){
-      out("Excluído ✅");
-      clearForm();
-      await refresh();
-    } else {
-      out("Erro ❌ " + JSON.stringify(r.j), false);
+    function summarize(rule){
+      const name = rule.name || rule.title || rule.rule_name || "";
+      const enabled = (rule.enabled ?? rule.is_enabled ?? true);
+      const blob = JSON.stringify(rule);
+      const res = blob.length > 180 ? blob.slice(0,180) + "…" : blob;
+      return { name, enabled, res };
     }
-  }
 
-  async function toggleActive(){
-    const f = getForm();
-    if(!f.id){ out("Selecione uma regra existente (id).", false); return; }
-    f.is_active = !f.is_active;
-    out("Atualizando…");
-    const r = await api("/.netlify/functions/rules_upsert", f);
-    if(r.ok && r.j && r.j.ok){
-      out("Atualizado ✅ is_active=" + f.is_active);
-      await refresh();
-    } else {
-      out("Erro ❌ " + JSON.stringify(r.j), false);
+    function renderTable(list){
+      const tb = el("tb");
+      tb.innerHTML = "";
+      if (!list.length){
+        tb.innerHTML = `<tr><td colspan="4" class="small">Sem regras.</td></tr>`;
+        return;
+      }
+      list.forEach((r, idx)=>{
+        const id = r.id ?? r.rule_id ?? r.key ?? "";
+        const s = summarize(r);
+        const tr = document.createElement("tr");
+        tr.className = "click";
+        tr.innerHTML = `
+          <td class="small">${escapeHTML(id || ("#" + (idx+1)))}</td>
+          <td>${escapeHTML(s.name || "(sem nome)")}</td>
+          <td><span class="tag">${escapeHTML(String(s.enabled))}</span></td>
+          <td class="small">${escapeHTML(s.res)}</td>
+        `;
+        tr.onclick = ()=>loadIntoEditor(r);
+        tb.appendChild(tr);
+      });
     }
-  }
 
-  async function testRule(){
-    if(!token()){ testOut("Sem token.", false); return; }
-    const message = (document.getElementById("testMsg").value||"").trim();
-    testOut("Testando…");
-    const r = await api("/.netlify/functions/rules_test", { message });
-    if(r.ok && r.j && r.j.ok){
-      testOut("Resposta: \n" + (r.j.reply_text || "—"));
-    } else {
-      testOut("Erro ❌ " + JSON.stringify(r.j), false);
+    function loadIntoEditor(rule){
+      el("id").value = rule.id ?? rule.rule_id ?? rule.key ?? "";
+      el("name").value = rule.name ?? rule.title ?? rule.rule_name ?? "";
+      el("enabled").value = String(rule.enabled ?? rule.is_enabled ?? true);
+      el("json").value = pretty(rule);
+      setBox("res", true, { ok:true, loaded:true });
     }
-  }
 
-  document.getElementById("refreshBtn").onclick = refresh;
-  document.getElementById("searchBtn").onclick = refresh;
-  document.getElementById("saveBtn").onclick = save;
-  document.getElementById("toggleBtn").onclick = toggleActive;
-  document.getElementById("deleteBtn").onclick = () => del((document.getElementById("id").value||"").trim());
-  document.getElementById("clearBtn").onclick = () => { clearForm(); out("Limpo."); };
-  document.getElementById("testBtn").onclick = testRule;
+    function newRule(){
+      el("id").value = "";
+      el("name").value = "";
+      el("enabled").value = "true";
+      el("json").value = pretty({
+        name: "Nova Regra",
+        enabled: true,
+        match: { contains: "ATIVAR" },
+        response: { text: "Olá! Seu acesso foi ativado ✅" }
+      });
+      setBox("res", true, { ok:true, new:true });
+    }
 
-  refresh();
-</script>
+    async function listRules(){
+      let r = await ADMIN.fetchJSON(FN_LIST + "?limit=200", { method:"GET" });
+      if (r.res.status === 405){
+        r = await ADMIN.fetchJSON(FN_LIST, { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ limit:200 }) });
+      }
+      const ok = r.res.ok && (r.data?.ok !== false);
+      const list = ADMIN.normalizeList(r.data);
+      return { ok, status:r.res.status, raw:r.data, list };
+    }
+
+    async function upsertRule(payload){
+      const r = await ADMIN.fetchJSON(FN_UPSERT, {
+        method:"POST",
+        headers:{ "content-type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+      return { ok: r.res.ok && (r.data?.ok !== false), status:r.res.status, raw:r.data };
+    }
+
+    async function deleteRule(id){
+      const r = await ADMIN.fetchJSON(FN_DELETE, {
+        method:"POST",
+        headers:{ "content-type":"application/json" },
+        body: JSON.stringify({ id })
+      });
+      return { ok: r.res.ok && (r.data?.ok !== false), status:r.res.status, raw:r.data };
+    }
+
+    el("btnLogout").onclick = ()=>ADMIN.logout();
+    el("btnNew").onclick = ()=>newRule();
+
+    el("btnLoad").onclick = async ()=>{
+      setBox("diag", true, { ok:true, loading:true });
+      const r = await listRules();
+      lastList = filterList(r.list, el("q").value);
+      renderTable(lastList);
+      setBox("diag", r.ok, { ok:r.ok, status:r.status, count:lastList.length, raw:r.raw });
+    };
+
+    el("btnExport").onclick = ()=>{
+      const blob = new Blob([pretty(lastList)], {type:"application/json;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `rules_${new Date().toISOString().slice(0,19).replaceAll(":","-")}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    };
+
+    el("btnSave").onclick = async ()=>{
+      let obj;
+      try{ obj = JSON.parse(el("json").value || "{}"); }
+      catch{ setBox("res", false, { ok:false, error:"invalid_json" }); return; }
+
+      const id = (el("id").value || "").trim();
+      const name = (el("name").value || "").trim();
+      const enabled = (el("enabled").value === "true");
+
+      // injeta campos comuns sem quebrar estruturas livres
+      if (id) obj.id = obj.id ?? id;
+      if (name) obj.name = obj.name ?? name;
+      obj.enabled = obj.enabled ?? enabled;
+
+      setBox("res", true, { ok:true, saving:true });
+      const r = await upsertRule(obj);
+      setBox("res", r.ok, { ok:r.ok, status:r.status, raw:r.raw });
+
+      // recarrega lista
+      if (r.ok) el("btnLoad").click();
+    };
+
+    el("btnDelete").onclick = async ()=>{
+      const id = (el("id").value || "").trim();
+      if (!id){ setBox("res", false, { ok:false, error:"missing_id" }); return; }
+      setBox("res", true, { ok:true, deleting:true, id });
+      const r = await deleteRule(id);
+      setBox("res", r.ok, { ok:r.ok, status:r.status, raw:r.raw });
+      if (r.ok){ newRule(); el("btnLoad").click(); }
+    };
+
+    // init
+    newRule();
+  </script>
 </body>
 </html>
