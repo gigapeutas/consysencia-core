@@ -1,193 +1,156 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>ConSySencI.A — Eventos (debug)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ConSySencI.A — Eventos Recentes (debug)</title>
+  <meta name="robots" content="noindex,nofollow" />
   <style>
-    :root{
-      --bg0:#050707; --bg1:#071413; --card:#071a18cc;
-      --line:#0e3b34; --txt:#e8fffb; --mut:#9ad4c8;
-      --neon:#2dffb8; --danger:#ff4d6d; --shadow: 0 20px 60px rgba(0,0,0,.55);
-      --radius: 18px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-    }
+    :root{--bg:#05080a;--card:#071014cc;--line:#0f2a22;--txt:#e9fff6;--mut:#9bd8c2;--g:#22ff9a;--bad:#ff4d6d;--r:22px;}
     *{box-sizing:border-box}
-    body{
-      margin:0; font-family:var(--sans); color:var(--txt);
-      background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(45,255,184,.15), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      min-height:100vh;
-    }
-    .wrap{max-width:1200px; margin:0 auto; padding:22px 16px 60px;}
-    .top{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap}
-    h1{margin:0; font-size:18px}
-    .sub{color:var(--mut); font-size:12px; margin-top:4px}
-    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-    .btn{
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(7,26,24,.9), rgba(7,26,24,.65));
-      color:var(--txt);
-      padding:10px 14px;
-      border-radius:14px;
-      cursor:pointer;
-      box-shadow: var(--shadow);
-      transition:.15s transform, .15s border-color;
-      font-weight:700;
-    }
-    .btn:hover{transform:translateY(-1px); border-color: rgba(45,255,184,.55);}
-    .btn.primary{border-color: rgba(45,255,184,.55)}
-    .card{
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(7,26,24,.82), rgba(7,26,24,.55));
-      border-radius: var(--radius);
-      padding:14px;
-      box-shadow: var(--shadow);
-      margin-top:14px;
-    }
-    input, select{
-      border:1px solid rgba(14,59,52,.95);
-      background: rgba(0,0,0,.28);
-      color:var(--txt);
-      padding:10px 12px;
-      border-radius:14px;
-      outline:none;
-      font-family:var(--mono);
-    }
-    input:focus, select:focus{border-color: rgba(45,255,184,.55)}
-    .msg{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(14,59,52,.95);
-      background: rgba(0,0,0,.22);
-      color: var(--mut);
-      font-size:12px;
-      white-space:pre-wrap;
-      overflow:auto;
-      max-height:240px;
-      font-family:var(--mono);
-    }
-    table{width:100%; border-collapse:separate; border-spacing:0 10px; margin-top:8px}
-    th{font-size:12px; color:rgba(154,212,200,.85); text-align:left; padding:0 10px}
-    td{
-      padding:10px;
-      background: rgba(0,0,0,.25);
-      border-top:1px solid rgba(14,59,52,.8);
-      border-bottom:1px solid rgba(14,59,52,.8);
-      font-family:var(--mono);
-      font-size:12px;
-      vertical-align:top;
-    }
-    tr td:first-child{border-left:1px solid rgba(14,59,52,.8); border-radius:14px 0 0 14px}
-    tr td:last-child{border-right:1px solid rgba(14,59,52,.8); border-radius:0 14px 14px 0}
-    .small{color:rgba(154,212,200,.7); font-size:11px}
-    a{color:var(--neon); text-decoration:none}
-    a:hover{text-decoration:underline}
+    body{margin:0;color:var(--txt);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background: radial-gradient(1100px 650px at 20% -10%, rgba(34,255,154,.18), transparent 60%),
+                  radial-gradient(850px 600px at 110% 10%, rgba(15,226,138,.14), transparent 55%),
+                  linear-gradient(180deg,#030607,#050a0c 55%,#040809);
+      min-height:100vh;}
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 70px}
+    .top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+    h1{margin:0;font-size:20px;letter-spacing:.2px}
+    .btn{appearance:none;border:1px solid rgba(34,255,154,.35);background:linear-gradient(180deg, rgba(34,255,154,.10), rgba(34,255,154,.03));
+      color:var(--txt);padding:10px 14px;border-radius:18px;cursor:pointer;font-weight:650}
+    .btn:hover{border-color:rgba(34,255,154,.6)}
+    .btn.ghost{background:transparent}
+    .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
+    .input{padding:10px 12px;border-radius:16px;border:1px solid rgba(34,255,154,.22);background:rgba(0,0,0,.26);color:var(--txt);outline:none}
+    .input:focus{border-color:rgba(34,255,154,.55)}
+    .card{padding:16px;border-radius:var(--r);border:1px solid rgba(34,255,154,.16);background:linear-gradient(180deg, rgba(7,16,20,.78), rgba(7,16,20,.52));}
+    .msg{margin-top:10px;padding:12px 14px;border-radius:16px;border:1px solid rgba(34,255,154,.18);background:rgba(0,0,0,.20);color:var(--mut);min-height:44px;overflow:auto}
+    table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+    th,td{padding:10px 8px;border-bottom:1px solid rgba(34,255,154,.10);vertical-align:top}
+    th{color:var(--mut);font-weight:700;text-align:left}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+    .bad{color:var(--bad)}
+    .tag{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid rgba(34,255,154,.22);background:rgba(0,0,0,.22);color:var(--mut)}
+    .wraptext{white-space:pre-wrap;word-break:break-word}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="top">
-      <div>
-        <h1>📡 ConSySencI.A — Eventos Recentes (debug)</h1>
-        <div class="sub">Lista os últimos eventos ingeridos do WhatsAuto + sinais úteis para ajustar respostas.</div>
-      </div>
-      <div class="row">
-        <button class="btn" onclick="location.href='/admin/'">Painel Regras</button>
-        <button class="btn primary" id="btnRefresh">Atualizar</button>
+      <h1>📡 ConSySencI.A — Eventos Recentes (debug)</h1>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn ghost" onclick="location.href='index.html'">Painel</button>
+        <button class="btn" id="refreshBtn">Atualizar</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="row">
-        <label class="small">Limite</label>
-        <select id="limit">
-          <option>20</option><option>50</option><option>100</option>
-        </select>
-        <label class="small">Filtro (contém)</label>
-        <input id="q" placeholder="ex: pix, catalogo, suporte, número..." style="min-width:240px"/>
-        <button class="btn" id="btnSearch">Buscar</button>
+      <div class="bar">
+        <span class="tag">limit <input class="input mono" id="limit" value="50" style="width:90px"></span>
+        <span class="tag">offset <input class="input mono" id="offset" value="0" style="width:110px"></span>
+        <button class="btn" id="prevBtn">←</button>
+        <button class="btn" id="nextBtn">→</button>
       </div>
-      <div class="msg" id="status">—</div>
-      <div style="overflow:auto">
-        <table>
-          <thead>
-            <tr>
-              <th>Quando</th>
-              <th>Sender</th>
-              <th>Grupo</th>
-              <th>Mensagem</th>
-              <th>Resposta</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
+
+      <div class="msg mono" id="out">Pronto.</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:160px">Quando</th>
+            <th style="width:120px">Phone</th>
+            <th>Sender / Grupo</th>
+            <th>Mensagem / Status</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
     </div>
   </div>
 
 <script>
-  const LS = { token: "csy_admin_token_v1" };
+  const LS_KEY = "CONSYSENCIA_ADMIN_TOKEN_V1";
 
-  function authHeaders(){
-    const t = localStorage.getItem(LS.token);
-    if(!t) return null;
-    return { "Authorization": "Bearer "+t, "Content-Type":"application/json" };
+  function token(){
+    return (localStorage.getItem(LS_KEY) || "").trim();
   }
-
-  async function apiGet(path){
-    const h = authHeaders();
-    if(!h){ alert("Você precisa fazer login no /admin/ primeiro."); location.href="/admin/"; return null; }
-    const res = await fetch(path, { method:"GET", headers:h });
+  function out(msg, ok=true){
+    const el = document.getElementById("out");
+    el.textContent = msg;
+    el.className = "msg mono " + (ok ? "" : "bad");
+  }
+  async function api(path, body){
+    const t = token();
+    const res = await fetch(path, {
+      method:"POST",
+      headers:{
+        "content-type":"application/json",
+        "authorization": t ? `Bearer ${t}` : ""
+      },
+      body: JSON.stringify(body||{})
+    });
     const txt = await res.text();
-    let j=null; try{ j=JSON.parse(txt);}catch(e){}
-    return {ok:res.ok, status:res.status, j, txt};
+    let j=null;
+    try{ j = JSON.parse(txt); } catch(e){ j = { ok:false, error:"non_json", details: txt.slice(0,800) }; }
+    return { ok: res.ok, status: res.status, j };
   }
 
-  function setStatus(x){
-    const el = document.getElementById("status");
-    el.textContent = typeof x==="string" ? x : JSON.stringify(x,null,2);
+  function escapeHtml(s){
+    return String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
-
-  function esc(s){ return (s??"").toString().replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
 
   function render(items){
     const tb = document.getElementById("tbody");
     tb.innerHTML = "";
-    for(const it of items){
+    for(const it of (items||[])){
       const tr = document.createElement("tr");
+      const when = escapeHtml(it.created_at || it.inserted_at || it.ts || "");
+      const phone = escapeHtml(it.phone || it.phone_norm || "");
+      const sender = escapeHtml(it.sender || "");
+      const group = escapeHtml(it.group_name || it.group || "");
+      const msg = escapeHtml(it.message || it.msg || "");
+      const status = escapeHtml(it.status || it.kind || it.event_kind || "");
       tr.innerHTML = `
-        <td>${esc(it.created_at || it.ts || "")}</td>
-        <td>${esc(it.sender || it.payload?.sender || "")}</td>
-        <td>${esc(it.group_name || it.payload?.group_name || "")}</td>
-        <td>${esc(it.message || it.payload?.message || "")}</td>
-        <td>${esc(it.reply || it.reply_text || it.out_reply || "")}</td>
+        <td class="mono">${when}</td>
+        <td class="mono">${phone}</td>
+        <td><div><b>${sender||"—"}</b></div><div class="mono" style="opacity:.8">${group||""}</div></td>
+        <td class="wraptext">${msg}${status ? `<div class="mono" style="opacity:.75;margin-top:6px">status: ${status}</div>` : ""}</td>
       `;
       tb.appendChild(tr);
     }
   }
 
   async function refresh(){
-    setStatus("Carregando...");
-    const limit = document.getElementById("limit").value;
-    const q = document.getElementById("q").value.trim();
-    const url = "/.netlify/functions/events_list?limit="+encodeURIComponent(limit)+"&q="+encodeURIComponent(q);
-    const out = await apiGet(url);
-    if(!out) return;
-    if(!out.ok){
-      setStatus(out.j || out.txt);
-      render([]);
+    if(!token()){
+      out("Sem token. Volte ao /admin/ e cole seu ADMIN_TOKEN.", false);
       return;
     }
-    setStatus({ok:true, count: out.j.items?.length || 0});
-    render(out.j.items || []);
+    out("Carregando…");
+    const limit = parseInt(document.getElementById("limit").value||"50",10);
+    const offset = parseInt(document.getElementById("offset").value||"0",10);
+    const r = await api("/.netlify/functions/events_list", { limit, offset });
+    if(r.ok && r.j && r.j.ok){
+      render(r.j.items || r.j.rows || []);
+      out(`OK ✅ returned=${(r.j.items||r.j.rows||[]).length}`);
+    } else {
+      out("Erro ❌ " + JSON.stringify(r.j), false);
+    }
   }
 
-  document.getElementById("btnRefresh").onclick = refresh;
-  document.getElementById("btnSearch").onclick = refresh;
+  document.getElementById("refreshBtn").onclick = refresh;
+  document.getElementById("prevBtn").onclick = () => {
+    const o = parseInt(document.getElementById("offset").value||"0",10);
+    const l = parseInt(document.getElementById("limit").value||"50",10);
+    document.getElementById("offset").value = String(Math.max(0, o - l));
+    refresh();
+  };
+  document.getElementById("nextBtn").onclick = () => {
+    const o = parseInt(document.getElementById("offset").value||"0",10);
+    const l = parseInt(document.getElementById("limit").value||"50",10);
+    document.getElementById("offset").value = String(o + l);
+    refresh();
+  };
+
   refresh();
 </script>
 </body>
