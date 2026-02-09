@@ -1,226 +1,351 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ConSySencI.A — Biblioteca de Mídia (links)</title>
-  <meta name="robots" content="noindex,nofollow" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ConSySencI.A — Mídia</title>
+  <meta name="color-scheme" content="dark"/>
   <style>
-    :root{--bg:#05080a;--card:#071014cc;--line:#0f2a22;--txt:#e9fff6;--mut:#9bd8c2;--g:#22ff9a;--bad:#ff4d6d;--r:22px;}
+    :root{--bg:#050a08;--bg2:#07120d;--line:rgba(0,255,163,.18);--line2:rgba(0,255,163,.10);--txt:rgba(236,255,247,.92);--muted:rgba(236,255,247,.65);--muted2:rgba(236,255,247,.45);--green:#00ffa3;--red:#ff4d6d;--shadow:0 18px 50px rgba(0,0,0,.55);--r:22px;}
     *{box-sizing:border-box}
-    body{margin:0;color:var(--txt);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background: radial-gradient(1100px 650px at 20% -10%, rgba(34,255,154,.18), transparent 60%),
-                  radial-gradient(850px 600px at 110% 10%, rgba(15,226,138,.14), transparent 55%),
-                  linear-gradient(180deg,#030607,#050a0c 55%,#040809);
-      min-height:100vh;}
-    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 70px}
-    .top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
-    h1{margin:0;font-size:18px;letter-spacing:.2px}
-    .btn{appearance:none;border:1px solid rgba(34,255,154,.35);background:linear-gradient(180deg, rgba(34,255,154,.10), rgba(34,255,154,.03));
-      color:var(--txt);padding:10px 14px;border-radius:18px;cursor:pointer;font-weight:650}
-    .btn:hover{border-color:rgba(34,255,154,.6)}
-    .btn.ghost{background:transparent}
-    .btn.bad{border-color:rgba(255,77,109,.35); background:linear-gradient(180deg, rgba(255,77,109,.08), rgba(255,77,109,.02))}
-    .grid{display:grid;grid-template-columns:1fr;gap:14px}
-    @media(min-width:900px){.grid{grid-template-columns: 420px 1fr}}
-    .card{padding:16px;border-radius:var(--r);border:1px solid rgba(34,255,154,.16);background:linear-gradient(180deg, rgba(7,16,20,.78), rgba(7,16,20,.52));}
-    .label{font-size:12px;color:var(--mut);margin:10px 0 6px}
-    .input,.sel,textarea{
-      width:100%;padding:11px 12px;border-radius:16px;border:1px solid rgba(34,255,154,.22);
-      background:rgba(0,0,0,.26);color:var(--txt);outline:none
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--txt);
+      background:radial-gradient(900px 520px at 20% 15%, rgba(0,255,163,.16), transparent 55%),
+      radial-gradient(700px 420px at 75% 30%, rgba(0,255,163,.10), transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg2));}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 70px}
+    .top{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:var(--r);
+      background:linear-gradient(180deg,rgba(0,255,163,.08),rgba(0,0,0,.18));box-shadow:var(--shadow);position:sticky;top:10px;z-index:10;backdrop-filter:blur(10px);}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .dot{width:12px;height:12px;border-radius:999px;background:var(--green);box-shadow:0 0 0 6px rgba(0,255,163,.12),0 0 24px rgba(0,255,163,.35)}
+    h1{margin:0;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sub{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .btn{border:1px solid var(--line);background:rgba(0,255,163,.06);color:var(--txt);padding:10px 12px;border-radius:999px;font-weight:650;font-size:13px;cursor:pointer}
+    .btn:hover{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.10)}
+    .btn.ghost{background:rgba(0,0,0,.22)}
+    .btn.danger{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.10)}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    @media(min-width:980px){.grid{grid-template-columns:1.05fr .95fr}}
+    .card{border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.10))}
+    .head{padding:16px;border-bottom:1px solid var(--line2);background:linear-gradient(180deg,rgba(0,255,163,.06),transparent)}
+    .head h2{margin:0;font-size:16px}
+    .head p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
+    .body{padding:16px}
+    label{display:block;margin-bottom:6px;color:var(--muted);font-size:12px}
+    input,select,textarea{width:100%;padding:12px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--txt);outline:none;font-size:14px}
+    textarea{min-height:140px;resize:vertical;line-height:1.35}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+    .field{flex:1 1 220px;min-width:200px}
+    .result{margin-top:12px;padding:12px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.25);white-space:pre;overflow:auto;max-height:280px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.35}
+    .ok{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.06)}
+    .err{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.08);color:rgba(255,240,245,.92)}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--line2);border-radius:16px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid rgba(0,255,163,.08);font-size:12.5px;vertical-align:top}
+    th{color:var(--muted);text-align:left;background:rgba(0,255,163,.04)}
+    .small{font-size:12px;color:var(--muted2)}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line2);background:rgba(0,0,0,.20);color:var(--muted);font-size:12px}
+    .click{cursor:pointer}
+    .preview{
+      margin-top:10px;border:1px solid var(--line2);border-radius:18px;overflow:hidden;background:rgba(0,0,0,.20)
     }
-    .input:focus,.sel:focus,textarea:focus{border-color:rgba(34,255,154,.55)}
-    textarea{min-height:90px;resize:vertical}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .msg{margin-top:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(34,255,154,.18);background:rgba(0,0,0,.20);color:var(--mut);min-height:44px;overflow:auto}
-    table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
-    th,td{padding:10px 8px;border-bottom:1px solid rgba(34,255,154,.10);vertical-align:top}
-    th{color:var(--mut);font-weight:700;text-align:left}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
-    .badtxt{color:var(--bad)}
-    a{color:var(--g)}
+    .preview img{display:block;width:100%;height:auto}
+    .preview .meta{padding:10px;color:var(--muted);font-size:12px;border-top:1px solid rgba(0,255,163,.08)}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="top">
-      <h1>🖼️ ConSySencI.A — Biblioteca de Mídia (links)</h1>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn ghost" onclick="location.href='index.html'">Painel</button>
-        <button class="btn" id="refreshBtn">Atualizar</button>
+      <div class="brand">
+        <div class="dot"></div>
+        <div style="min-width:0">
+          <h1>Mídia</h1>
+          <p class="sub">media_list • media_upsert • media_delete</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <a class="btn ghost" href="/admin/index.html">Voltar</a>
+        <a class="btn ghost" href="/admin/events.html">Eventos</a>
+        <a class="btn ghost" href="/admin/rules.html">Regras</a>
+        <button class="btn danger" id="btnLogout" type="button">Sair</button>
       </div>
     </div>
 
     <div class="grid">
-      <div class="card">
-        <div class="row" style="justify-content:space-between">
-          <b>Cadastrar / Editar</b>
-          <button class="btn bad" id="clearBtn">Limpar</button>
+      <section class="card">
+        <div class="head">
+          <h2>Catálogo</h2>
+          <p>Busca no JSON completo. Clique em um item para carregar no editor.</p>
         </div>
-
-        <div class="label">Alias (ex: catalogo_geral)</div>
-        <input class="input mono" id="alias" placeholder="catalogo_geral" />
-
-        <div class="label">Tipo</div>
-        <select class="sel mono" id="kind">
-          <option value="image">image</option>
-          <option value="link">link</option>
-          <option value="file">file</option>
-        </select>
-
-        <div class="label">URL pública</div>
-        <input class="input mono" id="url" placeholder="https://..." />
-
-        <div class="label">Descrição (opcional)</div>
-        <textarea id="description" placeholder="ex: Catálogo geral — versão fevereiro"></textarea>
-
-        <div class="row" style="margin-top:12px">
-          <button class="btn" id="saveBtn">Salvar</button>
-          <button class="btn ghost" id="deleteBtn">Excluir</button>
-        </div>
-
-        <div class="msg mono" id="out">Pronto.</div>
-      </div>
-
-      <div class="card">
-        <div class="row" style="justify-content:space-between;align-items:center">
-          <b>Itens</b>
+        <div class="body">
           <div class="row">
-            <input class="input mono" id="q" placeholder="buscar…" style="width:220px">
-            <button class="btn ghost" id="searchBtn">Buscar</button>
+            <div class="field">
+              <label>Filtro</label>
+              <input id="q" placeholder="Ex: nome, tag, categoria, url..." autocomplete="off" spellcheck="false"/>
+            </div>
+            <button class="btn" id="btnLoad" type="button">Carregar</button>
+            <button class="btn ghost" id="btnExport" type="button">Export JSON</button>
+          </div>
+
+          <div id="diag" class="result ok">{ "ok": true, "info": "Carregue para ver a mídia." }</div>
+
+          <div style="margin-top:12px;overflow:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:110px">id</th>
+                  <th style="width:220px">nome</th>
+                  <th style="width:150px">tipo</th>
+                  <th>url</th>
+                </tr>
+              </thead>
+              <tbody id="tb">
+                <tr><td colspan="4" class="small">Sem dados ainda.</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </section>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Alias</th>
-              <th>Tipo</th>
-              <th>URL</th>
-              <th>Descrição</th>
-              <th style="width:120px">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
+      <section class="card">
+        <div class="head">
+          <h2>Editor</h2>
+          <p>Cadastre/edite itens (imagem/link). O sistema envia o objeto completo para <b>media_upsert</b>.</p>
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="field">
+              <label>ID (opcional)</label>
+              <input id="id" placeholder="uuid / id / slug..." autocomplete="off" spellcheck="false"/>
+            </div>
+            <div class="field">
+              <label>Nome</label>
+              <input id="name" placeholder="Ex: Banner Nível 1" autocomplete="off" spellcheck="false"/>
+            </div>
+            <div class="field">
+              <label>Tipo</label>
+              <select id="type">
+                <option value="image" selected>image</option>
+                <option value="link">link</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <div class="field">
+              <label>URL</label>
+              <input id="url" placeholder="https://..." autocomplete="off" spellcheck="false"/>
+            </div>
+            <div class="field">
+              <label>Tags (opcional)</label>
+              <input id="tags" placeholder="ex: nivel1, hero, oficial" autocomplete="off" spellcheck="false"/>
+            </div>
+          </div>
+
+          <label style="margin-top:10px">JSON do item</label>
+          <textarea id="json" spellcheck="false"></textarea>
+
+          <div class="row" style="margin-top:10px">
+            <button class="btn" id="btnSave" type="button">Salvar (Upsert)</button>
+            <button class="btn ghost" id="btnNew" type="button">Novo item</button>
+            <button class="btn danger" id="btnDelete" type="button">Deletar</button>
+          </div>
+
+          <div id="res" class="result ok">{ "ok": true, "info": "Pronto." }</div>
+
+          <div class="preview" id="preview" style="display:none">
+            <img id="img" alt="preview"/>
+            <div class="meta" id="meta"></div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
-<script src="/admin/boot.js"></script>
-<script>
-  const LS_KEY = "CONSYSENCIA_ADMIN_TOKEN_V1";
 
-  function token(){ return (localStorage.getItem(LS_KEY)||"").trim(); }
-  function out(msg, ok=true){
-    const el = document.getElementById("out");
-    el.textContent = msg;
-    el.className = "msg mono " + (ok ? "" : "badtxt");
-  }
+  <script src="/admin/boot.js"></script>
+  <script>
+    const FN_LIST   = "/.netlify/functions/media_list";
+    const FN_UPSERT = "/.netlify/functions/media_upsert";
+    const FN_DELETE = "/.netlify/functions/media_delete";
 
-  async function api(path, body){
-    const t = token();
-    const res = await fetch(path, {
-      method:"POST",
-      headers:{
-        "content-type":"application/json",
-        "authorization": t ? `Bearer ${t}` : ""
-      },
-      body: JSON.stringify(body||{})
-    });
-    const txt = await res.text();
-    let j=null;
-    try{ j = JSON.parse(txt); } catch(e){ j = { ok:false, error:"non_json", details: txt.slice(0,900) }; }
-    return { ok: res.ok, status: res.status, j };
-  }
+    const el = (id)=>document.getElementById(id);
+    const pretty = (x)=>ADMIN.pretty(x);
+    let lastList = [];
 
-  function esc(s){ return String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-  function fillForm(it){
-    document.getElementById("alias").value = it.alias || "";
-    document.getElementById("kind").value = it.kind || "image";
-    document.getElementById("url").value = it.url || "";
-    document.getElementById("description").value = it.description || "";
-  }
-
-  function clearForm(){
-    fillForm({ alias:"", kind:"image", url:"", description:"" });
-  }
-
-  function render(items){
-    const tb = document.getElementById("tbody");
-    tb.innerHTML = "";
-    for(const it of (items||[])){
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="mono"><b>${esc(it.alias)}</b></td>
-        <td class="mono">${esc(it.kind)}</td>
-        <td class="mono">${it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noreferrer">abrir</a>` : ""}</td>
-        <td>${esc(it.description||"")}</td>
-        <td>
-          <button class="btn ghost" data-act="edit">Editar</button>
-          <button class="btn bad" data-act="del">Excluir</button>
-        </td>
-      `;
-      tr.querySelector('[data-act="edit"]').onclick = () => { fillForm(it); out("Editando: " + it.alias); };
-      tr.querySelector('[data-act="del"]').onclick = async () => { await del(it.alias); };
-      tb.appendChild(tr);
+    function setBox(id, ok, obj){
+      const box = el(id);
+      box.className = "result " + (ok ? "ok":"err");
+      box.textContent = pretty(obj);
     }
-  }
 
-  async function refresh(){
-    if(!token()){ out("Sem token. Volte ao /admin/ e cole seu ADMIN_TOKEN.", false); return; }
-    out("Carregando…");
-    const q = (document.getElementById("q").value||"").trim();
-    const r = await api("/.netlify/functions/media_list", { q });
-    if(r.ok && r.j && r.j.ok){
-      render(r.j.items || []);
-      out("OK ✅ itens=" + (r.j.items||[]).length);
-    } else {
-      out("Erro ❌ " + JSON.stringify(r.j), false);
+    function escapeHTML(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;")
+        .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
-  }
 
-  async function save(){
-    if(!token()){ out("Sem token.", false); return; }
-    const alias = (document.getElementById("alias").value||"").trim();
-    const kind  = (document.getElementById("kind").value||"image").trim();
-    const url   = (document.getElementById("url").value||"").trim();
-    const description = (document.getElementById("description").value||"").trim();
-
-    if(!alias){ out("Alias é obrigatório.", false); return; }
-    if(!url){ out("URL é obrigatória.", false); return; }
-
-    out("Salvando…");
-    const r = await api("/.netlify/functions/media_upsert", { alias, kind, url, description });
-    if(r.ok && r.j && r.j.ok){
-      out("Salvo ✅");
-      await refresh();
-    } else {
-      out("Erro ❌ " + JSON.stringify(r.j), false);
+    function filterList(list, query){
+      const q = (query || "").trim().toLowerCase();
+      if (!q) return list;
+      return list.filter(r => JSON.stringify(r).toLowerCase().includes(q));
     }
-  }
 
-  async function del(alias){
-    if(!token()){ out("Sem token.", false); return; }
-    if(!alias){ out("Selecione um item ou digite um alias.", false); return; }
-    out("Excluindo…");
-    const r = await api("/.netlify/functions/media_delete", { alias });
-    if(r.ok && r.j && r.j.ok){
-      out("Excluído ✅ " + alias);
-      clearForm();
-      await refresh();
-    } else {
-      out("Erro ❌ " + JSON.stringify(r.j), false);
+    function summarize(item){
+      const id = item.id ?? item.key ?? item.media_id ?? "";
+      const name = item.name ?? item.title ?? item.filename ?? "(sem nome)";
+      const type = item.type ?? item.kind ?? "image";
+      const url = item.url ?? item.href ?? item.src ?? "";
+      return { id, name, type, url };
     }
-  }
 
-  document.getElementById("refreshBtn").onclick = refresh;
-  document.getElementById("searchBtn").onclick = refresh;
-  document.getElementById("saveBtn").onclick = save;
-  document.getElementById("deleteBtn").onclick = () => del((document.getElementById("alias").value||"").trim());
-  document.getElementById("clearBtn").onclick = () => { clearForm(); out("Limpo."); };
+    function renderTable(list){
+      const tb = el("tb");
+      tb.innerHTML = "";
+      if (!list.length){
+        tb.innerHTML = `<tr><td colspan="4" class="small">Sem mídia.</td></tr>`;
+        return;
+      }
+      list.forEach((m, idx)=>{
+        const s = summarize(m);
+        const tr = document.createElement("tr");
+        tr.className = "click";
+        tr.innerHTML = `
+          <td class="small">${escapeHTML(s.id || ("#" + (idx+1)))}</td>
+          <td>${escapeHTML(s.name)}</td>
+          <td><span class="tag">${escapeHTML(String(s.type))}</span></td>
+          <td class="small">${escapeHTML(s.url)}</td>
+        `;
+        tr.onclick = ()=>loadIntoEditor(m);
+        tb.appendChild(tr);
+      });
+    }
 
-  refresh();
-</script>
+    function updatePreview(){
+      const type = el("type").value;
+      const url = (el("url").value || "").trim();
+      const box = el("preview");
+      if (type !== "image" || !url){
+        box.style.display = "none";
+        return;
+      }
+      el("img").src = url;
+      el("meta").textContent = url;
+      box.style.display = "block";
+    }
+
+    function loadIntoEditor(item){
+      const s = summarize(item);
+      el("id").value = s.id;
+      el("name").value = s.name === "(sem nome)" ? "" : s.name;
+      el("type").value = String(s.type || "image");
+      el("url").value = s.url;
+      el("tags").value = (item.tags && Array.isArray(item.tags)) ? item.tags.join(",") : (item.tags || "");
+      el("json").value = pretty(item);
+      updatePreview();
+      setBox("res", true, { ok:true, loaded:true });
+    }
+
+    function newItem(){
+      el("id").value = "";
+      el("name").value = "";
+      el("type").value = "image";
+      el("url").value = "";
+      el("tags").value = "";
+      el("json").value = pretty({
+        name: "Novo item",
+        type: "image",
+        url: "",
+        tags: ["oficial"]
+      });
+      updatePreview();
+      setBox("res", true, { ok:true, new:true });
+    }
+
+    async function listMedia(){
+      let r = await ADMIN.fetchJSON(FN_LIST + "?limit=200", { method:"GET" });
+      if (r.res.status === 405){
+        r = await ADMIN.fetchJSON(FN_LIST, { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ limit:200 }) });
+      }
+      const ok = r.res.ok && (r.data?.ok !== false);
+      const list = ADMIN.normalizeList(r.data);
+      return { ok, status:r.res.status, raw:r.data, list };
+    }
+
+    async function upsertMedia(payload){
+      const r = await ADMIN.fetchJSON(FN_UPSERT, {
+        method:"POST",
+        headers:{ "content-type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+      return { ok: r.res.ok && (r.data?.ok !== false), status:r.res.status, raw:r.data };
+    }
+
+    async function deleteMedia(id){
+      const r = await ADMIN.fetchJSON(FN_DELETE, {
+        method:"POST",
+        headers:{ "content-type":"application/json" },
+        body: JSON.stringify({ id })
+      });
+      return { ok: r.res.ok && (r.data?.ok !== false), status:r.res.status, raw:r.data };
+    }
+
+    el("btnLogout").onclick = ()=>ADMIN.logout();
+    el("btnNew").onclick = ()=>newItem();
+
+    el("type").onchange = updatePreview;
+    el("url").oninput = updatePreview;
+
+    el("btnLoad").onclick = async ()=>{
+      setBox("diag", true, { ok:true, loading:true });
+      const r = await listMedia();
+      lastList = filterList(r.list, el("q").value);
+      renderTable(lastList);
+      setBox("diag", r.ok, { ok:r.ok, status:r.status, count:lastList.length, raw:r.raw });
+    };
+
+    el("btnExport").onclick = ()=>{
+      const blob = new Blob([pretty(lastList)], {type:"application/json;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `media_${new Date().toISOString().slice(0,19).replaceAll(":","-")}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    };
+
+    el("btnSave").onclick = async ()=>{
+      let obj;
+      try{ obj = JSON.parse(el("json").value || "{}"); }
+      catch{ setBox("res", false, { ok:false, error:"invalid_json" }); return; }
+
+      const id = (el("id").value || "").trim();
+      const name = (el("name").value || "").trim();
+      const type = el("type").value;
+      const url = (el("url").value || "").trim();
+      const tags = (el("tags").value || "").split(",").map(s=>s.trim()).filter(Boolean);
+
+      if (id) obj.id = obj.id ?? id;
+      if (name) obj.name = obj.name ?? name;
+      obj.type = obj.type ?? type;
+      obj.url = obj.url ?? url;
+      if (tags.length) obj.tags = obj.tags ?? tags;
+
+      setBox("res", true, { ok:true, saving:true });
+      const r = await upsertMedia(obj);
+      setBox("res", r.ok, { ok:r.ok, status:r.status, raw:r.raw });
+      if (r.ok){ updatePreview(); el("btnLoad").click(); }
+    };
+
+    el("btnDelete").onclick = async ()=>{
+      const id = (el("id").value || "").trim();
+      if (!id){ setBox("res", false, { ok:false, error:"missing_id" }); return; }
+      setBox("res", true, { ok:true, deleting:true, id });
+      const r = await deleteMedia(id);
+      setBox("res", r.ok, { ok:r.ok, status:r.status, raw:r.raw });
+      if (r.ok){ newItem(); el("btnLoad").click(); }
+    };
+
+    // init
+    newItem();
+  </script>
 </body>
 </html>
