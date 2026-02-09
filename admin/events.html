@@ -1,157 +1,236 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ConSySencI.A — Eventos Recentes (debug)</title>
-  <meta name="robots" content="noindex,nofollow" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ConSySencI.A — Eventos</title>
+  <meta name="color-scheme" content="dark"/>
   <style>
-    :root{--bg:#05080a;--card:#071014cc;--line:#0f2a22;--txt:#e9fff6;--mut:#9bd8c2;--g:#22ff9a;--bad:#ff4d6d;--r:22px;}
+    :root{--bg:#050a08;--bg2:#07120d;--line:rgba(0,255,163,.18);--line2:rgba(0,255,163,.10);--txt:rgba(236,255,247,.92);--muted:rgba(236,255,247,.65);--muted2:rgba(236,255,247,.45);--green:#00ffa3;--red:#ff4d6d;--shadow:0 18px 50px rgba(0,0,0,.55);--r:22px;}
     *{box-sizing:border-box}
-    body{margin:0;color:var(--txt);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background: radial-gradient(1100px 650px at 20% -10%, rgba(34,255,154,.18), transparent 60%),
-                  radial-gradient(850px 600px at 110% 10%, rgba(15,226,138,.14), transparent 55%),
-                  linear-gradient(180deg,#030607,#050a0c 55%,#040809);
-      min-height:100vh;}
-    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 70px}
-    .top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
-    h1{margin:0;font-size:20px;letter-spacing:.2px}
-    .btn{appearance:none;border:1px solid rgba(34,255,154,.35);background:linear-gradient(180deg, rgba(34,255,154,.10), rgba(34,255,154,.03));
-      color:var(--txt);padding:10px 14px;border-radius:18px;cursor:pointer;font-weight:650}
-    .btn:hover{border-color:rgba(34,255,154,.6)}
-    .btn.ghost{background:transparent}
-    .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}
-    .input{padding:10px 12px;border-radius:16px;border:1px solid rgba(34,255,154,.22);background:rgba(0,0,0,.26);color:var(--txt);outline:none}
-    .input:focus{border-color:rgba(34,255,154,.55)}
-    .card{padding:16px;border-radius:var(--r);border:1px solid rgba(34,255,154,.16);background:linear-gradient(180deg, rgba(7,16,20,.78), rgba(7,16,20,.52));}
-    .msg{margin-top:10px;padding:12px 14px;border-radius:16px;border:1px solid rgba(34,255,154,.18);background:rgba(0,0,0,.20);color:var(--mut);min-height:44px;overflow:auto}
-    table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
-    th,td{padding:10px 8px;border-bottom:1px solid rgba(34,255,154,.10);vertical-align:top}
-    th{color:var(--mut);font-weight:700;text-align:left}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
-    .bad{color:var(--bad)}
-    .tag{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid rgba(34,255,154,.22);background:rgba(0,0,0,.22);color:var(--mut)}
-    .wraptext{white-space:pre-wrap;word-break:break-word}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--txt);
+      background:radial-gradient(900px 520px at 20% 15%, rgba(0,255,163,.16), transparent 55%),
+      radial-gradient(700px 420px at 75% 30%, rgba(0,255,163,.10), transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg2));}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 70px}
+    .top{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:var(--r);
+      background:linear-gradient(180deg,rgba(0,255,163,.08),rgba(0,0,0,.18));box-shadow:var(--shadow);position:sticky;top:10px;z-index:10;backdrop-filter:blur(10px);}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .dot{width:12px;height:12px;border-radius:999px;background:var(--green);box-shadow:0 0 0 6px rgba(0,255,163,.12),0 0 24px rgba(0,255,163,.35)}
+    h1{margin:0;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sub{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .btn{border:1px solid var(--line);background:rgba(0,255,163,.06);color:var(--txt);padding:10px 12px;border-radius:999px;font-weight:650;font-size:13px;cursor:pointer}
+    .btn:hover{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.10)}
+    .btn.ghost{background:rgba(0,0,0,.22)}
+    .btn.danger{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.10)}
+    .card{margin-top:14px;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.10))}
+    .head{padding:16px;border-bottom:1px solid var(--line2);background:linear-gradient(180deg,rgba(0,255,163,.06),transparent)}
+    .head h2{margin:0;font-size:16px}
+    .head p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
+    .body{padding:16px}
+    label{display:block;margin-bottom:6px;color:var(--muted);font-size:12px}
+    input,select{width:100%;padding:12px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--txt);outline:none;font-size:14px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+    .field{flex:1 1 240px;min-width:200px}
+    .result{margin-top:12px;padding:12px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.25);white-space:pre;overflow:auto;max-height:280px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.35}
+    .ok{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.06)}
+    .err{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.08);color:rgba(255,240,245,.92)}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--line2);border-radius:16px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid rgba(0,255,163,.08);font-size:12.5px;vertical-align:top}
+    th{color:var(--muted);text-align:left;background:rgba(0,255,163,.04)}
+    .small{font-size:12px;color:var(--muted2)}
+    .click{cursor:pointer}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--line2);background:rgba(0,0,0,.20);color:var(--muted);font-size:12px}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="top">
-      <h1>📡 ConSySencI.A — Eventos Recentes (debug)</h1>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn ghost" onclick="location.href='index.html'">Painel</button>
-        <button class="btn" id="refreshBtn">Atualizar</button>
+      <div class="brand">
+        <div class="dot"></div>
+        <div style="min-width:0">
+          <h1>Eventos</h1>
+          <p class="sub">Leitura do fluxo (events_list) + export + detalhe</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <a class="btn ghost" href="/admin/index.html">Voltar</a>
+        <a class="btn ghost" href="/admin/rules.html">Regras</a>
+        <a class="btn ghost" href="/admin/media.html">Mídia</a>
+        <button class="btn danger" id="btnLogout" type="button">Sair</button>
       </div>
     </div>
 
-    <div class="card">
-      <div class="bar">
-        <span class="tag">limit <input class="input mono" id="limit" value="50" style="width:90px"></span>
-        <span class="tag">offset <input class="input mono" id="offset" value="0" style="width:110px"></span>
-        <button class="btn" id="prevBtn">←</button>
-        <button class="btn" id="nextBtn">→</button>
+    <section class="card">
+      <div class="head">
+        <h2>Consulta</h2>
+        <p>Se sua function aceitar apenas POST internamente, este painel tenta GET primeiro e cai para POST automaticamente.</p>
       </div>
+      <div class="body">
+        <div class="row">
+          <div class="field">
+            <label>Quantidade</label>
+            <select id="limit">
+              <option value="10">10</option>
+              <option value="25" selected>25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Filtro (texto)</label>
+            <input id="q" placeholder="Ex: affiliate_id, phone, status, event_type..." autocomplete="off" spellcheck="false"/>
+          </div>
+          <button class="btn" id="btnLoad" type="button">Carregar</button>
+          <button class="btn ghost" id="btnExport" type="button">Export JSON</button>
+        </div>
 
-      <div class="msg mono" id="out">Pronto.</div>
+        <div id="diag" class="result ok">{ "ok": true, "info": "Carregue para ver os eventos." }</div>
 
-      <table>
-        <thead>
-          <tr>
-            <th style="width:160px">Quando</th>
-            <th style="width:120px">Phone</th>
-            <th>Sender / Grupo</th>
-            <th>Mensagem / Status</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
+        <div style="margin-top:12px;overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:150px">created_at</th>
+                <th style="width:120px">type</th>
+                <th style="width:140px">affiliate</th>
+                <th style="width:140px">phone</th>
+                <th>resumo</th>
+              </tr>
+            </thead>
+            <tbody id="tb">
+              <tr><td colspan="5" class="small">Sem dados ainda.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <div class="head"><h2>Detalhe do evento</h2><p>Clique numa linha para ver o JSON bruto.</p></div>
+          <div class="body">
+            <div class="pill">Selecionado: <span id="sel">nenhum</span></div>
+            <div id="detail" class="result ok" style="margin-top:10px">{}</div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
-<script src="/admin/boot.js"></script>
-<script>
-  const LS_KEY = "CONSYSENCIA_ADMIN_TOKEN_V1";
 
-  function token(){
-    return (localStorage.getItem(LS_KEY) || "").trim();
-  }
-  function out(msg, ok=true){
-    const el = document.getElementById("out");
-    el.textContent = msg;
-    el.className = "msg mono " + (ok ? "" : "bad");
-  }
-  async function api(path, body){
-    const t = token();
-    const res = await fetch(path, {
-      method:"POST",
-      headers:{
-        "content-type":"application/json",
-        "authorization": t ? `Bearer ${t}` : ""
-      },
-      body: JSON.stringify(body||{})
-    });
-    const txt = await res.text();
-    let j=null;
-    try{ j = JSON.parse(txt); } catch(e){ j = { ok:false, error:"non_json", details: txt.slice(0,800) }; }
-    return { ok: res.ok, status: res.status, j };
-  }
+  <script src="/admin/boot.js"></script>
+  <script>
+    const FN_LIST = "/.netlify/functions/events_list";
 
-  function escapeHtml(s){
-    return String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
+    const el = (id) => document.getElementById(id);
+    const pretty = (x)=>ADMIN.pretty(x);
 
-  function render(items){
-    const tb = document.getElementById("tbody");
-    tb.innerHTML = "";
-    for(const it of (items||[])){
-      const tr = document.createElement("tr");
-      const when = escapeHtml(it.created_at || it.inserted_at || it.ts || "");
-      const phone = escapeHtml(it.phone || it.phone_norm || "");
-      const sender = escapeHtml(it.sender || "");
-      const group = escapeHtml(it.group_name || it.group || "");
-      const msg = escapeHtml(it.message || it.msg || "");
-      const status = escapeHtml(it.status || it.kind || it.event_kind || "");
-      tr.innerHTML = `
-        <td class="mono">${when}</td>
-        <td class="mono">${phone}</td>
-        <td><div><b>${sender||"—"}</b></div><div class="mono" style="opacity:.8">${group||""}</div></td>
-        <td class="wraptext">${msg}${status ? `<div class="mono" style="opacity:.75;margin-top:6px">status: ${status}</div>` : ""}</td>
-      `;
-      tb.appendChild(tr);
+    let lastList = [];
+
+    function setBox(ok, obj){
+      const box = el("diag");
+      box.className = "result " + (ok ? "ok":"err");
+      box.textContent = pretty(obj);
     }
-  }
 
-  async function refresh(){
-    if(!token()){
-      out("Sem token. Volte ao /admin/ e cole seu ADMIN_TOKEN.", false);
-      return;
+    function escapeHTML(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;")
+        .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
-    out("Carregando…");
-    const limit = parseInt(document.getElementById("limit").value||"50",10);
-    const offset = parseInt(document.getElementById("offset").value||"0",10);
-    const r = await api("/.netlify/functions/events_list", { limit, offset });
-    if(r.ok && r.j && r.j.ok){
-      render(r.j.items || r.j.rows || []);
-      out(`OK ✅ returned=${(r.j.items||r.j.rows||[]).length}`);
-    } else {
-      out("Erro ❌ " + JSON.stringify(r.j), false);
+
+    function summarizePayload(p){
+      if (!p) return "";
+      if (typeof p !== "object") return String(p).slice(0, 180);
+      const preferred = ["message","text","status","from","to","event_type","type","url","name","caption"];
+      const pick = {};
+      for (const k of preferred) if (k in p) pick[k] = p[k];
+      const s = JSON.stringify(Object.keys(pick).length ? pick : p);
+      return s.length > 200 ? s.slice(0,200)+"…" : s;
     }
-  }
 
-  document.getElementById("refreshBtn").onclick = refresh;
-  document.getElementById("prevBtn").onclick = () => {
-    const o = parseInt(document.getElementById("offset").value||"0",10);
-    const l = parseInt(document.getElementById("limit").value||"50",10);
-    document.getElementById("offset").value = String(Math.max(0, o - l));
-    refresh();
-  };
-  document.getElementById("nextBtn").onclick = () => {
-    const o = parseInt(document.getElementById("offset").value||"0",10);
-    const l = parseInt(document.getElementById("limit").value||"50",10);
-    document.getElementById("offset").value = String(o + l);
-    refresh();
-  };
+    function filterList(list, query){
+      const q = (query || "").trim().toLowerCase();
+      if (!q) return list;
+      return list.filter((row)=>{
+        const blob = JSON.stringify(row).toLowerCase();
+        return blob.includes(q);
+      });
+    }
 
-  refresh();
-</script>
+    function renderTable(list){
+      const tb = el("tb");
+      tb.innerHTML = "";
+      if (!Array.isArray(list) || list.length === 0){
+        tb.innerHTML = `<tr><td colspan="5" class="small">Sem eventos.</td></tr>`;
+        return;
+      }
+      list.forEach((row, idx)=>{
+        const created = (row.created_at||row.ts||row.time||"").toString().slice(0,19).replace("T"," ");
+        const type = row.event_type || row.type || row.kind || "";
+        const aff = row.affiliate_id || row.aff || row.afiliado || "";
+        const phone = row.phone || row.telefone || row.from || "";
+        const payload = row.payload || row;
+        const resume = summarizePayload(payload);
+
+        const tr = document.createElement("tr");
+        tr.className = "click";
+        tr.innerHTML = `
+          <td class="small">${escapeHTML(created)}</td>
+          <td>${escapeHTML(type)}</td>
+          <td>${escapeHTML(aff)}</td>
+          <td>${escapeHTML(phone)}</td>
+          <td class="small">${escapeHTML(resume)}</td>
+        `;
+        tr.onclick = ()=>{
+          el("sel").textContent = `#${idx+1}`;
+          el("detail").textContent = pretty(row);
+        };
+        tb.appendChild(tr);
+      });
+    }
+
+    async function listEvents(){
+      const limit = el("limit").value || "25";
+
+      // tenta GET primeiro
+      let r = await ADMIN.fetchJSON(`${FN_LIST}?limit=${encodeURIComponent(limit)}`, { method:"GET" });
+
+      // fallback para POST se a função for "POST only"
+      if (r.res && r.res.status === 405){
+        r = await ADMIN.fetchJSON(FN_LIST, {
+          method:"POST",
+          headers:{ "content-type":"application/json" },
+          body: JSON.stringify({ limit: Number(limit) })
+        });
+      }
+
+      const ok = r.res.ok && (r.data?.ok !== false);
+      const list = ADMIN.normalizeList(r.data);
+
+      return { ok, status: r.res.status, data: r.data, list };
+    }
+
+    document.getElementById("btnLogout").onclick = ()=>ADMIN.logout();
+
+    document.getElementById("btnLoad").onclick = async ()=>{
+      setBox(true, { ok:true, loading:true });
+      const r = await listEvents();
+      lastList = filterList(r.list, el("q").value);
+      renderTable(lastList);
+      setBox(r.ok, { ok:r.ok, status:r.status, count:lastList.length, raw:r.data });
+    };
+
+    document.getElementById("btnExport").onclick = ()=>{
+      const blob = new Blob([pretty(lastList)], {type:"application/json;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `events_${new Date().toISOString().slice(0,19).replaceAll(":","-")}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    };
+  </script>
 </body>
 </html>
