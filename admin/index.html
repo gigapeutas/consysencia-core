@@ -1,128 +1,86 @@
 <!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>ConSySencI.A — Painel</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ConSySencI.A — Painel (Admin)</title>
+  <meta name="robots" content="noindex,nofollow" />
   <style>
     :root{
-      --bg0:#050707; --bg1:#071413; --card:#071a18cc;
-      --line:#0e3b34; --txt:#e8fffb; --mut:#9ad4c8;
-      --neon:#2dffb8; --neon2:#00d08a; --danger:#ff4d6d; --warn:#ffd166;
-      --shadow: 0 20px 60px rgba(0,0,0,.55);
-      --radius: 18px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --bg:#05080a; --card:#071014cc; --line:#0f2a22; --txt:#e9fff6; --mut:#9bd8c2;
+      --g:#22ff9a; --g2:#0fe28a; --bad:#ff4d6d; --warn:#ffd166;
+      --shadow: 0 24px 80px rgba(0,0,0,.55);
+      --r:22px;
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font-family:var(--sans); color:var(--txt);
+      margin:0; color:var(--txt); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(45,255,184,.15), transparent 60%),
-        radial-gradient(900px 600px at 80% 30%, rgba(0,208,138,.10), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
+        radial-gradient(1200px 700px at 20% -10%, rgba(34,255,154,.18), transparent 60%),
+        radial-gradient(900px 600px at 110% 10%, rgba(15,226,138,.14), transparent 55%),
+        radial-gradient(800px 600px at 50% 120%, rgba(34,255,154,.08), transparent 60%),
+        linear-gradient(180deg, #030607, #050a0c 55%, #040809);
       min-height:100vh;
     }
-    .wrap{max-width:980px; margin:0 auto; padding:26px 16px 60px;}
+    .wrap{max-width:980px;margin:0 auto;padding:22px 18px 70px}
     .top{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:10px 2px 18px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+      padding:18px 18px 10px;
     }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-    }
-    .dot{width:14px; height:14px; border-radius:50%; background:var(--neon); box-shadow:0 0 18px rgba(45,255,184,.55);}
-    h1{margin:0; font-size:18px; letter-spacing:.3px}
-    .sub{margin:2px 0 0; color:var(--mut); font-size:12px}
-    .actions{display:flex; gap:10px; align-items:center}
+    .brand{display:flex; gap:12px; align-items:center}
+    .dot{width:12px;height:12px;border-radius:999px;background:var(--g); box-shadow: 0 0 24px rgba(34,255,154,.55)}
+    h1{margin:0;font-size:28px;letter-spacing:.2px}
+    .sub{margin-top:4px;color:var(--mut);font-size:13px;line-height:1.35}
     .btn{
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(7,26,24,.9), rgba(7,26,24,.65));
-      color:var(--txt);
-      padding:10px 14px;
-      border-radius:14px;
-      cursor:pointer;
-      box-shadow: var(--shadow);
-      transition:.15s transform, .15s border-color;
-      font-weight:700;
+      appearance:none;border:1px solid rgba(34,255,154,.35); background:linear-gradient(180deg, rgba(34,255,154,.10), rgba(34,255,154,.03));
+      color:var(--txt); padding:12px 16px; border-radius:18px; cursor:pointer;
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+      font-weight:650; letter-spacing:.2px;
     }
-    .btn:hover{transform:translateY(-1px); border-color: rgba(45,255,184,.55);}
-    .btn.primary{border-color: rgba(45,255,184,.55)}
-    .btn.danger{border-color: rgba(255,77,109,.55)}
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:14px;
-      margin-top:14px;
-    }
-    @media(max-width:720px){ .grid{grid-template-columns:1fr;} }
-    .card{
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(7,26,24,.82), rgba(7,26,24,.55));
-      border-radius: var(--radius);
-      padding:16px;
+    .btn:hover{border-color:rgba(34,255,154,.6)}
+    .btn.ghost{background:transparent}
+    .btn.bad{border-color:rgba(255,77,109,.35); background:linear-gradient(180deg, rgba(255,77,109,.08), rgba(255,77,109,.02))}
+    .panel{
+      margin-top:10px; padding:18px; border-radius:var(--r); border:1px solid rgba(34,255,154,.18);
+      background: linear-gradient(180deg, rgba(7,16,20,.78), rgba(7,16,20,.52));
       box-shadow: var(--shadow);
     }
-    .card h2{margin:0 0 6px; font-size:16px}
-    .card p{margin:0 0 12px; color:var(--mut); font-size:13px; line-height:1.35}
-    .mono{font-family:var(--mono); color:rgba(232,255,251,.92)}
-    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
     .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      border:1px solid var(--line);
-      padding:8px 10px; border-radius:999px;
-      color:var(--mut); font-size:12px;
-      background: rgba(0,0,0,.25);
+      display:inline-flex; gap:10px; align-items:center;
+      padding:10px 14px; border-radius:999px; border:1px solid rgba(34,255,154,.22);
+      background: rgba(0,0,0,.22); color:var(--mut); font-size:13px;
     }
-    .ok{color: var(--neon)}
-    .bad{color: var(--danger)}
-    .hint{color:rgba(154,212,200,.85); font-size:12px; margin-top:10px}
-    .footer{margin-top:14px; color:rgba(154,212,200,.7); font-size:12px}
-    a{color:var(--neon); text-decoration:none}
-    a:hover{text-decoration:underline}
-
-    /* modal */
-    .modal{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.58);
-      display:none;
-      align-items:center; justify-content:center;
-      padding:18px;
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
+    .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; margin-top:14px}
+    .card{
+      grid-column: span 12;
+      padding:16px; border-radius:var(--r); border:1px solid rgba(34,255,154,.16);
+      background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.08));
     }
-    .modal.on{display:flex}
-    .box{
-      width:min(520px, 100%);
-      border:1px solid rgba(45,255,184,.25);
-      border-radius: 20px;
-      background: linear-gradient(180deg, rgba(5,10,10,.95), rgba(7,26,24,.88));
-      box-shadow: 0 30px 100px rgba(0,0,0,.65);
-      padding:16px;
+    .card h2{margin:0 0 6px;font-size:18px}
+    .desc{color:var(--mut); font-size:13px; line-height:1.4}
+    .card .actions{margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .small{font-size:12px;color:rgba(155,216,194,.9)}
+    .msg{
+      margin-top:12px; padding:12px 14px; border-radius:16px; border:1px solid rgba(34,255,154,.18);
+      background: rgba(0,0,0,.20); color:var(--mut); min-height:44px;
+      overflow:auto;
     }
-    .box h3{margin:0 0 8px; font-size:16px}
-    .box p{margin:0 0 14px; color:var(--mut); font-size:13px}
-    .field{display:flex; flex-direction:column; gap:6px; margin-bottom:10px}
-    label{font-size:12px; color:rgba(154,212,200,.85)}
-    input{
-      width:100%;
-      border:1px solid rgba(14,59,52,.95);
+    .danger{color:var(--bad)}
+    .ok{color:var(--g)}
+    .input{
+      width: min(520px, 100%);
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(34,255,154,.22);
       background: rgba(0,0,0,.28);
       color:var(--txt);
-      padding:12px 12px;
-      border-radius:14px;
       outline:none;
-      font-family:var(--mono);
     }
-    input:focus{border-color: rgba(45,255,184,.55)}
-    .msg{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(14,59,52,.95);
-      background: rgba(0,0,0,.22);
-      color: var(--mut);
-      font-size:12px;
-      min-height: 38px;
-      white-space:pre-wrap;
+    .input:focus{border-color:rgba(34,255,154,.55)}
+    @media (min-width: 860px){
+      .card.span6{grid-column: span 6;}
     }
   </style>
 </head>
@@ -133,167 +91,131 @@
         <div class="dot"></div>
         <div>
           <h1>ConSySencI.A — Painel</h1>
-          <div class="sub">Gestão rápida de eventos, mídia e automações (Admin)</div>
+          <div class="sub">Gestão rápida de events, mídia e automações (Admin)</div>
         </div>
       </div>
-      <div class="actions">
-        <button class="btn" id="btnLogin">Login</button>
-        <button class="btn danger" id="btnLogout" style="display:none">Sair</button>
-      </div>
+      <button class="btn bad" id="logoutBtn">Sair</button>
     </div>
 
-    <div class="card">
+    <div class="panel">
+      <div class="row" style="margin-bottom:10px">
+        <span class="pill">Status: <b id="statusTxt" class="ok">deslogado</b></span>
+        <span class="pill">Token: <span id="tokenPreview" class="mono">—</span></span>
+      </div>
+
       <div class="row">
-        <div class="pill">Status: <span id="st" class="mono">—</span></div>
-        <div class="pill">Token: <span id="tok" class="mono">—</span></div>
-        <button class="btn primary" id="btnPing">Testar acesso</button>
+        <input class="input mono" id="tokenInput" placeholder="Cole aqui o ADMIN_TOKEN (Netlify env var)" />
+        <button class="btn" id="saveBtn">Salvar token</button>
+        <button class="btn ghost" id="testBtn">Testar acesso</button>
       </div>
-      <div class="hint">
-        Se aparecer <span class="mono">unauthorized</span> ao abrir functions direto no navegador, é normal.
-        O painel chama com token e resolve.
+
+      <div class="small" style="margin-top:10px">
+        Dica: se aparecer <span class="mono">unauthorized</span> ao abrir functions direto no navegador, é normal.
+        O painel chama com token e resolve. <b>Se continuar “unauthorized” aqui</b>, falta criar a env var <span class="mono">ADMIN_TOKEN</span> no Netlify e redeploy.
       </div>
-      <div class="msg" id="out">Pronto.</div>
+
+      <div class="msg mono" id="out">Pronto.</div>
     </div>
 
     <div class="grid">
-      <div class="card">
+      <div class="card span6">
         <h2>Eventos (WhatsAuto → Observatório)</h2>
-        <p>Veja o fluxo real de mensagens, status, filtros e sinais para debugging e melhoria de respostas.</p>
-        <div class="row">
-          <button class="btn primary" onclick="openPage('events.html')">Abrir events.html</button>
+        <div class="desc">Fluxo real de mensagens, status, filtros e sinais para debugging e melhoria de respostas.</div>
+        <div class="actions">
+          <button class="btn" onclick="openPage('events.html')">Abrir events.html</button>
           <span class="pill">URL: <span class="mono">/admin/events.html</span></span>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card span6">
         <h2>Mídia (imagens / links / catálogo)</h2>
-        <p>Cadastre imagens, aliases e links para respostas. Base para enviar “imagem por link” no WhatsAuto.</p>
-        <div class="row">
-          <button class="btn primary" onclick="openPage('media.html')">Abrir media.html</button>
+        <div class="desc">Cadastre aliases e links para respostas. Base para enviar “imagem por link” no WhatsAuto.</div>
+        <div class="actions">
+          <button class="btn" onclick="openPage('media.html')">Abrir media.html</button>
           <span class="pill">URL: <span class="mono">/admin/media.html</span></span>
         </div>
       </div>
-    </div>
 
-    <div class="card">
-  <div class="title">Regras (gatilhos / respostas)</div>
-  <div class="desc">
-    Crie, edite, desative e exclua regras. Ajuste prioridade, tipo de match e teste respostas.
-  </div>
-
-  <a class="btn" href="/admin/rules.html">Abrir rules.html</a>
-
-  <div class="mini">URL: <span class="mono">/admin/rules.html</span></div>
-    </div>
-    
-
-    <div class="footer">
-      Dica: para abrir direto, use <span class="mono">/admin/</span> (este index) e depois navegue.
-    </div>
-  </div>
-
-  <!-- Modal Login -->
-  <div class="modal" id="modal">
-    <div class="box">
-      <h3>Login do Painel</h3>
-      <p>Autenticação do Admin (não é o token do WhatsAuto). Esse login gera um token de sessão.</p>
-      <div class="field">
-        <label>Login</label>
-        <input id="login" placeholder="Consysencia" autocomplete="username"/>
+      <div class="card span12">
+        <h2>Regras (gatilhos / respostas)</h2>
+        <div class="desc">Crie, edite, desative e exclua regras. Ajuste prioridade, tipo de match e teste respostas.</div>
+        <div class="actions">
+          <button class="btn" onclick="openPage('rules.html')">Abrir rules.html</button>
+          <span class="pill">URL: <span class="mono">/admin/rules.html</span></span>
+        </div>
       </div>
-      <div class="field">
-        <label>Senha</label>
-        <input id="senha" type="password" placeholder="••••••" autocomplete="current-password"/>
-      </div>
-      <div class="row">
-        <button class="btn primary" id="doLogin">Entrar</button>
-        <button class="btn" id="close">Cancelar</button>
-      </div>
-      <div class="msg" id="msg">—</div>
     </div>
   </div>
 
 <script>
-  const LS = {
-    token: "csy_admin_token_v1"
-  };
+  const LS_KEY = "CONSYSENCIA_ADMIN_TOKEN_V1";
 
-  function setStatus(text, ok){
-    const st = document.getElementById("st");
-    st.textContent = text;
-    st.className = "mono " + (ok ? "ok" : "bad");
-  }
-  function setTokenLabel(){
-    const t = localStorage.getItem(LS.token);
-    document.getElementById("tok").textContent = t ? (t.slice(0,12)+"…") : "—";
-    document.getElementById("btnLogout").style.display = t ? "" : "none";
-    document.getElementById("btnLogin").style.display = t ? "none" : "";
-  }
-  function log(x){
-    document.getElementById("out").textContent = typeof x === "string" ? x : JSON.stringify(x, null, 2);
+  function maskToken(t){
+    if(!t) return "—";
+    const s = String(t);
+    if(s.length <= 8) return s;
+    return s.slice(0,4) + "…" + s.slice(-4);
   }
 
-  async function api(path, {method="GET", body=null}={}){
-    const token = localStorage.getItem(LS.token);
-    const headers = { "Content-Type": "application/json" };
-    if(token) headers["Authorization"] = "Bearer " + token;
-    const res = await fetch(path, { method, headers, body: body ? JSON.stringify(body) : null });
+  function setStatus(){
+    const t = localStorage.getItem(LS_KEY) || "";
+    document.getElementById("tokenPreview").textContent = maskToken(t);
+    document.getElementById("statusTxt").textContent = t ? "logado" : "deslogado";
+    document.getElementById("statusTxt").className = t ? "ok" : "danger";
+    document.getElementById("tokenInput").value = t;
+  }
+
+  function out(msg, ok=true){
+    const el = document.getElementById("out");
+    el.textContent = msg;
+    el.className = "msg mono " + (ok ? "" : "danger");
+  }
+
+  function openPage(p){ location.href = p; }
+
+  async function api(path, body){
+    const token = (localStorage.getItem(LS_KEY) || "").trim();
+    const res = await fetch(path, {
+      method: "POST",
+      headers: {
+        "content-type":"application/json",
+        "authorization": token ? `Bearer ${token}` : ""
+      },
+      body: JSON.stringify(body || {})
+    });
     const txt = await res.text();
-    let j = null;
-    try{ j = JSON.parse(txt); }catch(e){}
-    return { ok: res.ok, status: res.status, text: txt, j };
+    let j=null;
+    try{ j = JSON.parse(txt); } catch(e){ j = { ok:false, error:"non_json", details: txt.slice(0,500) }; }
+    return { ok: res.ok, status: res.status, j };
   }
 
-  function openPage(file){
-    const token = localStorage.getItem(LS.token);
-    if(!token){
-      alert("Faça login primeiro.");
-      return;
+  async function testAccess(){
+    out("Testando…");
+    const r = await api("/.netlify/functions/events_list", { limit: 5, offset: 0 });
+    if(r.ok && r.j && r.j.ok){
+      out("Acesso OK ✅ Functions respondendo. Você está pronto para operar o painel.");
+    } else {
+      out("Falha ❌ " + JSON.stringify(r.j), false);
     }
-    location.href = file;
   }
 
-  // Modal controls
-  const modal = document.getElementById("modal");
-  const msg = document.getElementById("msg");
-  function openModal(){ modal.classList.add("on"); msg.textContent="—"; }
-  function closeModal(){ modal.classList.remove("on"); }
-  document.getElementById("btnLogin").onclick = openModal;
-  document.getElementById("close").onclick = closeModal;
-
-  document.getElementById("btnLogout").onclick = () => {
-    localStorage.removeItem(LS.token);
-    setTokenLabel();
-    setStatus("deslogado", false);
-    log("Token removido.");
+  document.getElementById("saveBtn").onclick = () => {
+    const t = (document.getElementById("tokenInput").value || "").trim();
+    if(!t){ localStorage.removeItem(LS_KEY); setStatus(); out("Token removido."); return; }
+    localStorage.setItem(LS_KEY, t);
+    setStatus();
+    out("Token salvo. Agora clique em “Testar acesso”.");
   };
 
-  document.getElementById("doLogin").onclick = async () => {
-    msg.textContent = "Autenticando...";
-    const login = document.getElementById("login").value.trim();
-    const senha = document.getElementById("senha").value.trim();
-    const out = await api("/.netlify/functions/admin_login", { method:"POST", body:{ login, senha }});
-    if(!out.ok || !out.j || !out.j.ok){
-      msg.textContent = (out.j && out.j.error) ? out.j.error : ("Falha: "+out.status);
-      return;
-    }
-    localStorage.setItem(LS.token, out.j.token);
-    setTokenLabel();
-    setStatus("logado", true);
-    log(out.j);
-    closeModal();
+  document.getElementById("testBtn").onclick = testAccess;
+
+  document.getElementById("logoutBtn").onclick = () => {
+    localStorage.removeItem(LS_KEY);
+    setStatus();
+    out("Deslogado.");
   };
 
-  document.getElementById("btnPing").onclick = async () => {
-    const out = await api("/.netlify/functions/media_list", { method:"GET" });
-    if(out.ok) setStatus("ok", true); else setStatus("falha", false);
-    log(out.j || out.text);
-  };
-
-  // init
-  setTokenLabel();
-  const has = !!localStorage.getItem(LS.token);
-  setStatus(has ? "logado" : "deslogado", has);
+  setStatus();
 </script>
 </body>
 </html>
