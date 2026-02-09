@@ -1,90 +1,85 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ConSySencI.A — Painel (Admin)</title>
-  <meta name="color-scheme" content="dark" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ConSySencI.A — Admin</title>
+  <meta name="color-scheme" content="dark"/>
   <style>
     :root{
       --bg:#050a08; --bg2:#07120d;
-      --line:rgba(0,255,163,.18);
-      --line2:rgba(0,255,163,.10);
-      --txt:rgba(236,255,247,.92);
-      --muted:rgba(236,255,247,.65);
-      --muted2:rgba(236,255,247,.45);
-      --green:#00ffa3;
-      --red:#ff4d6d;
-      --shadow:0 18px 50px rgba(0,0,0,.55);
-      --radius:22px;
+      --line:rgba(0,255,163,.18); --line2:rgba(0,255,163,.10);
+      --txt:rgba(236,255,247,.92); --muted:rgba(236,255,247,.65); --muted2:rgba(236,255,247,.45);
+      --green:#00ffa3; --red:#ff4d6d; --shadow:0 18px 50px rgba(0,0,0,.55);
+      --r:22px;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--txt);
       background:
-        radial-gradient(900px 500px at 20% 15%, rgba(0,255,163,.16), transparent 55%),
-        radial-gradient(700px 400px at 75% 30%, rgba(0,255,163,.10), transparent 60%),
+        radial-gradient(900px 520px at 20% 15%, rgba(0,255,163,.16), transparent 55%),
+        radial-gradient(700px 420px at 75% 30%, rgba(0,255,163,.10), transparent 60%),
         linear-gradient(180deg,var(--bg),var(--bg2));
-      color:var(--txt);
     }
-    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 60px}
+    .wrap{max-width:1020px;margin:0 auto;padding:18px 14px 70px}
     .top{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:14px 14px;border:1px solid var(--line);
-      border-radius:var(--radius);
+      display:flex;justify-content:space-between;gap:12px;align-items:center;
+      padding:14px 14px;border:1px solid var(--line);border-radius:var(--r);
       background:linear-gradient(180deg,rgba(0,255,163,.08),rgba(0,0,0,.18));
       box-shadow:var(--shadow); position:sticky; top:10px; z-index:10; backdrop-filter:blur(10px);
     }
-    .brand{display:flex;gap:12px;align-items:center;min-width:0}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
     .dot{width:12px;height:12px;border-radius:999px;background:var(--green);
       box-shadow:0 0 0 6px rgba(0,255,163,.12),0 0 24px rgba(0,255,163,.35)}
     h1{margin:0;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .sub{margin:4px 0 0;color:var(--muted);font-size:13px}
-    .pill{padding:9px 12px;border-radius:999px;border:1px solid var(--line);
-      background:rgba(0,0,0,.25);color:var(--muted);font-size:12px}
+    .right{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .pill{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.22);color:var(--muted);font-size:12px}
     .pill b{color:var(--green)}
     .btn{
-      border:1px solid var(--line);
-      background:rgba(0,255,163,.06);
-      color:var(--txt);
-      padding:10px 12px;border-radius:999px;
-      font-weight:650;font-size:13px;cursor:pointer;
+      border:1px solid var(--line);background:rgba(0,255,163,.06);color:var(--txt);
+      padding:10px 12px;border-radius:999px;font-weight:650;font-size:13px;cursor:pointer;
     }
     .btn:hover{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.10)}
-    .btn.ghost{background:rgba(0,0,0,.20)}
+    .btn.ghost{background:rgba(0,0,0,.22)}
     .btn.danger{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.10)}
     .grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
-    @media(min-width:920px){.grid{grid-template-columns:1.1fr .9fr}}
-    .card{border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;
-      background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.10))}
+    @media(min-width:920px){.grid{grid-template-columns:1.05fr .95fr}}
+    .card{
+      border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;
+      background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.10));
+    }
     .head{padding:16px;border-bottom:1px solid var(--line2);background:linear-gradient(180deg,rgba(0,255,163,.06),transparent)}
     .head h2{margin:0;font-size:16px}
     .head p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
     .body{padding:16px}
-    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-    input,select,textarea{
-      width:100%;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--txt);
-      padding:12px;border-radius:16px;outline:none;font-size:14px
+    label{display:block;margin-bottom:6px;color:var(--muted);font-size:12px}
+    input{
+      width:100%;padding:12px;border-radius:16px;border:1px solid var(--line);
+      background:rgba(0,0,0,.35);color:var(--txt);outline:none;font-size:14px
     }
-    textarea{min-height:120px;resize:vertical;line-height:1.35}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
-    .field{flex:1 1 240px;min-width:220px}
-    .hint{
-      margin-top:10px;padding:12px;border:1px dashed rgba(0,255,163,.25);
-      border-radius:16px;background:rgba(0,255,163,.04);color:var(--muted);font-size:12.5px
+    .field{flex:1 1 260px;min-width:220px}
+    .nav{
+      display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px
     }
+    @media(min-width:920px){.nav{grid-template-columns:repeat(3,1fr)}}
+    .tile{
+      display:block;text-decoration:none;color:var(--txt);
+      padding:14px;border:1px solid var(--line);border-radius:18px;
+      background:rgba(0,255,163,.05);
+      transition:.15s ease;
+    }
+    .tile:hover{transform:translateY(-1px);border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.08)}
+    .tile b{color:var(--green)}
+    .tile small{display:block;color:var(--muted);margin-top:4px;line-height:1.35}
     .result{
       margin-top:12px;padding:12px;border-radius:16px;border:1px solid var(--line);
-      background:rgba(0,0,0,.25);
-      white-space:pre;overflow:auto;max-height:360px;
-      font-family: ui-monospace, Menlo, Consolas, monospace; font-size:12.5px; line-height:1.35
+      background:rgba(0,0,0,.25);white-space:pre;overflow:auto;max-height:280px;
+      font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.35;
     }
     .ok{border-color:rgba(0,255,163,.35);background:rgba(0,255,163,.06)}
     .err{border-color:rgba(255,77,109,.35);background:rgba(255,77,109,.08);color:rgba(255,240,245,.92)}
-    table{width:100%;border-collapse:collapse;border:1px solid var(--line2);border-radius:16px;overflow:hidden}
-    th,td{padding:10px;border-bottom:1px solid rgba(0,255,163,.08);font-size:12.5px;vertical-align:top}
-    th{color:var(--muted);text-align:left;background:rgba(0,255,163,.04)}
     .small{font-size:12px;color:var(--muted2)}
   </style>
 </head>
@@ -94,12 +89,12 @@
       <div class="brand">
         <div class="dot"></div>
         <div style="min-width:0">
-          <h1>ConSySencI.A — Painel</h1>
-          <p class="sub">Observatório Admin (GET leitura / POST ingest)</p>
+          <h1>ConSySencI.A — Admin</h1>
+          <p class="sub">Centro operacional (token único • navegação • diagnóstico)</p>
         </div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <div class="pill">Status: <b id="uiStatus">deslogado</b></div>
+      <div class="right">
+        <div class="pill">Status: <b id="status">deslogado</b></div>
         <button class="btn ghost" id="btnLogout" type="button">Sair</button>
       </div>
     </div>
@@ -107,274 +102,105 @@
     <div class="grid">
       <section class="card">
         <div class="head">
-          <h2>Token & Diagnóstico</h2>
-          <p>O painel envia <b>GET</b> com Bearer para leitura e <b>POST</b> para gravar eventos.</p>
+          <h2>Acesso</h2>
+          <p>Salve o token uma vez. Todas as páginas (events/rules/media) reaproveitam automaticamente.</p>
         </div>
         <div class="body">
           <div class="row">
             <div class="field">
               <label>Token Admin</label>
-              <input id="token" placeholder="Cole o token (ex: ACORDADO)" autocomplete="off" spellcheck="false"/>
+              <input id="token" placeholder="Cole aqui o token ADMIN_TOKEN" autocomplete="off" spellcheck="false"/>
+              <div class="small" style="margin-top:8px">Dica: se aparecer <b>unauthorized</b>, token ≠ ADMIN_TOKEN do Netlify (precisa redeploy).</div>
             </div>
             <button class="btn" id="btnSave" type="button">Salvar token</button>
             <button class="btn" id="btnTest" type="button">Testar acesso</button>
-            <button class="btn ghost" id="btnCopy" type="button">Copiar resultado</button>
           </div>
 
-          <div class="hint">
-            Se der <b>404</b>: Netlify não publicou a function (ver pasta de functions e deploy).<br>
-            Se der <b>405</b>: método errado (sua function não aceita GET/POST).<br>
-            Se der <b>401</b>: token/env secret divergente.<br>
-            Se der <b>supabase_read_failed</b>: tabela ou RLS/URL/KEY.
+          <div id="diag" class="result ok">{ "ok": true, "info": "Pronto. Cole o token e clique em Salvar." }</div>
+
+          <div class="nav" style="margin-top:14px">
+            <a class="tile" href="/admin/events.html"><b>Eventos</b><small>Lista, filtro, detalhe e export do fluxo do observatório.</small></a>
+            <a class="tile" href="/admin/rules.html"><b>Regras</b><small>Criar/editar, ativar/desativar e deletar regras do motor.</small></a>
+            <a class="tile" href="/admin/media.html"><b>Mídia</b><small>Catálogo de imagens/links, upsert, delete e preview.</small></a>
           </div>
 
-          <div id="diag" class="result ok">{ "ok": true, "info": "Pronto. Salve o token e teste." }</div>
-
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-            <button class="btn ghost" id="btnOpenFn" type="button">Abrir function</button>
-            <button class="btn ghost" id="btnOpenEvents" type="button">Abrir events.html</button>
+          <div class="small" style="margin-top:12px">
+            Se você veio de outra página, após salvar o token você volta automaticamente para ela.
           </div>
         </div>
       </section>
 
       <section class="card">
         <div class="head">
-          <h2>Eventos</h2>
-          <p>Lista eventos do Supabase e permite enviar um evento teste.</p>
+          <h2>Diagnóstico rápido</h2>
+          <p>Usa a Function <b>observatory</b> para validar token + Supabase sem abrir endpoints manualmente.</p>
         </div>
         <div class="body">
-          <div class="row">
-            <div class="field">
-              <label>Quantidade</label>
-              <select id="limit">
-                <option value="10">10</option>
-                <option value="25" selected>25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-            </div>
-            <button class="btn" id="btnLoad" type="button">Carregar eventos</button>
-            <button class="btn ghost" id="btnDownload" type="button">Baixar JSON</button>
-          </div>
-
-          <label style="margin-top:12px">Payload de teste (POST)</label>
-          <textarea id="payload" spellcheck="false"></textarea>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-            <button class="btn" id="btnPost" type="button">Enviar evento teste</button>
-            <button class="btn ghost" id="btnReset" type="button">Reset payload</button>
-          </div>
-          <div id="postRes" class="result ok">{ "ok": true, "info": "POST pronto." }</div>
-
-          <div style="margin-top:12px;overflow:auto">
-            <table>
-              <thead>
-                <tr>
-                  <th style="width:130px">created_at</th>
-                  <th style="width:110px">source</th>
-                  <th style="width:130px">event_type</th>
-                  <th style="width:120px">affiliate</th>
-                  <th>payload</th>
-                </tr>
-              </thead>
-              <tbody id="tb">
-                <tr><td colspan="5" class="small">Carregue eventos para visualizar.</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="small">Endpoint testado: <code>/.netlify/functions/observatory?limit=5</code></div>
+          <div class="small" style="margin-top:8px">Se sua tabela não se chama <b>core_events</b>, o teste pode falhar com <b>supabase_read_failed</b> — aí ajustamos 1 linha na function.</div>
         </div>
       </section>
     </div>
   </div>
 
 <script>
-  const FN = "/.netlify/functions/observatory";
-  const EVENTS = "/admin/events.html";
   const LS = "ADMIN_TOKEN";
-
+  const FN = "/.netlify/functions/observatory";
   const el = (id) => document.getElementById(id);
 
-  function setStatus(v, ok=null){
-    el("uiStatus").textContent = v;
-    el("uiStatus").style.color = ok===true ? "var(--green)" : ok===false ? "var(--red)" : "rgba(236,255,247,.85)";
-  }
-
-  function pretty(x){
-    try { return JSON.stringify(x, null, 2); } catch { return String(x); }
-  }
-
-  function setBox(boxId, ok, obj){
-    const box = el(boxId);
+  function pretty(x){ try{return JSON.stringify(x,null,2)}catch{return String(x)} }
+  function setBox(ok, obj){
+    const box = el("diag");
     box.className = "result " + (ok ? "ok" : "err");
-    box.textContent = typeof obj === "string" ? obj : pretty(obj);
+    box.textContent = pretty(obj);
   }
-
-  function token(){
-    return (localStorage.getItem(LS) || el("token").value || "").trim();
+  function setStatus(s, ok=null){
+    el("status").textContent = s;
+    el("status").style.color = ok===true ? "var(--green)" : ok===false ? "var(--red)" : "rgba(236,255,247,.85)";
   }
+  function getToken(){ return (localStorage.getItem(LS) || el("token").value || "").trim(); }
 
-  async function apiGet(limit){
-    const res = await fetch(`${FN}?limit=${encodeURIComponent(limit)}`, {
-      method:"GET",
-      headers:{ "Authorization": `Bearer ${token()}`, "Accept":"application/json" }
-    });
-    const t = await res.text();
-    let data; try{ data = t ? JSON.parse(t) : {}; } catch { data = t; }
-    return { res, data };
-  }
-
-  async function apiPost(payload){
-    const res = await fetch(FN, {
-      method:"POST",
-      headers:{
-        "Authorization": `Bearer ${token()}`,
-        "content-type":"application/json",
-        "Accept":"application/json"
-      },
-      body: JSON.stringify(payload)
-    });
-    const t = await res.text();
-    let data; try{ data = t ? JSON.parse(t) : {}; } catch { data = t; }
-    return { res, data };
-  }
-
-  function escapeHTML(s){
-    return String(s ?? "")
-      .replaceAll("&","&amp;").replaceAll("<","&lt;")
-      .replaceAll(">","&gt;").replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-
-  function renderTable(list){
-    const tb = el("tb");
-    tb.innerHTML = "";
-    if (!Array.isArray(list) || !list.length){
-      tb.innerHTML = `<tr><td colspan="5" class="small">Sem eventos retornados.</td></tr>`;
-      return;
-    }
-    for (const r of list){
-      const created = (r.created_at||"").toString().slice(0,19).replace("T"," ");
-      const payload = pretty(r.payload || {}).slice(0,200);
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="small">${escapeHTML(created)}</td>
-        <td>${escapeHTML(r.source)}</td>
-        <td>${escapeHTML(r.event_type)}</td>
-        <td>${escapeHTML(r.affiliate_id)}</td>
-        <td class="small">${escapeHTML(payload)}${payload.length>=200?"…":""}</td>
-      `;
-      tb.appendChild(tr);
-    }
-  }
-
-  async function copy(text){
-    try{ await navigator.clipboard.writeText(text); return true; }
-    catch{
-      const ta = document.createElement("textarea");
-      ta.value = text; document.body.appendChild(ta);
-      ta.select(); const ok = document.execCommand("copy");
-      ta.remove(); return ok;
-    }
-  }
-
-  function resetPayload(){
-    el("payload").value = pretty({
-      source:"panel",
-      event_type:"debug_test",
-      affiliate_id:"0001",
-      phone:"+55DD999999999",
-      message:"Evento teste ConSySencI.A",
-      ts: new Date().toISOString()
-    });
-  }
-  resetPayload();
-
-  // INIT
+  // init
   const saved = localStorage.getItem(LS) || "";
   el("token").value = saved;
   setStatus(saved ? "logado" : "deslogado", saved ? true : null);
-
-  // HANDLERS
-  el("btnSave").onclick = () => {
-    const t = (el("token").value||"").trim();
-    localStorage.setItem(LS, t);
-    setStatus(t ? "logado" : "deslogado", t ? true : null);
-    setBox("diag", true, { ok:true, saved:!!t });
-  };
 
   el("btnLogout").onclick = () => {
     localStorage.removeItem(LS);
     el("token").value = "";
     setStatus("deslogado", null);
-    setBox("diag", true, { ok:true, logout:true });
+    setBox(true, { ok:true, logout:true });
   };
 
-  el("btnOpenFn").onclick = () => window.open(FN, "_blank");
-  el("btnOpenEvents").onclick = () => (window.location.href = EVENTS);
+  el("btnSave").onclick = () => {
+    const t = (el("token").value || "").trim();
+    localStorage.setItem(LS, t);
+    setStatus(t ? "logado" : "deslogado", t ? true : null);
+    setBox(true, { ok:true, saved:!!t });
 
-  el("btnCopy").onclick = async () => {
-    const ok = await copy(el("diag").textContent || "");
-    setBox("diag", ok, ok ? { ok:true, copied:true } : { ok:false, copied:false });
+    // volta para a página original (next)
+    const next = new URLSearchParams(location.search).get("next");
+    if (next) location.href = next;
   };
 
   el("btnTest").onclick = async () => {
-    if (!token()){ setBox("diag", false, { ok:false, error:"token_vazio" }); setStatus("falha", false); return; }
+    const token = getToken();
+    if (!token){
+      setBox(false, { ok:false, error:"token_vazio" });
+      setStatus("falha", false);
+      return;
+    }
     setStatus("testando...", null);
     try{
-      const { res, data } = await apiGet(el("limit").value || "25");
+      const res = await fetch(FN + "?limit=5", { headers:{ Authorization:`Bearer ${token}`, Accept:"application/json" }});
+      const text = await res.text();
+      let data; try{ data = text ? JSON.parse(text) : {}; }catch{ data = { raw:text }; }
       const ok = res.ok && data && data.ok === true;
-      setBox("diag", ok, { http_ok:res.ok, status:res.status, data });
+      setBox(ok, { http_ok:res.ok, status:res.status, data });
       setStatus(ok ? "logado" : "falha", ok);
     }catch(e){
-      setBox("diag", false, { ok:false, error:"network_or_server", details:String(e?.message||e) });
+      setBox(false, { ok:false, error:"network_or_server", details:String(e?.message||e) });
       setStatus("falha", false);
-    }
-  };
-
-  el("btnLoad").onclick = async () => {
-    if (!token()){ setBox("diag", false, { ok:false, error:"token_vazio" }); return; }
-    setStatus("carregando...", null);
-    try{
-      const { res, data } = await apiGet(el("limit").value || "25");
-      const ok = res.ok && data && data.ok === true;
-      setBox("diag", ok, { action:"load_events", status:res.status, data_summary: ok ? {count:data.count}: null, data });
-      if (ok) renderTable(data.data || []);
-      setStatus(ok ? "logado" : "falha", ok);
-    }catch(e){
-      setBox("diag", false, { ok:false, error:"network_or_server", details:String(e?.message||e) });
-      setStatus("falha", false);
-    }
-  };
-
-  el("btnDownload").onclick = async () => {
-    try{
-      const { res, data } = await apiGet(el("limit").value || "25");
-      const name = `events_${new Date().toISOString().slice(0,19).replaceAll(":","-")}.json`;
-      const blob = new Blob([pretty({ status: res.status, data })], {type:"application/json;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = name;
-      document.body.appendChild(a); a.click(); a.remove();
-      URL.revokeObjectURL(url);
-    }catch(e){
-      setBox("diag", false, { ok:false, error:"download_failed", details:String(e?.message||e) });
-    }
-  };
-
-  el("btnReset").onclick = () => { resetPayload(); setBox("postRes", true, { ok:true, reset:true }); };
-
-  el("btnPost").onclick = async () => {
-    if (!token()){ setBox("postRes", false, { ok:false, error:"token_vazio" }); return; }
-    let payload;
-    try{ payload = JSON.parse(el("payload").value || "{}"); }
-    catch{ setBox("postRes", false, { ok:false, error:"invalid_json" }); return; }
-
-    try{
-      const { res, data } = await apiPost(payload);
-      const ok = res.ok && data && data.ok === true;
-      setBox("postRes", ok, { status:res.status, data });
-      if (ok) el("btnLoad").click();
-    }catch(e){
-      setBox("postRes", false, { ok:false, error:"network_or_server", details:String(e?.message||e) });
     }
   };
 </script>
