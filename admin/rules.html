@@ -3,476 +3,304 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ConSySencI.A — Painel de Regras</title>
+  <title>ConSySencI.A — Regras (gatilhos / respostas)</title>
+  <meta name="robots" content="noindex,nofollow" />
   <style>
-    :root{
-      --bg:#050a07; --card:#07110c; --card2:#06100b;
-      --txt:#d7ffe8; --mut:#82caa4; --line:rgba(0,255,140,.12);
-      --g:#00ff8c; --g2:#00d57a; --bad:#ff4d6d;
-      --shadow: 0 20px 70px rgba(0,0,0,.55);
-      --r:18px;
-    }
+    :root{--bg:#05080a;--card:#071014cc;--line:#0f2a22;--txt:#e9fff6;--mut:#9bd8c2;--g:#22ff9a;--bad:#ff4d6d;--r:22px;}
     *{box-sizing:border-box}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      color:var(--txt); background: radial-gradient(900px 900px at 20% 10%, rgba(0,255,140,.12), transparent 60%),
-      radial-gradient(700px 700px at 80% 35%, rgba(0,255,140,.08), transparent 55%),
-      linear-gradient(180deg, #040806, #020403 60%, #000 100%);
-      min-height:100vh;
+    body{margin:0;color:var(--txt);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background: radial-gradient(1100px 650px at 20% -10%, rgba(34,255,154,.18), transparent 60%),
+                  radial-gradient(850px 600px at 110% 10%, rgba(15,226,138,.14), transparent 55%),
+                  linear-gradient(180deg,#030607,#050a0c 55%,#040809);
+      min-height:100vh;}
+    .wrap{max-width:1200px;margin:0 auto;padding:22px 16px 70px}
+    .top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+    h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .btn{appearance:none;border:1px solid rgba(34,255,154,.35);background:linear-gradient(180deg, rgba(34,255,154,.10), rgba(34,255,154,.03));
+      color:var(--txt);padding:10px 14px;border-radius:18px;cursor:pointer;font-weight:650}
+    .btn:hover{border-color:rgba(34,255,154,.6)}
+    .btn.ghost{background:transparent}
+    .btn.bad{border-color:rgba(255,77,109,.35); background:linear-gradient(180deg, rgba(255,77,109,.08), rgba(255,77,109,.02))}
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:980px){.grid{grid-template-columns: 460px 1fr}}
+    .card{padding:16px;border-radius:var(--r);border:1px solid rgba(34,255,154,.16);background:linear-gradient(180deg, rgba(7,16,20,.78), rgba(7,16,20,.52));}
+    .label{font-size:12px;color:var(--mut);margin:10px 0 6px}
+    .input,.sel,textarea{
+      width:100%;padding:11px 12px;border-radius:16px;border:1px solid rgba(34,255,154,.22);
+      background:rgba(0,0,0,.26);color:var(--txt);outline:none
     }
-    a{color:var(--g); text-decoration:none}
-    .wrap{max-width:1100px; margin:0 auto; padding:22px 16px 60px}
-    .top{
-      display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;
-      padding:14px 14px; border:1px solid var(--line); border-radius:var(--r); background:rgba(6,16,11,.55); box-shadow:var(--shadow);
-      backdrop-filter: blur(10px);
-    }
-    .brand{display:flex; align-items:center; gap:10px}
-    .dot{width:12px;height:12px;border-radius:50%;background:var(--g); box-shadow:0 0 20px rgba(0,255,140,.55)}
-    h1{margin:0; font-size:18px; letter-spacing:.3px}
-    .sub{color:var(--mut); font-size:12px; margin-top:2px}
-    .actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-    .btn{
-      border:1px solid var(--line); background:linear-gradient(180deg, rgba(0,255,140,.16), rgba(0,255,140,.06));
-      color:var(--txt); padding:10px 12px; border-radius:14px; cursor:pointer; font-weight:650;
-    }
-    .btn:hover{border-color:rgba(0,255,140,.30)}
-    .btn.bad{background:linear-gradient(180deg, rgba(255,77,109,.20), rgba(255,77,109,.08));}
-    .pill{
-      border:1px solid var(--line); padding:8px 10px; border-radius:14px; color:var(--mut); font-size:12px;
-      background:rgba(7,17,12,.55);
-    }
-
-    .grid{display:grid; grid-template-columns: 1.2fr .8fr; gap:14px; margin-top:14px}
-    @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
-
-    .card{
-      border:1px solid var(--line); border-radius:var(--r);
-      background:rgba(7,17,12,.55); box-shadow:var(--shadow); overflow:hidden;
-    }
-    .card .hd{
-      padding:14px 14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
-      background:linear-gradient(180deg, rgba(0,255,140,.08), transparent);
-    }
-    .card .bd{padding:14px}
-    label{display:block; font-size:12px; color:var(--mut); margin:12px 0 6px}
-    input, select, textarea{
-      width:100%; padding:12px; border-radius:14px; border:1px solid var(--line);
-      background:rgba(6,16,11,.55); color:var(--txt); outline:none;
-    }
-    textarea{min-height:110px; resize:vertical}
-    .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
-    @media (max-width: 520px){ .row{grid-template-columns:1fr} }
-
-    .status{margin-top:10px; font-size:12px; color:var(--mut)}
-    .status.err{color:var(--bad)}
-    .tableWrap{overflow:auto; border-top:1px solid var(--line)}
-    table{width:100%; border-collapse:collapse; min-width:880px}
-    th, td{padding:10px 10px; border-bottom:1px solid rgba(0,255,140,.08); vertical-align:top}
-    th{font-size:12px; color:var(--mut); text-align:left; position:sticky; top:0; background:rgba(7,17,12,.85); backdrop-filter: blur(8px)}
-    td{font-size:13px}
-    .tag{
-      display:inline-block; padding:4px 8px; border-radius:999px; border:1px solid var(--line);
-      color:var(--mut); font-size:12px; background:rgba(0,255,140,.06);
-    }
-    .mini{font-size:12px; color:var(--mut)}
-    .tdBtns{display:flex; gap:8px; flex-wrap:wrap}
-    .small{padding:7px 10px; border-radius:12px; font-size:12px}
-    .muted{opacity:.8}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px}
-    .hr{height:1px; background:rgba(0,255,140,.10); margin:12px 0}
+    .input:focus,.sel:focus,textarea:focus{border-color:rgba(34,255,154,.55)}
+    textarea{min-height:120px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .msg{margin-top:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(34,255,154,.18);background:rgba(0,0,0,.20);color:var(--mut);min-height:44px;overflow:auto}
+    table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+    th,td{padding:10px 8px;border-bottom:1px solid rgba(34,255,154,.10);vertical-align:top}
+    th{color:var(--mut);font-weight:700;text-align:left}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+    .badtxt{color:var(--bad)}
+    .tag{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid rgba(34,255,154,.22);background:rgba(0,0,0,.22);color:var(--mut)}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="top">
-      <div class="brand">
-        <div class="dot"></div>
-        <div>
-          <h1>ConSySencI.A — Painel de Regras</h1>
-          <div class="sub">CRUD visual de gatilhos: prioridade, match, grupos, remetentes e resposta</div>
-        </div>
-      </div>
-      <div class="actions">
-        <a class="pill" href="/admin/" title="Voltar ao painel">Painel</a>
-        <button class="btn" onclick="refresh()">Atualizar</button>
-        <button class="btn bad" onclick="logout()">Sair</button>
+      <h1>🧩 ConSySencI.A — Regras (gatilhos / respostas)</h1>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn ghost" onclick="location.href='index.html'">Painel</button>
+        <button class="btn" id="refreshBtn">Atualizar</button>
       </div>
     </div>
 
     <div class="grid">
       <div class="card">
-        <div class="hd">
-          <div>
-            <div style="font-weight:750">Cadastrar / Editar regra</div>
-            <div class="mini">Dica: prioridade menor = executa antes. Ex: 10 é acima de 100.</div>
-          </div>
-          <span class="tag" id="authTag">não autenticado</span>
-        </div>
-        <div class="bd">
-          <div class="row">
-            <div>
-              <label>ID (auto ao salvar)</label>
-              <input id="id" class="mono" placeholder="(vazio = nova regra)" />
-            </div>
-            <div>
-              <label>Ativa?</label>
-              <select id="is_active">
-                <option value="true">Sim</option>
-                <option value="false">Não</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label>Prioridade</label>
-              <input id="priority" type="number" value="100" />
-            </div>
-            <div>
-              <label>Source</label>
-              <input id="source" placeholder="admin" value="admin" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label>Tipo de match</label>
-              <select id="match_kind">
-                <option value="equals">equals (igual)</option>
-                <option value="contains" selected>contains (contém)</option>
-                <option value="starts_with">starts_with (começa com)</option>
-                <option value="regex">regex (avançado)</option>
-              </select>
-            </div>
-            <div>
-              <label>Gatilho (match_text)</label>
-              <input id="match_text" placeholder="ex: pix" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label>Filtro por grupo (match_group) — opcional</label>
-              <input id="match_group" placeholder="ex: Grupo Oficial Afiliados" />
-            </div>
-            <div>
-              <label>Filtro por remetente (match_sender) — opcional</label>
-              <input id="match_sender" placeholder="ex: João Vitor" />
-            </div>
-          </div>
-
-          <label>Resposta (reply_text)</label>
-          <textarea id="reply_text" placeholder="Escreva aqui a resposta…"></textarea>
-
-          <div class="hr"></div>
-
-          <div class="row">
-            <button class="btn" onclick="saveRule()">Salvar (Upsert)</button>
-            <button class="btn" onclick="clearForm()">Limpar</button>
-          </div>
-
-          <div class="status" id="status">Pronto.</div>
-
-          <div class="hr"></div>
-
-          <div class="row">
-            <div>
-              <label>Buscar</label>
-              <input id="q" placeholder="busca em gatilho/resposta/grupo/remetente" onkeydown="if(event.key==='Enter') refresh()" />
-            </div>
-            <div>
-              <label>Mostrar apenas ativas?</label>
-              <select id="activeOnly" onchange="refresh()">
-                <option value="1" selected>Sim</option>
-                <option value="0">Não</option>
-              </select>
-            </div>
-          </div>
-
+        <div class="row" style="justify-content:space-between">
+          <b>Criar / Editar Regra</b>
+          <button class="btn bad" id="clearBtn">Limpar</button>
         </div>
 
-        <div class="tableWrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Ativa</th>
-                <th>Prioridade</th>
-                <th>Match</th>
-                <th>Gatilho</th>
-                <th>Grupo / Remetente</th>
-                <th>Resposta (preview)</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="tbody">
-              <tr><td colspan="7" class="mini">Carregando…</td></tr>
-            </tbody>
-          </table>
+        <div class="label">ID (auto)</div>
+        <input class="input mono" id="id" placeholder="(deixe vazio para criar novo)" />
+
+        <div class="row">
+          <div style="flex:1">
+            <div class="label">Ativa?</div>
+            <select class="sel mono" id="is_active">
+              <option value="true">true</option>
+              <option value="false">false</option>
+            </select>
+          </div>
+          <div style="flex:1">
+            <div class="label">Prioridade</div>
+            <input class="input mono" id="priority" value="100" />
+          </div>
         </div>
+
+        <div class="label">match_kind</div>
+        <select class="sel mono" id="match_kind">
+          <option value="equals">equals</option>
+          <option value="contains">contains</option>
+          <option value="starts_with">starts_with</option>
+          <option value="regex">regex</option>
+        </select>
+
+        <div class="label">match_text (gatilho)</div>
+        <input class="input mono" id="match_text" placeholder="pix" />
+
+        <div class="label">match_group (opcional)</div>
+        <input class="input mono" id="match_group" placeholder="nome do grupo (se quiser travar por grupo)" />
+
+        <div class="label">match_sender (opcional)</div>
+        <input class="input mono" id="match_sender" placeholder="nome do sender (se quiser travar por pessoa)" />
+
+        <div class="label">reply_text (resposta)</div>
+        <textarea id="reply_text" placeholder="Texto que o bot vai enviar…"></textarea>
+
+        <div class="row" style="margin-top:12px">
+          <button class="btn" id="saveBtn">Salvar</button>
+          <button class="btn ghost" id="toggleBtn">Ativar/Desativar</button>
+          <button class="btn bad" id="deleteBtn">Excluir</button>
+        </div>
+
+        <div class="msg mono" id="out">Pronto.</div>
+
+        <div class="label">Teste rápido (simula entrada)</div>
+        <div class="row">
+          <input class="input mono" id="testMsg" placeholder="Digite uma mensagem (ex: pix)" style="flex:1">
+          <button class="btn" id="testBtn">Testar</button>
+        </div>
+        <div class="msg mono" id="testOut">—</div>
       </div>
 
       <div class="card">
-        <div class="hd">
-          <div style="font-weight:750">Login do Admin</div>
-          <div class="mini">Usa a Function <span class="mono">/.netlify/functions/admin_login</span></div>
-        </div>
-        <div class="bd">
-          <label>Login</label>
-          <input id="login" value="Consysencia" />
-          <label>Senha</label>
-          <input id="senha" type="password" value="aprenda" />
-          <div class="row" style="margin-top:12px">
-            <button class="btn" onclick="doLogin()">Entrar</button>
-            <button class="btn" onclick="testAuth()">Testar acesso</button>
-          </div>
-          <div class="status" id="authStatus">Sem login.</div>
-
-          <div class="hr"></div>
-
-          <div class="mini">
-            <b>Por que isso existe?</b><br/>
-            Suas Functions (rules/media/events) exigem o header:<br/>
-            <span class="mono">Authorization: Bearer ADMIN_TOKEN</span><br/>
-            Esse painel guarda o token no <span class="mono">localStorage</span>.
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <b>Regras ativas (por prioridade)</b>
+          <div class="row">
+            <span class="tag">buscar</span>
+            <input class="input mono" id="q" placeholder="pix / catálogo / suporte…" style="width:260px">
+            <button class="btn ghost" id="searchBtn">Buscar</button>
           </div>
         </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Ativa</th>
+              <th>Pri</th>
+              <th>kind</th>
+              <th>match_text</th>
+              <th>preview</th>
+              <th style="width:160px">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
       </div>
     </div>
   </div>
 
 <script>
-  const LS_KEY = "CONSYSENCIA_ADMIN_TOKEN";
+  const LS_KEY = "CONSYSENCIA_ADMIN_TOKEN_V1";
 
-  function setStatus(msg, isErr=false){
-    const el = document.getElementById("status");
+  function token(){ return (localStorage.getItem(LS_KEY)||"").trim(); }
+  function out(msg, ok=true){
+    const el = document.getElementById("out");
     el.textContent = msg;
-    el.className = "status" + (isErr ? " err" : "");
+    el.className = "msg mono " + (ok ? "" : "badtxt");
   }
-  function setAuthStatus(msg, isErr=false){
-    const el = document.getElementById("authStatus");
+  function testOut(msg, ok=true){
+    const el = document.getElementById("testOut");
     el.textContent = msg;
-    el.className = "status" + (isErr ? " err" : "");
+    el.className = "msg mono " + (ok ? "" : "badtxt");
   }
 
-  function getToken(){ return (localStorage.getItem(LS_KEY) || "").trim(); }
-  function setToken(t){
-    if(!t) localStorage.removeItem(LS_KEY);
-    else localStorage.setItem(LS_KEY, t);
-    paintAuth();
-  }
-  function paintAuth(){
-    const t = getToken();
-    const tag = document.getElementById("authTag");
-    if(t){
-      tag.textContent = "autenticado";
-      tag.style.color = "var(--txt)";
-      tag.style.background = "rgba(0,255,140,.10)";
-      tag.style.borderColor = "rgba(0,255,140,.30)";
-    } else {
-      tag.textContent = "não autenticado";
-      tag.style.color = "var(--mut)";
-      tag.style.background = "rgba(7,17,12,.55)";
-      tag.style.borderColor = "var(--line)";
-    }
-  }
-
-  async function api(path, method="GET", body=null){
-    const headers = { "Content-Type":"application/json" };
-    const t = getToken();
-    if(t) headers["Authorization"] = "Bearer " + t;
-
+  async function api(path, body){
+    const t = token();
     const res = await fetch(path, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : null
+      method:"POST",
+      headers:{
+        "content-type":"application/json",
+        "authorization": t ? `Bearer ${t}` : ""
+      },
+      body: JSON.stringify(body||{})
     });
-    const text = await res.text();
-    let j = null;
-    try { j = text ? JSON.parse(text) : null; } catch { j = { ok:false, error:"bad_json", raw:text }; }
-    return { res, j };
+    const txt = await res.text();
+    let j=null;
+    try{ j = JSON.parse(txt); } catch(e){ j = { ok:false, error:"non_json", details: txt.slice(0,900) }; }
+    return { ok: res.ok, status: res.status, j };
   }
 
-  async function doLogin(){
-    setAuthStatus("Entrando…");
-    const login = document.getElementById("login").value.trim();
-    const senha = document.getElementById("senha").value.trim();
-    const out = await api("/.netlify/functions/admin_login", "POST", { login, senha });
-    if(!out.j?.ok){
-      setToken("");
-      setAuthStatus("Falhou: " + (out.j?.error || out.res.status), true);
-      return;
-    }
-    setToken(out.j.token);
-    setAuthStatus("OK ✅ Token carregado.");
-    await refresh();
-  }
-
-  async function testAuth(){
-    setAuthStatus("Testando…");
-    const out = await api("/.netlify/functions/rules_list?limit=1&offset=0", "GET");
-    if(out.j?.ok) setAuthStatus("Acesso OK ✅");
-    else setAuthStatus("Sem acesso: " + (out.j?.error || out.res.status), true);
-  }
-
-  function logout(){
-    setToken("");
-    setAuthStatus("Saiu.");
-    setStatus("Token removido.");
-  }
-
-  function clearForm(){
-    ["id","priority","source","match_text","match_group","match_sender","reply_text"].forEach(id=>{
-      document.getElementById(id).value = "";
-    });
-    document.getElementById("is_active").value = "true";
-    document.getElementById("priority").value = "100";
-    document.getElementById("source").value = "admin";
-    document.getElementById("match_kind").value = "contains";
-    setStatus("Form limpo.");
-  }
+  function esc(s){ return String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   function fillForm(it){
     document.getElementById("id").value = it.id || "";
-    document.getElementById("is_active").value = String(!!it.is_active);
-    document.getElementById("priority").value = it.priority ?? 100;
-    document.getElementById("source").value = it.source || "admin";
-    document.getElementById("match_kind").value = it.match_kind || "contains";
+    document.getElementById("is_active").value = String(it.is_active ?? true);
+    document.getElementById("priority").value = String(it.priority ?? 100);
+    document.getElementById("match_kind").value = it.match_kind || "equals";
     document.getElementById("match_text").value = it.match_text || "";
     document.getElementById("match_group").value = it.match_group || "";
     document.getElementById("match_sender").value = it.match_sender || "";
-    document.getElementById("reply_text").value = it.reply_text || "";
-    setStatus("Editando regra: " + (it.id || ""));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById("reply_text").value = it.reply_text || it.preview || "";
   }
 
-  function esc(s){ return String(s ?? "").replace(/[&<>"]/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[m])); }
-  function preview(s){
-    s = String(s ?? "");
-    if(s.length > 120) s = s.slice(0,120) + "…";
-    return s;
+  function clearForm(){
+    fillForm({ id:"", is_active:true, priority:100, match_kind:"equals", match_text:"", match_group:"", match_sender:"", reply_text:"" });
   }
 
-  async function refresh(){
-    setStatus("Carregando regras…");
-    const q = document.getElementById("q").value.trim();
-    const active = document.getElementById("activeOnly").value;
-
-    const url = new URL("/.netlify/functions/rules_list", location.origin);
-    url.searchParams.set("limit","500");
-    url.searchParams.set("offset","0");
-    url.searchParams.set("active", active);
-    if(q) url.searchParams.set("q", q);
-
-    const out = await api(url.pathname + url.search, "GET");
-    if(!out.j?.ok){
-      document.getElementById("tbody").innerHTML =
-        `<tr><td colspan="7" class="mini">Erro: ${esc(out.j?.error || out.res.status)} — ${esc(out.j?.details || "")}</td></tr>`;
-      setStatus("Falhou: " + (out.j?.error || out.res.status), true);
-      return;
-    }
-
-    const items = out.j.items || [];
-    render(items);
-    setStatus(`OK ✅ ${items.length} regra(s).`);
+  function getForm(){
+    const id = (document.getElementById("id").value||"").trim();
+    const is_active = (document.getElementById("is_active").value||"true") === "true";
+    const priority = parseInt(document.getElementById("priority").value||"100",10);
+    const match_kind = (document.getElementById("match_kind").value||"equals").trim();
+    const match_text = (document.getElementById("match_text").value||"").trim();
+    const match_group = (document.getElementById("match_group").value||"").trim();
+    const match_sender = (document.getElementById("match_sender").value||"").trim();
+    const reply_text = (document.getElementById("reply_text").value||"").trim();
+    return { id, is_active, priority, match_kind, match_text, match_group, match_sender, reply_text };
   }
 
   function render(items){
     const tb = document.getElementById("tbody");
-    if(!items.length){
-      tb.innerHTML = `<tr><td colspan="7" class="mini">Nenhuma regra encontrada.</td></tr>`;
-      return;
-    }
     tb.innerHTML = "";
-    for(const it of items){
+    for(const it of (items||[])){
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${it.is_active ? "✅" : "⛔"}</td>
+        <td class="mono">${it.is_active ? "✅" : "—"}</td>
         <td class="mono">${esc(it.priority)}</td>
-        <td><span class="tag">${esc(it.match_kind)}</span></td>
-        <td class="mono">${esc(it.match_text)}</td>
-        <td class="mini">
-          <div>Grupo: <span class="mono">${esc(it.match_group || "-")}</span></div>
-          <div>Remetente: <span class="mono">${esc(it.match_sender || "-")}</span></div>
-        </td>
-        <td>${esc(preview(it.reply_text))}</td>
+        <td class="mono">${esc(it.match_kind)}</td>
+        <td class="mono"><b>${esc(it.match_text||"")}</b></td>
+        <td class="mono" style="white-space:pre-wrap;opacity:.9">${esc(it.preview||it.reply_text||"")}</td>
         <td>
-          <div class="tdBtns">
-            <button class="btn small" onclick='editById("${it.id}")'>Editar</button>
-            <button class="btn small" onclick='toggleActive("${it.id}", ${it.is_active ? "false":"true"})'>${it.is_active ? "Desativar":"Ativar"}</button>
-            <button class="btn small bad" onclick='delRule("${it.id}")'>Excluir</button>
-          </div>
+          <button class="btn ghost" data-act="edit">Editar</button>
+          <button class="btn bad" data-act="del">Excluir</button>
         </td>
       `;
+      tr.querySelector('[data-act="edit"]').onclick = async () => {
+        // carregar regra completa pelo id (se sua function listar já vier completa, funciona igual)
+        fillForm(it);
+        out("Editando: " + it.match_text);
+      };
+      tr.querySelector('[data-act="del"]').onclick = async () => { await del(it.id); };
       tb.appendChild(tr);
     }
-
-    // cache local pra editar por id sem outra chamada
-    window.__RULES = items;
   }
 
-  function editById(id){
-    const it = (window.__RULES || []).find(x=>x.id===id);
-    if(it) fillForm(it);
-  }
-
-  async function saveRule(){
-    const payload = {
-      id: document.getElementById("id").value.trim() || undefined,
-      is_active: document.getElementById("is_active").value === "true",
-      priority: parseInt(document.getElementById("priority").value || "100", 10),
-      source: document.getElementById("source").value.trim() || "admin",
-      match_kind: document.getElementById("match_kind").value,
-      match_text: document.getElementById("match_text").value.trim(),
-      match_group: document.getElementById("match_group").value.trim() || null,
-      match_sender: document.getElementById("match_sender").value.trim() || null,
-      reply_text: document.getElementById("reply_text").value.trim(),
-    };
-
-    setStatus("Salvando…");
-    const out = await api("/.netlify/functions/rules_upsert", "POST", payload);
-    if(!out.j?.ok){
-      setStatus("Falhou: " + (out.j?.error || out.res.status) + " " + (out.j?.details || ""), true);
-      return;
+  async function refresh(){
+    if(!token()){ out("Sem token. Volte ao /admin/ e cole seu ADMIN_TOKEN.", false); return; }
+    out("Carregando…");
+    const q = (document.getElementById("q").value||"").trim();
+    const r = await api("/.netlify/functions/rules_list", { q });
+    if(r.ok && r.j && r.j.ok){
+      render(r.j.items || []);
+      out("OK ✅ regras=" + (r.j.items||[]).length);
+    } else {
+      out("Erro ❌ " + JSON.stringify(r.j), false);
     }
-    const row = out.j.row || {};
-    document.getElementById("id").value = row.id || "";
-    setStatus("Salvo ✅");
-    await refresh();
   }
 
-  async function toggleActive(id, nextActive){
-    const it = (window.__RULES || []).find(x=>x.id===id);
-    if(!it) return;
-
-    setStatus("Atualizando status…");
-    const out = await api("/.netlify/functions/rules_upsert", "POST", {
-      ...it,
-      is_active: !!nextActive
-    });
-    if(!out.j?.ok){
-      setStatus("Falhou: " + (out.j?.error || out.res.status), true);
-      return;
+  async function save(){
+    if(!token()){ out("Sem token.", false); return; }
+    const f = getForm();
+    if(!f.match_text){ out("match_text é obrigatório.", false); return; }
+    if(!f.reply_text){ out("reply_text é obrigatório.", false); return; }
+    out("Salvando…");
+    const r = await api("/.netlify/functions/rules_upsert", f);
+    if(r.ok && r.j && r.j.ok){
+      out("Salvo ✅");
+      await refresh();
+    } else {
+      out("Erro ❌ " + JSON.stringify(r.j), false);
     }
-    setStatus("OK ✅");
-    await refresh();
   }
 
-  async function delRule(id){
-    if(!confirm("Excluir regra? Isso é irreversível.")) return;
-    setStatus("Excluindo…");
-    const out = await api("/.netlify/functions/rules_delete", "POST", { id });
-    if(!out.j?.ok){
-      setStatus("Falhou: " + (out.j?.error || out.res.status), true);
-      return;
+  async function del(id){
+    if(!token()){ out("Sem token.", false); return; }
+    if(!id){ out("Selecione uma regra (id).", false); return; }
+    out("Excluindo…");
+    const r = await api("/.netlify/functions/rules_delete", { id });
+    if(r.ok && r.j && r.j.ok){
+      out("Excluído ✅");
+      clearForm();
+      await refresh();
+    } else {
+      out("Erro ❌ " + JSON.stringify(r.j), false);
     }
-    setStatus("Excluída ✅");
-    await refresh();
   }
 
-  paintAuth();
+  async function toggleActive(){
+    const f = getForm();
+    if(!f.id){ out("Selecione uma regra existente (id).", false); return; }
+    f.is_active = !f.is_active;
+    out("Atualizando…");
+    const r = await api("/.netlify/functions/rules_upsert", f);
+    if(r.ok && r.j && r.j.ok){
+      out("Atualizado ✅ is_active=" + f.is_active);
+      await refresh();
+    } else {
+      out("Erro ❌ " + JSON.stringify(r.j), false);
+    }
+  }
+
+  async function testRule(){
+    if(!token()){ testOut("Sem token.", false); return; }
+    const message = (document.getElementById("testMsg").value||"").trim();
+    testOut("Testando…");
+    const r = await api("/.netlify/functions/rules_test", { message });
+    if(r.ok && r.j && r.j.ok){
+      testOut("Resposta: \n" + (r.j.reply_text || "—"));
+    } else {
+      testOut("Erro ❌ " + JSON.stringify(r.j), false);
+    }
+  }
+
+  document.getElementById("refreshBtn").onclick = refresh;
+  document.getElementById("searchBtn").onclick = refresh;
+  document.getElementById("saveBtn").onclick = save;
+  document.getElementById("toggleBtn").onclick = toggleActive;
+  document.getElementById("deleteBtn").onclick = () => del((document.getElementById("id").value||"").trim());
+  document.getElementById("clearBtn").onclick = () => { clearForm(); out("Limpo."); };
+  document.getElementById("testBtn").onclick = testRule;
+
   refresh();
 </script>
 </body>
-  </html>
-  
+</html>
