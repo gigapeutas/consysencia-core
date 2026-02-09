@@ -1,4 +1,3 @@
-// netlify/functions/whatauto_ingest.js
 const { createClient } = require("@supabase/supabase-js");
 const { decide } = require("./_core/brain");
 
@@ -9,7 +8,6 @@ function json(statusCode, body) {
     body: JSON.stringify(body),
   };
 }
-
 function getBearerToken(authHeader) {
   const h = (authHeader || "").trim();
   if (!h.toLowerCase().startsWith("bearer ")) return null;
