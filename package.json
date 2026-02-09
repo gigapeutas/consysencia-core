@@ -1,9 +1,9 @@
 {
   "name": "consysencia-core",
-  "version": "1.0.0",
   "private": true,
-  "description": "ConSySencI.A — Observatório, automações e painel administrativo",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.39.0"
+  "version": "1.0.0",
+  "description": "ConSySencI.A Observatório — Netlify Functions + Admin Panel",
+  "engines": {
+    "node": ">=18"
   }
 }
