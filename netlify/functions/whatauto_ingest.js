@@ -117,7 +117,7 @@ exports.handler = async (event, context) => {
     }
 
     // 5) OK
-    return json(200, { reply: "OK" });
+    return json(200, { reply: "aqui é oq o servidor responde, essa parte tem que ser reservada para pegar a resposta do servidor. certo?" });
   } catch (err) {
     // ERRO “blindado”: nunca deixe estourar HTML/stack pro WhatsAuto
     return json(200, { reply: "Recebi seu webhook, mas ocorreu um erro interno. Tente novamente." });
