@@ -1,286 +1,114 @@
 // netlify/functions/whatauto_ingest.js
-const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
+const querystring = require("querystring");
 
-// Import do “cérebro” local (ajuste o caminho se seu repo for diferente)
-const brain = require("./_core/brain.js");
-
-// === Helpers ===
-function json(statusCode, obj) {
-  return {
-    statusCode,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store",
-    },
-    body: JSON.stringify(obj),
-  };
+function maskPhone(v) {
+  if (!v) return null;
+  const s = String(v);
+  if (s.length <= 6) return "***";
+  return `${s.slice(0, 3)}***${s.slice(-3)}`;
 }
 
-function truncate(str, n = 700) {
-  if (str == null) return "";
-  str = String(str);
-  return str.length > n ? str.slice(0, n) + "…" : str;
+function safeJsonParse(str) {
+  try { return JSON.parse(str); } catch { return null; }
 }
 
-function safeLower(s) {
-  return String(s || "").toLowerCase();
+function normalize(bodyObj) {
+  // WhatsAuto costuma mandar: app, sender, message, group_name, phone
+  const provider = bodyObj.provider || bodyObj.app || "whatsauto";
+  const sender = bodyObj.sender ?? null;
+  const message = bodyObj.message ?? bodyObj.text ?? bodyObj.msg ?? null;
+  const phone = bodyObj.phone ?? bodyObj.from ?? null;
+  const group_name = bodyObj.group_name ?? bodyObj.group ?? null;
+  const message_id = bodyObj.message_id ?? bodyObj.id ?? null;
+
+  return { provider, sender, message, phone, group_name, message_id };
 }
 
-function decodeBody(event) {
-  const raw = event?.body ?? "";
-  if (!raw) return "";
-  if (event?.isBase64Encoded) {
-    try {
-      return Buffer.from(raw, "base64").toString("utf8");
-    } catch {
-      return String(raw);
-    }
-  }
-  return String(raw);
-}
-
-function parseTextKV(raw) {
-  // aceita: "{a=b, c=d}" OR "a=b, c=d" OR "a=b&c=d"
-  const out = {};
-  let s = String(raw || "").trim();
-
-  if (!s) return out;
-
-  // remove chaves
-  if (s.startsWith("{") && s.endsWith("}")) s = s.slice(1, -1).trim();
-
-  // querystring
-  if (s.includes("&") && s.includes("=")) {
-    try {
-      const usp = new URLSearchParams(s);
-      for (const [k, v] of usp.entries()) out[k] = v;
-      return out;
-    } catch {
-      // cai pra split
-    }
-  }
-
-  // split por vírgula (a=b, c=d)
-  const parts = s.split(",").map((p) => p.trim()).filter(Boolean);
-  for (const part of parts) {
-    const eq = part.indexOf("=");
-    if (eq === -1) continue;
-    const k = part.slice(0, eq).trim();
-    const v = part.slice(eq + 1).trim();
-    if (!k) continue;
-    out[k] = decodeURIComponent(v.replace(/\+/g, " "));
-  }
-  return out;
-}
-
-function normalizeFields(obj) {
-  const src = obj || {};
-
-  const sender =
-    src.sender ?? src.from ?? src.name ?? src.contact ?? src.user ?? null;
-
-  const message =
-    src.message ?? src.text ?? src.body ?? src.content ?? src.msg ?? null;
-
-  const phone =
-    src.phone ??
-    src.number ??
-    src.msisdn ??
-    src.remote_jid ??
-    src.remoteJid ??
-    null;
-
-  const group_name =
-    src.group_name ?? src.group ?? src.groupName ?? src.chat ?? null;
-
-  const app = src.app ?? src.platform ?? "WhatsAuto";
-
-  return { app, sender, message, phone, group_name };
-}
-
-function sha256(input) {
-  return crypto.createHash("sha256").update(String(input)).digest("hex");
-}
-
-function getAuthToken(event) {
-  const h = event?.headers || {};
-  return h.authorization || h.Authorization || "";
-}
-
-function hasValidAuth(event) {
-  const expected = process.env.CS_ADMIN_TOKEN;
-  if (!expected) return true; // se você esquecer de setar env, não bloqueia dev
-  const token = getAuthToken(event);
-  // esperado: "Bearer <token>"
-  return token === `Bearer ${expected}`;
-}
-
-// === Main ===
-exports.handler = async (event, context) => {
-  try {
-    // 0) auth
-    if (!hasValidAuth(event)) {
-      return json(401, { reply: "UNAUTHORIZED" });
-    }
-
-    // 1) decode body + content-type
-    const headers = event?.headers || {};
-    const contentType = safeLower(headers["content-type"] || headers["Content-Type"]);
-    const rawBody = decodeBody(event);
-
-    // 2) parse body (json / form / text)
-    let parsed = null;
-    let body_type_detected = "unknown";
-    let parse_path = [];
-
-    if (contentType.includes("application/json")) {
-      parse_path.push("json");
-      body_type_detected = "json";
-      try {
-        parsed = rawBody ? JSON.parse(rawBody) : {};
-      } catch (e) {
-        // não explode: registra e segue
-        parsed = { _parse_error: "json_invalid", _raw: truncate(rawBody) };
-      }
-    } else if (contentType.includes("application/x-www-form-urlencoded")) {
-      parse_path.push("form");
-      body_type_detected = "form";
-      try {
-        const usp = new URLSearchParams(rawBody);
-        parsed = Object.fromEntries(usp.entries());
-      } catch (e) {
-        parsed = { _parse_error: "form_invalid", _raw: truncate(rawBody) };
-      }
-    } else {
-      parse_path.push("text");
-      body_type_detected = "text";
-      parsed = parseTextKV(rawBody);
-      // se vier texto “solto”, guarda também
-      if (!Object.keys(parsed || {}).length && rawBody) {
-        parsed = { message: rawBody };
-      }
-    }
-
-    // 3) canonical
-    const canonical = normalizeFields(parsed);
-
-    // 4) LOOP GUARD (anti ping-pong):
-    // tudo que o bot enviar vai começar com "🧠 "
-    // se voltar pro webhook, a gente IGNORA e não responde.
-    const msg = String(canonical.message || "").trim();
-    if (msg.startsWith("🧠 ")) {
-      // registra mesmo assim (opcional), mas não responde pra não loopar
-      return json(200, { reply: "" });
-    }
-
-    // 5) monta payload rico
-    const idempotency_key = sha256(
-      `${canonical.app}|${canonical.phone}|${canonical.sender}|${msg}|${event?.requestContext?.requestId || ""}|${Date.now()}`
-    );
-
-    const payload = {
-      provider: "whatauto",
-      content_type: contentType || null,
-      body_type_detected,
-      parse_path,
-      raw_body_preview: truncate(rawBody, 1200),
-      parsed_body_preview: parsed,
-      extracted_fields: canonical,
-      canonical, // mantém redundante pra facilitar query
-      headers_preview: {
-        "content-type": headers["content-type"] || headers["Content-Type"] || null,
-        "user-agent": headers["user-agent"] || headers["User-Agent"] || null,
-      },
-      netlify: {
-        function: context?.functionName || "whatauto_ingest",
-        request_id: event?.requestContext?.requestId || null,
-      },
-      idempotency_key,
-      received_at: new Date().toISOString(),
+exports.handler = async (event) => {
+  // 1) Método
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Method not allowed" }),
     };
+  }
 
-    // 6) grava no Supabase (core_events)
-    const SUPABASE_URL = process.env.SUPABASE_URL;
-    const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // 2) Parse do body (JSON OU form-urlencoded)
+  const contentType =
+    event.headers["content-type"] ||
+    event.headers["Content-Type"] ||
+    "";
 
-    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-      // sem env => não quebra, mas avisa
-      // ainda assim tenta responder via brain, se possível
-      // (você vai ver isso no WhatsApp e saber que faltou ENV)
-    }
+  const rawBody = event.body || "";
+  let bodyObj = null;
 
-    let inserted = null;
+  if (contentType.includes("application/json")) {
+    bodyObj = safeJsonParse(rawBody);
+  } else if (contentType.includes("application/x-www-form-urlencoded")) {
+    bodyObj = querystring.parse(rawBody);
+  } else {
+    // tentativa automática: JSON primeiro, senão parse de querystring
+    bodyObj = safeJsonParse(rawBody) || querystring.parse(rawBody);
+  }
 
-    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
-      const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  if (!bodyObj || typeof bodyObj !== "object") bodyObj = {};
+
+  // 3) Normalização
+  const n = normalize(bodyObj);
+
+  // 4) Resposta dinâmica mínima (sem ser burra)
+  // (depois você pluga o decide de verdade)
+  let reply = "Recebi sua mensagem ✅";
+  const msg = (n.message || "").toLowerCase();
+
+  if (msg.includes("ativar")) reply = "Beleza. Quer ativar como: *novo afiliado* ou *acesso admin*?";
+  else if (msg.includes("oi") || msg.includes("olá") || msg.includes("ola")) reply = "Opa! Você quer *ativar*, *ver a vitrine* ou *tirar uma dúvida*?";
+  else if (msg.includes("novo afiliado")) reply = "Perfeito. Me manda: *NOME* + *DDD/Whats* e eu gero seu acesso.";
+
+  // 5) Persistência no Supabase (não falha o webhook)
+  try {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (supabaseUrl && serviceRole) {
+      const supabase = createClient(supabaseUrl, serviceRole, {
         auth: { persistSession: false },
       });
 
-      const { data, error } = await supabase
-        .from("core_events")
-        .insert([
-          {
-            provider: "whatauto",
-            sender: canonical.sender,
-            phone: canonical.phone,
-            group_name: canonical.group_name,
-            message_preview: truncate(canonical.message, 180),
-            payload,
-          },
-        ])
-        .select("id, created_at")
-        .single();
+      // Ajuste os nomes das colunas se a sua tabela for diferente
+      const insertPayload = {
+        provider: n.provider,
+        sender: n.sender,
+        phone: n.phone || n.sender || null,
+        group_name: n.group_name,
+        message: n.message,
+        raw_body: bodyObj,
+        headers: event.headers,
+        message_id: n.message_id,
+      };
 
+      const { error } = await supabase.from("core_events").insert(insertPayload);
+
+      // se sua tabela NÃO é core_events, troque acima pelo nome real
       if (error) {
-        // não explode, só registra no payload de saída
-        payload.supabase_error = {
-          message: error.message,
-          details: error.details || null,
-          hint: error.hint || null,
-          code: error.code || null,
-        };
-      } else {
-        inserted = data;
-      }
-    }
-
-    // 7) chama o cérebro (o “servidor” de verdade)
-    // Esperado: brain.process({ canonical, payload, inserted }) -> { reply }
-    // Se o seu brain exporta diferente, ajusta aqui.
-    let replyText = null;
-
-    try {
-      if (brain && typeof brain.process === "function") {
-        const out = await brain.process({
-          canonical,
-          payload,
-          inserted,
-        });
-        replyText = out?.reply ?? out?.text ?? out?.message ?? null;
-      }
-    } catch (e) {
-      payload.brain_error = truncate(e?.stack || e?.message || String(e), 1500);
-    }
-
-    // 8) fallback inteligente (nunca deixa “mudo”)
-    // Se não tiver reply do brain, dá um OK mínimo pra validar pipeline.
-    if (!replyText) {
-      if (!canonical.message || !canonical.sender || !canonical.phone) {
-        // aqui o WhatsAuto realmente não mandou o trio mínimo.
-        // mas mesmo assim gravamos payload rico pra depurar.
-        replyText = "🧠 Recebi seu webhook. Me envie JSON com message/sender/phone.";
-      } else {
-        replyText = "🧠 OK";
+        console.log("[ingest] supabase insert error:", error.message);
       }
     } else {
-      // garante o prefixo anti-loop
-      if (!String(replyText).startsWith("🧠 ")) replyText = "🧠 " + replyText;
+      console.log("[ingest] missing env SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
     }
-
-    return json(200, { reply: replyText });
   } catch (e) {
-    // nunca devolve HTML de crash
-    return json(200, { reply: "🧠 Erro interno no ingest. Tente novamente." });
+    console.log("[ingest] persist exception:", e?.message || e);
   }
+
+  // 6) Logs úteis (sem vazar segredos)
+  console.log("[ingest] provider:", n.provider, "phone:", maskPhone(n.phone), "sender:", n.sender, "msg:", (n.message || "").slice(0, 80));
+
+  // 7) Resposta pro WhatsAuto
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ reply }),
+  };
 };
