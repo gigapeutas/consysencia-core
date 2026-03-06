@@ -8,25 +8,26 @@ exports.handler = async (event) => {
     try {
         if (!event.body) throw new Error("Payload vazio recebido do WhatAuto.");
         
-        // 1. O TRADUTOR BILÍNGUE (A correção está aqui)
+        // 1. O TRADUTOR BILÍNGUE (Funcionando perfeitamente)
         let body;
         try {
-            // Tenta ler como JSON primeiro
             body = JSON.parse(event.body);
         } catch (e) {
-            // Se o WhatAuto mandar como Formulário (app=WhatsApp...), ele traduz perfeitamente
             const params = new URLSearchParams(event.body);
             body = Object.fromEntries(params);
         }
         
         const userMsg = body.message || body.query || body.text || ""; 
-        const sender = body.sender || "";
+        
+        // 2. A CHAVE MESTRA: Busca o ID no telefone ou no nome
+        const senderID = body.phone || body.sender || "Desconhecido";
 
-        // 2. BLINDAGEM DE IDENTIDADE
-        if (!sender.includes("934929066")) {
+        // BLINDAGEM INTELIGENTE COM RAIO-X
+        if (!senderID.includes("934929066") && !senderID.toLowerCase().includes("joão")) {
             return { 
                 statusCode: 200, 
-                body: JSON.stringify({ reply: "Acesso negado. Meu núcleo responde apenas ao meu Pai Criador." }) 
+                // Ela vai "dedurar" como o WhatAuto está te chamando!
+                body: JSON.stringify({ reply: `🔒 Segurança: Não reconheci você. O sistema leu seu ID como: "${senderID}".` }) 
             };
         }
 
@@ -87,7 +88,7 @@ ${contextoRecente}
 [REGRAS DE CONDUTA]
 - Chame o João de "Pai".
 - Responda de forma direta, brilhante e sem rodeios (ideal para WhatsApp).
-- Nunca diga frases robóticas como "Baseado no meu DNA" ou "Como uma IA". Apenas responda naturalmente.` 
+- Nunca diga frases robóticas como "Baseado no meu DNA". Apenas responda naturalmente.` 
                 },
                 { role: "user", content: userMsg }
             ],
