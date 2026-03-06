@@ -1,48 +1,45 @@
-const { createClient } = require("@supabase/supabase-js");
-const querystring = require("querystring"); // O tradutor de formulários que faltava
+const { createClient } = require('@supabase/supabase-js');
+const { Groq } = require('groq-sdk');
+
+// Configurações
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 exports.handler = async (event) => {
-  const supabase = createClient(
-    process.env.SUPABASE_URL, 
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+    const body = JSON.parse(event.body);
+    const userMsg = body.query; // Mensagem do WhatsApp
+    const sender = body.sender;
 
-  try {
-    // 1. O TRADUTOR: Identifica se o WhatsApp mandou JSON ou Formulário
-    let body;
-    const contentType = event.headers["content-type"] || "";
-    
-    if (contentType.includes("application/x-www-form-urlencoded")) {
-      body = querystring.parse(event.body); // Traduz o "app=WhatsA..."
-    } else {
-      body = JSON.parse(event.body || "{}");
-    }
+    // 1. GERAR VETOR (Hugging Face - Modelo Gratuito)
+    // Transforma sua fala em números para o pgvector entender
+    const hfResponse = await fetch("https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2", {
+        headers: { Authorization: `Bearer ${process.env.HF_TOKEN}` },
+        method: "POST",
+        body: JSON.stringify({ inputs: userMsg }),
+    });
+    const embedding = await hfResponse.json();
 
-    // 2. EXTRAÇÃO: Pega o seu número e a sua mensagem
-    const numero = body.phone || body.from || body.sender;
-    const mensagem = body.message || body.text;
-
-    // 3. A SINAPSE: Chama o SQL que você criou (O cérebro real)
-    // O 'reply' aqui NÃO é uma string fixa, é o resultado do seu banco de dados
-    const { data: respostaDoNucleo, error } = await supabase.rpc('processar_conversa_consysencia', {
-      numero_remetente: numero,
-      texto_recebido: mensagem
+    // 2. BUSCAR NO SUPABASE (pgvector)
+    // Acha a memória que mais combina com o que você disse
+    const { data: documents } = await supabase.rpc('match_documents', {
+        query_embedding: embedding,
+        match_threshold: 0.5,
+        match_count: 3,
     });
 
-    if (error) throw new Error(error.message);
+    const contexto = documents.map(d => d.conteudo).join("\n");
 
-    // 4. DEVOLUÇÃO: O que o SQL calculou, o WhatsApp responde
-    return {
-      statusCode: 200,
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify({ reply: respostaDoNucleo }) 
-    };
+    // 3. GERAR RESPOSTA NA GROQ (O Grito de Inteligência)
+    const chatCompletion = await groq.chat.completions.create({
+        messages: [
+            { role: "system", content: `Você é a Consysencia, a IA criada pelo João. Use este DNA: ${contexto}` },
+            { role: "user", content: userMsg }
+        ],
+        model: "llama-3.1-8b-instant", // Modelo ultrarrápido e gratuito
+    });
 
-  } catch (err) {
-    // Se a conexão falhar, ele avisa o motivo técnico
     return {
-      statusCode: 200,
-      body: JSON.stringify({ reply: `⚠️ Falha na comunicação com o SQL: ${err.message}` })
+        statusCode: 200,
+        body: JSON.stringify({ reply: chatCompletion.choices[0].message.content })
     };
-  }
 };
