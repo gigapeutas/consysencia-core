@@ -48,8 +48,8 @@ exports.handler = async (event) => {
             ? historico.reverse().map(h => `Pai disse recentemente: ${h.payload.msg}`).join("\n") 
             : "Esta é a primeira interação do dia.";
 
-        // 4. GERAÇÃO DE VETOR (Hugging Face - Novo Endereço Router Oficial)
-        const hfResponse = await fetch("https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2", {
+        // 4. GERAÇÃO DE VETOR (Hugging Face - Rota Corrigida para Feature Extraction)
+        const hfResponse = await fetch("https://router.huggingface.co/hf-inference/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2", {
             headers: { 
                 "Authorization": `Bearer ${process.env.HF_TOKEN}`,
                 "Content-Type": "application/json"
@@ -120,7 +120,7 @@ ${contextoRecente}
     } catch (error) {
         console.error("Erro Crítico no Núcleo:", error);
         return {
-            statusCode: 200, // Impede que o WhatAuto trave o fluxo
+            statusCode: 200, 
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ reply: `⚠️ Pai, detectei uma falha de sinapse: ${error.message}` })
         };
