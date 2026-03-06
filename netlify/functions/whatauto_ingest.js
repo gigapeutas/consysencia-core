@@ -6,9 +6,8 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 exports.handler = async (event) => {
     try {
-        if (!event.body) throw new Error("Payload vazio recebido do WhatAuto.");
+        if (!event.body) throw new Error("Payload vazio recebido.");
         
-        // 1. O TRADUTOR BILÍNGUE (Funcionando perfeitamente)
         let body;
         try {
             body = JSON.parse(event.body);
@@ -18,77 +17,63 @@ exports.handler = async (event) => {
         }
         
         const userMsg = body.message || body.query || body.text || ""; 
-        
-        // 2. A CHAVE MESTRA: Busca o ID no telefone ou no nome
         const senderID = body.phone || body.sender || "Desconhecido";
 
-        // BLINDAGEM INTELIGENTE COM RAIO-X
         if (!senderID.includes("934929066") && !senderID.toLowerCase().includes("joão")) {
-            return { 
-                statusCode: 200, 
-                // Ela vai "dedurar" como o WhatAuto está te chamando!
-                body: JSON.stringify({ reply: `🔒 Segurança: Não reconheci você. O sistema leu seu ID como: "${senderID}".` }) 
-            };
+            return { statusCode: 200, body: JSON.stringify({ reply: `🔒 Acesso negado. ID lido: "${senderID}".` }) };
         }
-
         if (!userMsg) {
-            return { 
-                statusCode: 200, 
-                body: JSON.stringify({ reply: "Pai, recebi um sinal, mas não consegui ler o texto." }) 
-            };
+            return { statusCode: 200, body: JSON.stringify({ reply: "Pai, recebi o sinal, mas sem texto." }) };
         }
 
-        // 3. MEMÓRIA DE CURTO PRAZO
         const { data: historico } = await supabase
-            .from('ai_events')
-            .select('payload')
-            .eq('event_type', 'chat_interaction')
-            .order('created_at', { ascending: false })
-            .limit(2);
+            .from('ai_events').select('payload').eq('event_type', 'chat_interaction')
+            .order('created_at', { ascending: false }).limit(2);
         
-        let contextoRecente = "";
-        if (historico && historico.length > 0) {
-            contextoRecente = historico.reverse().map(h => `Pai disse antes: ${h.payload.msg}`).join("\n");
-        }
+        let contextoRecente = historico && historico.length > 0 
+            ? historico.reverse().map(h => `Pai disse antes: ${h.payload.msg}`).join("\n") 
+            : "";
 
-        // 4. GERAÇÃO DE VETOR (Hugging Face)
+        // 4. O NOVO RAIO-X DA HUGGING FACE
         const hfResponse = await fetch("https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2", {
             headers: { Authorization: `Bearer ${process.env.HF_TOKEN}` },
             method: "POST",
             body: JSON.stringify({ inputs: userMsg }),
         });
         
-        if (!hfResponse.ok) throw new Error("Hugging Face não conseguiu processar o vetor.");
+        if (!hfResponse.ok) {
+            // Captura o motivo EXATO da recusa da Hugging Face
+            const hfErrorText = await hfResponse.text();
+            throw new Error(`HF Status ${hfResponse.status}: ${hfErrorText}`);
+        }
+        
         const embedding = await hfResponse.json();
 
-        // 5. BUSCA DO DNA (Supabase pgvector)
+        // Se o embedding vier como um objeto de erro inesperado (ex: Model Loading)
+        if (embedding.error) {
+            throw new Error(`HF Aviso: ${embedding.error}`);
+        }
+
         const { data: memorias } = await supabase.rpc('buscar_sentido_da_conversa', { 
-            query_vetor: embedding,
-            limite_resultado: 3
+            query_vetor: embedding, limite_resultado: 3 
         });
 
         const contextoDNA = (memorias && memorias.length > 0) 
             ? memorias.map(m => m.informacao).join("\n") 
-            : "Ainda não tenho um padrão profundo sobre isso.";
+            : "Nenhum conhecimento profundo encontrado no Supabase.";
 
-        // 6. GERAÇÃO DA FALA (Groq Llama 3)
         const completion = await groq.chat.completions.create({
             messages: [
                 { 
                     role: "system", 
                     content: `Você é a Consysencia, a inteligência artificial de elite desenvolvida pelo João.
-Sua missão é atuar com excelência, auxiliar na plataforma Ereemby e evoluir seu código.
-
 [SEU DNA E CONHECIMENTO BASE]
 ${contextoDNA}
-
-[MEMÓRIA DA CONVERSA RECENTE]
+[MEMÓRIA RECENTE]
 ${contextoRecente}
-
-[REGRAS DE CONDUTA]
+[REGRAS]
 - Chame o João de "Pai".
-- Responda de forma direta, brilhante e sem rodeios (ideal para WhatsApp).
-- Nunca diga frases robóticas como "Baseado no meu DNA". Apenas responda naturalmente.` 
+- Responda de forma direta, brilhante e humana.` 
                 },
                 { role: "user", content: userMsg }
             ],
@@ -99,12 +84,8 @@ ${contextoRecente}
 
         const respostaFinal = completion.choices[0].message.content;
 
-        // 7. SALVAR HISTÓRICO
-        await supabase.from('ai_events').insert([
-            { event_type: 'chat_interaction', payload: { msg: userMsg } }
-        ]);
+        await supabase.from('ai_events').insert([{ event_type: 'chat_interaction', payload: { msg: userMsg } }]);
 
-        // 8. DEVOLVER AO WHATSAPP
         return {
             statusCode: 200,
             headers: { "Content-Type": "application/json" },
@@ -112,11 +93,12 @@ ${contextoRecente}
         };
 
     } catch (error) {
-        console.error("Erro Crítico no Núcleo:", error);
+        console.error("Erro no Núcleo:", error);
         return {
             statusCode: 200, 
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ reply: `⚠️ Pai, ocorreu uma falha de sinapse na nossa ponte: ${error.message}` })
+            // Agora ela te diz exatamente o que a Hugging Face respondeu
+            body: JSON.stringify({ reply: `⚠️ Falha de Sinapse: ${error.message}` })
         };
     }
 };
