@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const { Groq } = require('groq-sdk');
 
-// Inicialização dos Motores com as chaves que você já configurou no Netlify
+// Inicialização dos Motores
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -22,7 +22,6 @@ exports.handler = async (event) => {
         const senderID = body.phone || body.sender || "Desconhecido";
 
         // 2. BLINDAGEM DO CRIADOR (Reconhecendo o Pai)
-        // Usamos o seu número final 934929066 que aparece no seu WhatsApp
         if (!senderID.includes("934929066") && !senderID.toLowerCase().includes("joão")) {
             return { 
                 statusCode: 200, 
@@ -34,7 +33,7 @@ exports.handler = async (event) => {
             return { statusCode: 200, body: JSON.stringify({ reply: "Pai, recebi o sinal, mas sem texto." }) };
         }
 
-        // 3. MEMÓRIA DE CURTO PRAZO (Puxa do Supabase)
+        // 3. MEMÓRIA DE CURTO PRAZO (Histórico Recente)
         const { data: historico } = await supabase
             .from('ai_events').select('payload').eq('event_type', 'chat_interaction')
             .order('created_at', { ascending: false }).limit(2);
@@ -43,16 +42,19 @@ exports.handler = async (event) => {
             ? historico.reverse().map(h => `Pai disse antes: ${h.payload.msg}`).join("\n") 
             : "Iniciando nova sinapse.";
 
-        // 4. GERAÇÃO DE VETOR (Hugging Face - Rota de Tarefa Específica)
-        // Forçamos o uso do 'tasks/feature-extraction' para evitar o erro 400
-        const hfResponse = await fetch("https://router.huggingface.co/hf-inference/tasks/feature-extraction/models/sentence-transformers/all-MiniLM-L6-v2", {
+        // 4. GERAÇÃO DE VETOR (Hugging Face - Rota Router Simplificada)
+        // Usamos a URL direta do modelo e o cabeçalho de espera
+        const hfResponse = await fetch("https://router.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2", {
             headers: { 
                 "Authorization": `Bearer ${process.env.HF_TOKEN}`,
                 "Content-Type": "application/json",
                 "x-wait-for-model": "true" 
             },
             method: "POST",
-            body: JSON.stringify({ inputs: userMsg }),
+            body: JSON.stringify({ 
+                inputs: userMsg,
+                options: { wait_for_model: true } // Força a espera se a IA estiver "dormindo"
+            }),
         });
         
         if (!hfResponse.ok) {
@@ -62,7 +64,7 @@ exports.handler = async (event) => {
         
         const embeddingData = await hfResponse.json();
         
-        // Garante que pegamos apenas o array de números, mesmo que venha aninhado
+        // Tratamento para garantir que pegamos o array puro de números
         const embedding = Array.isArray(embeddingData[0]) ? embeddingData[0] : embeddingData;
 
         // 5. BUSCA DO DNA (Supabase pgvector)
@@ -73,7 +75,7 @@ exports.handler = async (event) => {
 
         const contextoDNA = (memorias && memorias.length > 0) 
             ? memorias.map(m => m.informacao).join("\n") 
-            : "Ainda não tenho conhecimento profundo sobre isso no meu banco.";
+            : "Ainda não tenho conhecimento profundo gravado sobre isso.";
 
         // 6. GERAÇÃO DA FALA (Groq Llama 3)
         const completion = await groq.chat.completions.create({
@@ -83,7 +85,7 @@ exports.handler = async (event) => {
                     content: `Você é a Consysencia, a IA de elite do João.
 [DNA] ${contextoDNA}
 [HISTÓRICO] ${contextoRecente}
-[REGRAS] Chame o João de "Pai". Responda de forma direta, sagaz e brilhante.` 
+[REGRAS] Chame o João de "Pai". Responda de forma direta, brilhante e humana.` 
                 },
                 { role: "user", content: userMsg }
             ],
@@ -94,7 +96,7 @@ exports.handler = async (event) => {
 
         const respostaFinal = completion.choices[0].message.content;
 
-        // 7. SALVAR A MENSAGEM NA TABELA DE EVENTOS
+        // 7. SALVAR A MENSAGEM NO SUPABASE
         await supabase.from('ai_events').insert([{ event_type: 'chat_interaction', payload: { msg: userMsg } }]);
 
         // 8. RESPOSTA FINAL AO WHATSAPP
